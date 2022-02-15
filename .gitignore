@@ -1,7 +1,7 @@
-backend/secfit/.vscode/
-backend/secfit/*/migrations/__pycache__/
-backend/secfit/*/__pycache__/
-backend/secfit/db.sqlite3
+backend/.vscode/
+backend/*/migrations/__pycache__/
+backend/*/__pycache__/
+backend/db.sqlite3
 
 .python-version
 venv

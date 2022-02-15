@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath 'backend/secfit' secfit.wsgi --log-file -
+web: gunicorn --pythonpath 'backend' secfit.wsgi --log-file -
