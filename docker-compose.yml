@@ -2,7 +2,7 @@ version: "3"
 
 services:
   backend:
-    container_name: django_group_${GROUPID}
+    container_name: backend
     build:
       context: backend/
       dockerfile: Dockerfile
@@ -16,8 +16,8 @@ services:
       backend_bridge:
         ipv4_address: 10.${GROUPID}.0.4
 
-  application:
-    container_name: node_group_${GROUPID}
+  frontend:
+    container_name: frontend
     build:
       context: frontend/
       dockerfile: Dockerfile
@@ -30,13 +30,13 @@ services:
       backend_bridge:
         ipv4_address: 10.${GROUPID}.0.5
 
-  web:
-    container_name: nginx_group_${GROUPID}
+  proxy:
+    container_name: proxy
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - ${PORT_PREFIX}${GROUPID}:80
+      - 8080:80
     environment:
       - GROUPID=${GROUPID}
       - PORT_PREFIX=${PORT_PREFIX}
