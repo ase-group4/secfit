@@ -11,6 +11,7 @@ jobs:
   deploy:
     name: Deploy frontend & backend
     runs-on: ubuntu-latest
+    environment: staging
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -23,7 +24,7 @@ jobs:
 
       - name: Deploy to Heroku
         run: |
-          dpl --provider=heroku --app=ase-group4-secfit-frontend --api-key=$HEROKU_API_KEY
-          dpl --provider=heroku --app=ase-group4-secfit-backend --api-key=$HEROKU_API_KEY
+          dpl --provider=heroku --app=ase-group4-secfit-frontend --api-key=$HEROKU_STAGING_API_KEY
+          dpl --provider=heroku --app=ase-group4-secfit-backend --api-key=$HEROKU_STAGING_API_KEY
         env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_STAGING_API_KEY: ${{ secrets.HEROKU_STAGING_API_KEY }}
