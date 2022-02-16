@@ -24,7 +24,7 @@ jobs:
 
       - name: Deploy to Heroku
         run: |
-          dpl --provider=heroku --app=ase-group4-secfit-frontend --api-key=$HEROKU_STAGING_API_KEY
-          dpl --provider=heroku --app=ase-group4-secfit-backend --api-key=$HEROKU_STAGING_API_KEY
+          sudo dpl --provider=heroku --app=ase-group4-secfit-frontend --api-key=$HEROKU_STAGING_API_KEY
+          sudo dpl --provider=heroku --app=ase-group4-secfit-backend --api-key=$HEROKU_STAGING_API_KEY
         env:
           HEROKU_STAGING_API_KEY: ${{ secrets.HEROKU_STAGING_API_KEY }}
