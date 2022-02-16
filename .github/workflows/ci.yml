@@ -1,0 +1,29 @@
+name: CI
+
+# Triggers workflow on pushes to main.
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # Uses Heroku secrets to log in and deploy the frontend and backend apps.
+  deploy:
+    name: Deploy frontend & backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Install Dpl tool
+        run: |
+          apt-get update -qy
+          apt-get install -y ruby-dev
+          gem install dpl
+
+      - name: Deploy to Heroku
+        run: |
+          dpl --provider=heroku --app=ase-group4-secfit-frontend --api-key=$HEROKU_API_KEY
+          dpl --provider=heroku --app=ase-group4-secfit-backend --api-key=$HEROKU_API_KEY
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
