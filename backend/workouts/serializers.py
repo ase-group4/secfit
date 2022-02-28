@@ -2,7 +2,7 @@
 """
 from rest_framework import serializers
 from rest_framework.serializers import HyperlinkedRelatedField
-from workouts.models import Workout, Exercise, ExerciseInstance, WorkoutFile, RememberMe
+from workouts.models import Workout, Exercise, ExerciseInstance, ExerciseCategory, WorkoutFile, RememberMe
 
 
 class ExerciseInstanceSerializer(serializers.HyperlinkedModelSerializer):
@@ -213,7 +213,17 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Exercise
-        fields = ["url", "id", "name", "description", "duration", "calories", "muscleGroup", "unit", "instances"]
+        fields = ["url", "id", "name", "description", "category", "duration", "calories", "muscleGroup", "unit", "instances"]
+
+
+class ExerciseCategorySerializer(serializers.HyperlinkedModelSerializer):
+    """Serializer for an ExerciseCategory. Hyperlinks are used for relationships by default.
+
+    Serialized fields: id, name
+    """
+    class Meta:
+        model = ExerciseCategory
+        fields = [ "id", "name"]
 
 
 class RememberMeSerializer(serializers.HyperlinkedModelSerializer):

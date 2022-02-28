@@ -22,10 +22,10 @@ from workouts.permissions import (
     IsWorkoutPublic,
 )
 from workouts.mixins import CreateListModelMixin
-from workouts.models import Workout, Exercise, ExerciseInstance, WorkoutFile
+from workouts.models import Workout, Exercise, ExerciseInstance, ExerciseCategory, WorkoutFile
 from workouts.serializers import WorkoutSerializer, ExerciseSerializer
 from workouts.serializers import RememberMeSerializer
-from workouts.serializers import ExerciseInstanceSerializer, WorkoutFileSerializer
+from workouts.serializers import ExerciseInstanceSerializer, WorkoutFileSerializer, ExerciseCategorySerializer
 from django.core.exceptions import PermissionDenied
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
@@ -192,6 +192,21 @@ class ExerciseList(
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+
+class ExerciseCategories(
+    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
+):
+    """Class defining the web response for getting exercise categories
+
+    HTTP methods: GET
+    """
+
+    queryset = ExerciseCategory.objects.all()
+    serializer_class = ExerciseCategorySerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
 
 
 class ExerciseDetail(
