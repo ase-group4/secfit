@@ -14,14 +14,13 @@ from pathlib import Path
 import os
 from .djangoHeroku import settings
 
-
-
 # Get the GROUPID variable to accept connections from the application server and NGINX
 groupid = os.environ.get("GROUPID", "0")
 
 # Email configuration
 # The host must be running within NTNU's VPN (vpn.ntnu.no) to allow this config
-# Usage: https://docs.djangoproject.com/en/3.1/topics/email/#obtaining-an-instance-of-an-email-backend
+# Usage:
+# https://docs.djangoproject.com/en/3.1/topics/email/#obtaining-an-instance-of-an-email-backend
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "mx.ntnu.no"
 EMAIL_USE_TLS = False
@@ -104,10 +103,11 @@ is_prod = os.environ.get("IS_HEROKU", None)
 if is_prod:
     settings(locals())
 
-if 'DATABASE_URL' in os.environ:
+if "DATABASE_URL" in os.environ:
     import dj_database_url
+
     print("\n\n\n\n\nHEI\n\n\n\n\n\n")
-    DATABASES = {'default': dj_database_url.config()}
+    DATABASES = {"default": dj_database_url.config()}
 else:
     DATABASES = {
         "default": {
@@ -117,9 +117,7 @@ else:
     }
 
 # CORS Policy
-CORS_ORIGIN_ALLOW_ALL = (
-    True
-)
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

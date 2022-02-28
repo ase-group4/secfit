@@ -1,13 +1,7 @@
 from django.db import models
-
-
-from django.conf import settings
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
-from django.urls import reverse
-from django.db import models
 from django.contrib.auth import get_user_model
 from workouts.models import Workout
+
 
 # Create your models here.
 class Comment(models.Model):
@@ -19,6 +13,7 @@ class Comment(models.Model):
         content:     The content of the comment.
         timestamp:   When the comment was created.
     """
+
     owner = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, related_name="comments"
     )
@@ -41,6 +36,7 @@ class Like(models.Model):
         comment:     The comment that was liked
         timestamp:   When the like occurred.
     """
+
     owner = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, related_name="likes"
     )

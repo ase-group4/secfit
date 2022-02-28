@@ -1,10 +1,7 @@
 from django.urls import path, include
 from meals import views
 from rest_framework.urlpatterns import format_suffix_patterns
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+
 
 # This is messy and should be refactored
 urlpatterns = format_suffix_patterns(

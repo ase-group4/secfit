@@ -1,33 +1,18 @@
-"""Contains views for the meals application. These are mostly class-based views.
-"""
+"""Contains views for the meals application. These are mostly class-based views."""
 from rest_framework import generics, mixins
 from rest_framework import permissions
-
-from rest_framework.parsers import (
-    JSONParser,
-)
+from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.db.models import Q
 from rest_framework import filters
 from meals.parsers import MultipartJsonParser
-from meals.permissions import (
-    IsOwner,
-    IsOwnerOfMeal,
-    IsReadOnly,
-)
+from meals.permissions import IsOwner, IsOwnerOfMeal
 from meals.mixins import CreateListModelMixin
 from meals.models import Meal, MealFile
 from meals.serializers import MealSerializer
 from meals.serializers import MealFileSerializer
-from django.core.exceptions import PermissionDenied
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.response import Response
-import json
-from collections import namedtuple
-import base64, pickle
-from django.core.signing import Signer
 
 
 @api_view(["GET"])
@@ -36,15 +21,12 @@ def api_root(request, format=None):
         {
             "users": reverse("user-list", request=request, format=format),
             "meals": reverse("meal-list", request=request, format=format),
-            "meal-files": reverse(
-                "meal-file-list", request=request, format=format
-            ),
+            "meal-files": reverse("meal-file-list", request=request, format=format),
         }
     )
 
-class MealList(
-    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
-):
+
+class MealList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     """Class defining the web response for the creation of a Meal, or displaying a list
     of Meals
 
@@ -77,6 +59,7 @@ class MealList(
             qs = Meal.objects.filter(Q(owner=self.request.user)).distinct()
         return qs
 
+
 class MealDetail(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
@@ -90,10 +73,7 @@ class MealDetail(
 
     queryset = Meal.objects.all()
     serializer_class = MealSerializer
-    permission_classes = [
-        permissions.IsAuthenticated
-        & IsOwner
-    ]
+    permission_classes = [permissions.IsAuthenticated & IsOwner]
     parser_classes = [MultipartJsonParser, JSONParser]
 
     def get(self, request, *args, **kwargs):
@@ -104,6 +84,7 @@ class MealDetail(
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
 
 class MealFileList(
     mixins.ListModelMixin,
@@ -129,8 +110,7 @@ class MealFileList(
     def get_queryset(self):
         qs = MealFile.objects.none()
         if self.request.user:
-            qs = MealFile.objects.filter(
-                Q(owner=self.request.user)).distinct()
+            qs = MealFile.objects.filter(Q(owner=self.request.user)).distinct()
         return qs
 
 
@@ -143,10 +123,7 @@ class MealFileDetail(
 
     queryset = MealFile.objects.all()
     serializer_class = MealFileSerializer
-    permission_classes = [
-        permissions.IsAuthenticated
-        & IsOwner 
-    ]
+    permission_classes = [permissions.IsAuthenticated & IsOwner]
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)

@@ -1,8 +1,8 @@
-"""Serializers for the meals application
-"""
+"""Serializers for the meals application."""
 from rest_framework import serializers
 from rest_framework.serializers import HyperlinkedRelatedField
 from meals.models import Meal, MealFile
+
 
 class MealFileSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for a MealFile. Hyperlinks are used for relationships by default.

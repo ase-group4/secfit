@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import generics, mixins
 from comments.models import Comment, Like
 from rest_framework import permissions
@@ -7,6 +6,7 @@ from workouts.permissions import IsOwner, IsReadOnly
 from comments.serializers import CommentSerializer, LikeSerializer
 from django.db.models import Q
 from rest_framework.filters import OrderingFilter
+
 
 # Create your views here.
 class CommentList(
@@ -37,13 +37,13 @@ class CommentList(
             """A comment should be visible to the requesting user if any of the following hold:
             - The comment is on a public visibility workout
             - The comment was written by the user
-            - The comment is on a coach visibility workout and the user is the workout owner's coach
+            - The comment is on a coach-visible workout and the user is the workout owner's coach
             - The comment is on a workout owned by the user
             """
             # The code below is kind of duplicate of the one in ./permissions.py
             # We should replace it with a better solution.
             # Or maybe not.
-            
+
             qs = Comment.objects.filter(
                 Q(workout__visibility="PU")
                 | Q(owner=self.request.user)
@@ -55,6 +55,7 @@ class CommentList(
             ).distinct()
 
         return qs
+
 
 # Details of comment
 class CommentDetail(

@@ -10,10 +10,16 @@ class CustomUserCreationForm(UserCreationForm):
     city = forms.CharField(max_length=50)
     street_address = forms.CharField(max_length=50)
 
-
     class Meta(UserCreationForm):
         model = get_user_model()
-        fields = ("username", "coach", "phone_number", "country", "city", "street_address")
+        fields = (
+            "username",
+            "coach",
+            "phone_number",
+            "country",
+            "city",
+            "street_address",
+        )
 
 
 class CustomUserChangeForm(UserChangeForm):

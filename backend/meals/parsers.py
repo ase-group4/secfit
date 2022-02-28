@@ -1,7 +1,7 @@
-"""Contains custom parsers for serializers from the meals Django app
-"""
+"""Contains custom parsers for serializers from the meals Django app."""
 import json
 from rest_framework import parsers
+
 
 # Thanks to https://stackoverflow.com/a/50514630
 class MultipartJsonParser(parsers.MultiPartParser):

@@ -1,6 +1,4 @@
-"""
-Mixins for the meals application
-"""
+"""Mixins for the meals application"""
 
 
 class CreateListModelMixin(object):

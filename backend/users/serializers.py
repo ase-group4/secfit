@@ -32,7 +32,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         data = self.get_initial()
 
         password = data.get("password")
-        password1 = data.get("password1")
 
         try:
             password_validation.validate_password(password)
@@ -49,7 +48,14 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         country = validated_data["country"]
         city = validated_data["city"]
         street_address = validated_data["street_address"]
-        user_obj = get_user_model()(username=username, email=email, phone_number=phone_number, country=country, city=city, street_address=street_address)
+        user_obj = get_user_model()(
+            username=username,
+            email=email,
+            phone_number=phone_number,
+            country=country,
+            city=city,
+            street_address=street_address,
+        )
         user_obj.set_password(password)
         user_obj.save()
 
