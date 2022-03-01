@@ -48,6 +48,7 @@ function handleCancelButtonDuringEdit() {
     if (oldFormData.has("calories")) form.calories.value = oldFormData.get("calories");
     if (oldFormData.has("muscleGroup")) form.muscleGroup.value = oldFormData.get("muscleGroup");
     if (oldFormData.has("unit")) form.unit.value = oldFormData.get("unit");
+    if (oldFormData.has("category")) form.category.value = oldFormData.get("category");
     
     oldFormData.delete("name");
     oldFormData.delete("description");
@@ -55,6 +56,7 @@ function handleCancelButtonDuringEdit() {
     oldFormData.delete("calories");
     oldFormData.delete("muscleGroup");
     oldFormData.delete("unit");
+    oldFormData.delete("category");
 
 }
 
@@ -70,7 +72,8 @@ async function createExercise() {
                 "description": formData.get("description"),
                 "duration": formData.get("duration"),
                 "calories": formData.get("calories"),
-                "muscleGroup": formData.get("muscleGroup"), 
+                "muscleGroup": formData.get("muscleGroup"),
+                "category": formData.get("category"), 
                 "unit": formData.get("unit")};
 
     let response = await sendRequest("POST", `${HOST}/api/exercises/`, body);
@@ -150,6 +153,7 @@ async function updateExercise(id) {
                 "description": formData.get("description"),
                 "duration": formData.get("duration"),
                 "calories": formData.get("calories"),
+                "category": formData.get("category"),
                 "muscleGroup": selectedMuscleGroup.getMuscleGroupType(),
                 "unit": formData.get("unit")};
     let response = await sendRequest("PUT", `${HOST}/api/exercises/${id}/`, body);
@@ -176,6 +180,28 @@ async function updateExercise(id) {
         oldFormData.delete("calories");
         oldFormData.delete("muscleGroup");
         oldFormData.delete("unit");
+        oldFormData.delete("category");
+    }
+}
+
+async function getCategories() {
+    let response = await sendRequest("GET", `${HOST}/api/exercise-categories/`);
+
+    console.log(response.ok)
+
+    if (!response.ok) {
+        let data = await response.json();
+        let alert = createAlert("Could not retrieve category data!", data);
+        document.body.prepend(alert);
+    } else {
+        let categoriesData = await response.json();
+        let categoryDrop = document.querySelector('#categories');
+
+        let output= ""
+        categoriesData['results'].forEach(category =>{
+            output += `<option value=${category.id}>${category.name}</option>`;
+        })
+        categoryDrop.innerHTML = output
     }
 }
 
@@ -187,6 +213,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     oldFormData = null;
 
     const urlParams = new URLSearchParams(window.location.search);
+    
+    getCategories()
 
     // view/edit
     if (urlParams.has('id')) {
