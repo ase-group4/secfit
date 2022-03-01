@@ -24,9 +24,6 @@ RUN pip install --upgrade pip
 # Install the requirements.
 RUN pip install -r requirements.txt
 
-# Import groupid environment variable
-ENV GROUPID=${GROUPID}
-
 # Initialize Django
 RUN python manage.py migrate
 
