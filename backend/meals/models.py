@@ -45,9 +45,7 @@ class Meal(models.Model):
     notes = models.TextField()
     calories = models.IntegerField()
     is_veg = models.BooleanField(default=False)
-    owner = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE, related_name="meals"
-    )
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="meals")
 
     class Meta:
         ordering = ["-date"]

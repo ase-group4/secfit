@@ -9,9 +9,7 @@ from rest_framework.filters import OrderingFilter
 
 
 # Create your views here.
-class CommentList(
-    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
-):
+class CommentList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     # queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -47,10 +45,7 @@ class CommentList(
             qs = Comment.objects.filter(
                 Q(workout__visibility="PU")
                 | Q(owner=self.request.user)
-                | (
-                    Q(workout__visibility="CO")
-                    & Q(workout__owner__coach=self.request.user)
-                )
+                | (Q(workout__visibility="CO") & Q(workout__owner__coach=self.request.user))
                 | Q(workout__owner=self.request.user)
             ).distinct()
 

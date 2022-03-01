@@ -76,9 +76,7 @@ class MealSerializer(serializers.HyperlinkedModelSerializer):
         meal = Meal.objects.create(**validated_data)
 
         for file_data in files_data:
-            MealFile.objects.create(
-                meal=meal, owner=meal.owner, file=file_data.get("file")
-            )
+            MealFile.objects.create(meal=meal, owner=meal.owner, file=file_data.get("file"))
 
         return meal
 

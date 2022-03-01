@@ -6,9 +6,7 @@ from workouts.models import Workout
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source="owner.username")
-    workout = HyperlinkedRelatedField(
-        queryset=Workout.objects.all(), view_name="workout-detail"
-    )
+    workout = HyperlinkedRelatedField(queryset=Workout.objects.all(), view_name="workout-detail")
 
     class Meta:
         model = Comment
@@ -17,9 +15,7 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
 
 class LikeSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source="owner.username")
-    comment = HyperlinkedRelatedField(
-        queryset=Comment.objects.all(), view_name="comment-detail"
-    )
+    comment = HyperlinkedRelatedField(queryset=Comment.objects.all(), view_name="comment-detail")
 
     class Meta:
         model = Like
