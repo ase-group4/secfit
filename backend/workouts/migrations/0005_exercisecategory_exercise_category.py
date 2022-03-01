@@ -1,8 +1,9 @@
 from django.db import migrations, models
 import django.db.models.deletion
 
-
-DEFAULT_CATEGORIES = ["Legs", "Back", "Chest", "Shoulders", "Arms", "Core"]
+# From
+# https://www.nia.nih.gov/health/four-types-exercise-can-improve-your-health-and-physical-ability
+DEFAULT_CATEGORIES = ["Strength", "Endurance", "Balance", "Flexibility"]
 
 
 class Migration(migrations.Migration):
