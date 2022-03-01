@@ -195,14 +195,10 @@ async function getCategories() {
         document.body.prepend(alert);
     } else {
         let categoriesData = await response.json();
-        console.log(categoriesData['results'])
         let categoryDrop = document.querySelector('#categories');
 
         let output= ""
-
         categoriesData['results'].forEach(category =>{
-            console.log(category)
-            let value = {id: category.id, name: category.name}
             output += `<option value=${category.id}>${category.name}</option>`;
         })
         categoryDrop.innerHTML = output
