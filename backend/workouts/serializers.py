@@ -197,25 +197,6 @@ class WorkoutSerializer(serializers.HyperlinkedModelSerializer):
         """
         return obj.owner.username
 
-
-class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
-    """Serializer for an Exercise. Hyperlinks are used for relationships by default.
-
-    Serialized fields: url, id, name, description, duration, calories, muscle group, unit, instances
-
-    Attributes:
-        instances:  Associated exercise instances with this Exercise type. Hyperlinks.
-    """
-
-    instances = serializers.HyperlinkedRelatedField(
-        many=True, view_name="exerciseinstance-detail", read_only=True
-    )
-
-    class Meta:
-        model = Exercise
-        fields = ["url", "id", "name", "description", "category", "duration", "calories", "muscleGroup", "unit", "instances"]
-
-
 class ExerciseCategorySerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for an ExerciseCategory. Hyperlinks are used for relationships by default.
 
@@ -225,6 +206,23 @@ class ExerciseCategorySerializer(serializers.HyperlinkedModelSerializer):
         model = ExerciseCategory
         fields = [ "id", "name"]
 
+class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
+    """Serializer for an Exercise. Hyperlinks are used for relationships by default.
+
+    Serialized fields: url, id, name, description, category, duration, calories, muscle group, unit, instances
+
+    Attributes:
+        instances:  Associated exercise instances with this Exercise type. Hyperlinks.
+    """
+
+    instances = serializers.HyperlinkedRelatedField(
+        many=True, view_name="exerciseinstance-detail", read_only=True
+    )
+
+    category = serializers.PrimaryKeyRelatedField(queryset=ExerciseCategory.objects.all())
+    class Meta:
+        model = Exercise
+        fields = ["url", "id", "name", "description", "category", "duration", "calories", "muscleGroup", "unit", "instances"]
 
 class RememberMeSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for an RememberMe. Hyperlinks are used for relationships by default.
