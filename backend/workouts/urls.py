@@ -17,7 +17,11 @@ urlpatterns = format_suffix_patterns(
             name="workout-detail",
         ),
         path("api/exercises/", views.ExerciseList.as_view(), name="exercise-list"),
-        path("api/exercise-categories/", views.ExerciseCategories.as_view(), name="exercise-categories"),
+        path(
+            "api/exercise-categories/",
+            views.ExerciseCategories.as_view(),
+            name="exercise-categories",
+        ),
         path(
             "api/exercises/<int:pk>/",
             views.ExerciseDetail.as_view(),
