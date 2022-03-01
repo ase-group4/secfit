@@ -25,7 +25,6 @@ class OverwriteStorage(FileSystemStorage):
             os.remove(os.path.join(settings.MEDIA_ROOT, name))
 
 
-# Create your models here.
 class Meal(models.Model):
     """Django model for a meal that users can log.
 
@@ -43,17 +42,53 @@ class Meal(models.Model):
     name = models.CharField(max_length=100)
     date = models.DateTimeField()
     notes = models.TextField()
-    calories = models.IntegerField()
-    is_veg = models.BooleanField(default=False)
-    owner = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE, related_name="meals"
+
+    ingredients = models.ManyToManyField(
+        to="Ingredient",
+        through="IngredientInMeal",
+        through_fields=("meal", "ingredient"),
     )
+
+    is_veg = models.BooleanField(default=False)
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="meals")
 
     class Meta:
         ordering = ["-date"]
 
     def __str__(self):
         return self.name
+
+
+class Ingredient(models.Model):
+    """Django model for ingredients that users can compose meals from."""
+
+    # Grams of protein per 100 grams of the ingredient.
+    protein = models.IntegerField()
+
+    # Grams of carbohydrates per 100 grams of the ingredient.
+    carbohydrates = models.IntegerField()
+
+    # Grams of fat per 100 grams of the ingredient.
+    fat = models.IntegerField()
+
+    @property
+    def calories(self) -> int:
+        return self.protein * 4 + self.carbohydrates * 4 + self.fat * 9
+
+
+class IngredientInMeal(models.Model):
+    meal = models.ForeignKey("Meal", on_delete=models.CASCADE, related_name="ingredient_weights")
+    ingredient = models.ForeignKey("Ingredient", on_delete=models.CASCADE)
+
+    # The weight in grams of the ingredient in the meal.
+    weight = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["ingredient", "meal"], name="unique_ingredient_in_meal"
+            )
+        ]
 
 
 def meal_directory_path(instance, filename):
