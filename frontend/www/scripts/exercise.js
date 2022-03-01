@@ -153,6 +153,7 @@ async function updateExercise(id) {
                 "description": formData.get("description"),
                 "duration": formData.get("duration"),
                 "calories": formData.get("calories"),
+                "category": formData.get("category"),
                 "muscleGroup": selectedMuscleGroup.getMuscleGroupType(),
                 "unit": formData.get("unit")};
     let response = await sendRequest("PUT", `${HOST}/api/exercises/${id}/`, body);
