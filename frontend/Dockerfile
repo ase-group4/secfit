@@ -1,11 +1,10 @@
 # Get docker image
 FROM debian:buster-slim
 
-# Import groupid and host environment variable
-ARG GROUPID
+# Import host environment variables
 ARG DOMAIN
 ARG URL_PREFIX
-ARG PORT_PREFIX
+ARG PORT
 
 # Set working dir
 WORKDIR /app
@@ -14,7 +13,7 @@ WORKDIR /app
 COPY . /app/
 
 # Set the host variable in default.js (overwrite)
-RUN echo "const HOST = '${URL_PREFIX}${DOMAIN}:${PORT_PREFIX}${GROUPID}';" > ./www/scripts/defaults.js
+RUN echo "const HOST = '${URL_PREFIX}${DOMAIN}:${PORT}';" > ./www/scripts/defaults.js
 
 # Install cordova
 # Also install shelljs because of windows for some reason
