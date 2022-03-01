@@ -3,6 +3,7 @@
 import json
 from rest_framework import parsers
 
+
 # Thanks to https://stackoverflow.com/a/50514630
 class MultipartJsonParser(parsers.MultiPartParser):
     """Parser for serializing multipart data containing both files and JSON.
@@ -11,9 +12,7 @@ class MultipartJsonParser(parsers.MultiPartParser):
     """
 
     def parse(self, stream, media_type=None, parser_context=None):
-        result = super().parse(
-            stream, media_type=media_type, parser_context=parser_context
-        )
+        result = super().parse(stream, media_type=media_type, parser_context=parser_context)
         data = {}
         new_files = {"files": []}
 

@@ -1,4 +1,3 @@
-import django
 from rest_framework import mixins, generics
 from workouts.mixins import CreateListModelMixin
 from rest_framework import permissions
@@ -9,21 +8,15 @@ from users.serializers import (
     UserPutSerializer,
     UserGetSerializer,
 )
-from rest_framework.permissions import (
-    AllowAny,
-    IsAdminUser,
-    IsAuthenticated,
-    IsAuthenticatedOrReadOnly,
-)
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from users.models import Offer, AthleteFile
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
 from users.permissions import IsCurrentUser, IsAthlete, IsCoach
 from workouts.permissions import IsOwner, IsReadOnly
 
-# Create your views here.
+
 class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     serializer_class = UserSerializer
     users = []
@@ -82,9 +75,7 @@ class UserDetail(
         return self.partial_update(request, *args, **kwargs)
 
 
-class OfferList(
-    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
-):
+class OfferList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = OfferSerializer
 

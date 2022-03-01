@@ -3,9 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 
 
-# Create your models here.
-
-
 class User(AbstractUser):
     """
     Standard Django User model with an added field for a user's coach.
@@ -18,7 +15,7 @@ class User(AbstractUser):
     country = models.TextField(max_length=50, blank=True)
     city = models.TextField(max_length=50, blank=True)
     street_address = models.TextField(max_length=50, blank=True)
-    
+
 
 def athlete_directory_path(instance, filename):
     """
@@ -56,6 +53,7 @@ class Offer(models.Model):
         status:      The current status of the offer (accept, declined, or pending)
         timestamp:   When the offer was sent.
     """
+
     owner = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, related_name="sent_offers"
     )

@@ -1,5 +1,4 @@
-"""AppConfig for meals app
-"""
+"""AppConfig for meals app"""
 from django.apps import AppConfig
 
 

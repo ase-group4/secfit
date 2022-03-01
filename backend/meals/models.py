@@ -1,5 +1,6 @@
-"""Contains the models for the meals Django application. Users
-log meals (Meal). The user can also upload files (MealFile) .
+"""
+Contains the models for the meals Django application. Users
+log meals (Meal). The user can also upload files (MealFile).
 """
 import os
 from django.db import models
@@ -44,15 +45,14 @@ class Meal(models.Model):
     notes = models.TextField()
     calories = models.IntegerField()
     is_veg = models.BooleanField(default=False)
-    owner = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE, related_name="meals"
-    )
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="meals")
 
     class Meta:
         ordering = ["-date"]
 
     def __str__(self):
         return self.name
+
 
 def meal_directory_path(instance, filename):
     """Return path for which meal files should be uploaded on the web server
@@ -65,6 +65,7 @@ def meal_directory_path(instance, filename):
         str: Path where workout file is stored
     """
     return f"meals/{instance.meal.id}/{filename}"
+
 
 class MealFile(models.Model):
     """Django model for file associated with a meal. Basically a wrapper.

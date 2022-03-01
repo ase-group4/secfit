@@ -1,5 +1,4 @@
-"""Contains custom DRF permissions classes for the meals app
-"""
+"""Contains custom DRF permissions classes for the meals app."""
 from rest_framework import permissions
 from meals.models import Meal
 
@@ -27,6 +26,7 @@ class IsOwnerOfMeal(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj.meal.owner == request.user
+
 
 class IsReadOnly(permissions.BasePermission):
     """Checks whether the HTTP request verb is only for retrieving data (GET, HEAD, OPTIONS)"""

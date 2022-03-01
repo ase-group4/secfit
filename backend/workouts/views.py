@@ -2,7 +2,6 @@
 """
 from rest_framework import generics, mixins
 from rest_framework import permissions
-
 from rest_framework.parsers import (
     JSONParser,
 )
@@ -25,13 +24,16 @@ from workouts.mixins import CreateListModelMixin
 from workouts.models import Workout, Exercise, ExerciseInstance, ExerciseCategory, WorkoutFile
 from workouts.serializers import WorkoutSerializer, ExerciseSerializer
 from workouts.serializers import RememberMeSerializer
-from workouts.serializers import ExerciseInstanceSerializer, WorkoutFileSerializer, ExerciseCategorySerializer
+from workouts.serializers import (
+    ExerciseInstanceSerializer,
+    WorkoutFileSerializer,
+    ExerciseCategorySerializer,
+)
 from django.core.exceptions import PermissionDenied
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.response import Response
-import json
 from collections import namedtuple
-import base64, pickle
+import base64
+import pickle
 from django.core.signing import Signer
 
 
@@ -45,9 +47,7 @@ def api_root(request, format=None):
             "exercise-instances": reverse(
                 "exercise-instance-list", request=request, format=format
             ),
-            "workout-files": reverse(
-                "workout-file-list", request=request, format=format
-            ),
+            "workout-files": reverse("workout-file-list", request=request, format=format),
             "comments": reverse("comment-list", request=request, format=format),
             "likes": reverse("like-list", request=request, format=format),
         }
@@ -65,15 +65,13 @@ class RememberMe(
     serializer_class = RememberMeSerializer
 
     def get(self, request):
-        if request.user.is_authenticated == False:
+        if request.user.is_authenticated is False:
             raise PermissionDenied
         else:
             return Response({"remember_me": self.rememberme()})
 
     def post(self, request):
-        cookieObject = namedtuple("Cookies", request.COOKIES.keys())(
-            *request.COOKIES.values()
-        )
+        cookieObject = namedtuple("Cookies", request.COOKIES.keys())(*request.COOKIES.values())
         user = self.get_user(cookieObject)
         refresh = RefreshToken.for_user(user)
         return Response(
@@ -101,9 +99,7 @@ class RememberMe(
         return signed_user
 
 
-class WorkoutList(
-    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
-):
+class WorkoutList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     """Class defining the web response for the creation of a Workout, or displaying a list
     of Workouts
 
@@ -138,8 +134,7 @@ class WorkoutList(
             # - The owner of the workout is the requesting user
             # - The workout has coach visibility and the requesting user is the owner's coach
             qs = Workout.objects.filter(
-                Q(visibility="PU")
-                | (Q(visibility="CO") & Q(owner__coach=self.request.user))
+                Q(visibility="PU") | (Q(visibility="CO") & Q(owner__coach=self.request.user))
             ).distinct()
 
         return qs
@@ -174,9 +169,7 @@ class WorkoutDetail(
         return self.destroy(request, *args, **kwargs)
 
 
-class ExerciseList(
-    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
-):
+class ExerciseList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     """Class defining the web response for the creation of an Exercise, or
     a list of Exercises.
 
@@ -193,9 +186,8 @@ class ExerciseList(
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
-class ExerciseCategories(
-    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
-):
+
+class ExerciseCategories(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     """Class defining the web response for getting exercise categories
 
     HTTP methods: GET
@@ -206,7 +198,6 @@ class ExerciseCategories(
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
-
 
 
 class ExerciseDetail(
@@ -277,10 +268,7 @@ class ExerciseInstanceDetail(
     serializer_class = ExerciseInstanceSerializer
     permission_classes = [
         permissions.IsAuthenticated
-        & (
-            IsOwnerOfWorkout
-            | (IsReadOnly & (IsCoachOfWorkoutAndVisibleToCoach | IsWorkoutPublic))
-        )
+        & (IsOwnerOfWorkout | (IsReadOnly & (IsCoachOfWorkoutAndVisibleToCoach | IsWorkoutPublic)))
     ]
 
     def get(self, request, *args, **kwargs):
@@ -323,10 +311,7 @@ class WorkoutFileList(
             qs = WorkoutFile.objects.filter(
                 Q(owner=self.request.user)
                 | Q(workout__owner=self.request.user)
-                | (
-                    Q(workout__visibility="CO")
-                    & Q(workout__owner__coach=self.request.user)
-                )
+                | (Q(workout__visibility="CO") & Q(workout__owner__coach=self.request.user))
             ).distinct()
 
         return qs

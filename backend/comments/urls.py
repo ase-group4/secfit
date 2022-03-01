@@ -1,7 +1,5 @@
-from django.urls import path, include
-from comments.models import Comment, Like
+from django.urls import path
 from comments.views import CommentList, CommentDetail, LikeList, LikeDetail
-from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
     path("api/comments/", CommentList.as_view(), name="comment-list"),

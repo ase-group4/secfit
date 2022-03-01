@@ -1,8 +1,8 @@
-"""Serializers for the meals application
-"""
+"""Serializers for the meals application."""
 from rest_framework import serializers
 from rest_framework.serializers import HyperlinkedRelatedField
 from meals.models import Meal, MealFile
+
 
 class MealFileSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for a MealFile. Hyperlinks are used for relationships by default.
@@ -76,9 +76,7 @@ class MealSerializer(serializers.HyperlinkedModelSerializer):
         meal = Meal.objects.create(**validated_data)
 
         for file_data in files_data:
-            MealFile.objects.create(
-                meal=meal, owner=meal.owner, file=file_data.get("file")
-            )
+            MealFile.objects.create(meal=meal, owner=meal.owner, file=file_data.get("file"))
 
         return meal
 
