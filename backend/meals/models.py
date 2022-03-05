@@ -46,7 +46,6 @@ class Meal(models.Model):
     ingredients = models.ManyToManyField(
         to="Ingredient",
         through="IngredientInMeal",
-        through_fields=("meal", "ingredient"),
     )
 
     is_veg = models.BooleanField(default=False)
@@ -85,6 +84,8 @@ class IngredientInMeal(models.Model):
 
     class Meta:
         constraints = [
+            # Disallows adding the same ingredient twice to the same meal
+            # (increase weight instead).
             models.UniqueConstraint(
                 fields=["ingredient", "meal"], name="unique_ingredient_in_meal"
             )
