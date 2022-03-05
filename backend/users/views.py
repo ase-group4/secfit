@@ -75,9 +75,7 @@ class UserDetail(
         return self.partial_update(request, *args, **kwargs)
 
 
-class OfferList(
-    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
-):
+class OfferList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = OfferSerializer
 

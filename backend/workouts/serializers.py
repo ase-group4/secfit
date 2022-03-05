@@ -2,7 +2,14 @@
 """
 from rest_framework import serializers
 from rest_framework.serializers import HyperlinkedRelatedField
-from workouts.models import Workout, Exercise, ExerciseInstance, WorkoutFile, RememberMe
+from workouts.models import (
+    Workout,
+    Exercise,
+    ExerciseInstance,
+    ExerciseCategory,
+    WorkoutFile,
+    RememberMe,
+)
 
 
 class ExerciseInstanceSerializer(serializers.HyperlinkedModelSerializer):
@@ -145,18 +152,14 @@ class WorkoutSerializer(serializers.HyperlinkedModelSerializer):
             exercise_instance.number = exercise_instance_data.get(
                 "number", exercise_instance.number
             )
-            exercise_instance.sets = exercise_instance_data.get(
-                "sets", exercise_instance.sets
-            )
+            exercise_instance.sets = exercise_instance_data.get("sets", exercise_instance.sets)
             exercise_instance.save()
 
         # If new exercise instances have been added to the workout, then create them
         if len(exercise_instances_data) > len(exercise_instances.all()):
             for i in range(len(exercise_instances.all()), len(exercise_instances_data)):
                 exercise_instance_data = exercise_instances_data[i]
-                ExerciseInstance.objects.create(
-                    workout=instance, **exercise_instance_data
-                )
+                ExerciseInstance.objects.create(workout=instance, **exercise_instance_data)
         # Else if exercise instances have been removed from the workout, then delete them
         elif len(exercise_instances_data) < len(exercise_instances.all()):
             for i in range(len(exercise_instances_data), len(exercise_instances.all())):
@@ -198,10 +201,22 @@ class WorkoutSerializer(serializers.HyperlinkedModelSerializer):
         return obj.owner.username
 
 
+class ExerciseCategorySerializer(serializers.HyperlinkedModelSerializer):
+    """Serializer for an ExerciseCategory. Hyperlinks are used for relationships by default.
+
+    Serialized fields: id, name
+    """
+
+    class Meta:
+        model = ExerciseCategory
+        fields = ["id", "name"]
+
+
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
     """Serializer for an Exercise. Hyperlinks are used for relationships by default.
 
-    Serialized fields: url, id, name, description, duration, calories, muscle group, unit, instances
+    Serialized fields:
+        url, id, name, description, category, duration, calories, muscle group, unit, instances
 
     Attributes:
         instances:  Associated exercise instances with this Exercise type. Hyperlinks.
@@ -211,9 +226,22 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
         many=True, view_name="exerciseinstance-detail", read_only=True
     )
 
+    category = serializers.PrimaryKeyRelatedField(queryset=ExerciseCategory.objects.all())
+
     class Meta:
         model = Exercise
-        fields = ["url", "id", "name", "description", "duration", "calories", "muscleGroup", "unit", "instances"]
+        fields = [
+            "url",
+            "id",
+            "name",
+            "description",
+            "category",
+            "duration",
+            "calories",
+            "muscleGroup",
+            "unit",
+            "instances",
+        ]
 
 
 class RememberMeSerializer(serializers.HyperlinkedModelSerializer):

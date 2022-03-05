@@ -43,9 +43,7 @@ class Workout(models.Model):
     name = models.CharField(max_length=100)
     date = models.DateTimeField()
     notes = models.TextField()
-    owner = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE, related_name="workouts"
-    )
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="workouts")
 
     # Visibility levels
     PUBLIC = "PU"  # Visible to all authenticated users
@@ -57,12 +55,25 @@ class Workout(models.Model):
         (PRIVATE, "Private"),
     ]  # Choices for visibility level
 
-    visibility = models.CharField(
-        max_length=2, choices=VISIBILITY_CHOICES, default=COACH
-    )
+    visibility = models.CharField(max_length=2, choices=VISIBILITY_CHOICES, default=COACH)
 
     class Meta:
         ordering = ["-date"]
+
+    def __str__(self):
+        return self.name
+
+
+class ExerciseCategory(models.Model):
+    """Django model for an instance of an exercise category.
+
+    Each exercise category has a name
+
+    Attributes:
+        name:    The name of a category
+    """
+
+    name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
@@ -88,6 +99,10 @@ class Exercise(models.Model):
     calories = models.IntegerField(default=0)
     muscleGroup = models.TextField(default="Legs")
     unit = models.CharField(max_length=50)
+    category = models.ForeignKey(
+        ExerciseCategory, on_delete=models.CASCADE, default=True, null=False
+    )
+    # CASCADE => if the ExerciseCategory is deleted, the Exercise will also be
 
     def __str__(self):
         return self.name
@@ -110,9 +125,7 @@ class ExerciseInstance(models.Model):
     workout = models.ForeignKey(
         Workout, on_delete=models.CASCADE, related_name="exercise_instances"
     )
-    exercise = models.ForeignKey(
-        Exercise, on_delete=models.CASCADE, related_name="instances"
-    )
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name="instances")
     sets = models.IntegerField()
     number = models.IntegerField()
 

@@ -75,19 +75,15 @@ def settings(
         # Insert Whitenoise Middleware.
         try:
             config["MIDDLEWARE_CLASSES"] = tuple(
-                ["whitenoise.middleware.WhiteNoiseMiddleware"]
-                + list(config["MIDDLEWARE_CLASSES"])
+                ["whitenoise.middleware.WhiteNoiseMiddleware"] + list(config["MIDDLEWARE_CLASSES"])
             )
         except KeyError:
             config["MIDDLEWARE"] = tuple(
-                ["whitenoise.middleware.WhiteNoiseMiddleware"]
-                + list(config["MIDDLEWARE"])
+                ["whitenoise.middleware.WhiteNoiseMiddleware"] + list(config["MIDDLEWARE"])
             )
 
         # Enable GZip.
-        config[
-            "STATICFILES_STORAGE"
-        ] = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+        config["STATICFILES_STORAGE"] = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
     if allowed_hosts:
         # logger.info('Applying Heroku ALLOWED_HOSTS configuration to Django settings.')

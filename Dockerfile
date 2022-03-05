@@ -1,9 +1,8 @@
 # Webserver running nginx
 FROM nginx:perl
 
-# Import groupid environment variable
-ENV GROUPID=${GROUPID}
-ENV PORT_PREFIX=${PORT_PREFIX}
+# Import port environment variable
+ENV PORT=${PORT}
 
 # Copy nginx config to the container
 COPY nginx.conf /etc/nginx/nginx.conf

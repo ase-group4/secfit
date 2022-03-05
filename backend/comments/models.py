@@ -14,12 +14,8 @@ class Comment(models.Model):
         timestamp:   When the comment was created.
     """
 
-    owner = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE, related_name="comments"
-    )
-    workout = models.ForeignKey(
-        Workout, on_delete=models.CASCADE, related_name="comments"
-    )
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="comments")
+    workout = models.ForeignKey(Workout, on_delete=models.CASCADE, related_name="comments")
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -37,8 +33,6 @@ class Like(models.Model):
         timestamp:   When the like occurred.
     """
 
-    owner = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE, related_name="likes"
-    )
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="likes")
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="likes")
     timestamp = models.DateTimeField(auto_now_add=True)

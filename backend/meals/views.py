@@ -92,7 +92,6 @@ class MealFileList(
     CreateListModelMixin,
     generics.GenericAPIView,
 ):
-
     queryset = MealFile.objects.all()
     serializer_class = MealFileSerializer
     permission_classes = [permissions.IsAuthenticated & IsOwnerOfMeal]
@@ -120,7 +119,6 @@ class MealFileDetail(
     mixins.DestroyModelMixin,
     generics.GenericAPIView,
 ):
-
     queryset = MealFile.objects.all()
     serializer_class = MealFileSerializer
     permission_classes = [permissions.IsAuthenticated & IsOwner]
