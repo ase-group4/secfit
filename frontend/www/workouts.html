@@ -22,6 +22,14 @@
                 <input type="button" class="btn btn-success" id="btn-create-workout" value="Log new workout">
             </div>
         </div>
+        <div class="search-wrapper">
+            <div class="input-group rounded">
+                <input id="search-input" type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" data-search/>
+                <span class="input-group-text border-0" id="search-addon">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+        </div>
         <div class="row">
             <div class="col-lg text-center">
                 <div class="list-group list-group-horizontal d-inline-flex mt-2" id="list-tab" role="tablist">
@@ -34,7 +42,7 @@
                     <br>Currently sorting by: <span id="current-sort"></span>
                 </div>
                 <div class="list-group mt-1" id="div-content"></div>
-              </div>
+                </div>
         </div>
 
     </div>
