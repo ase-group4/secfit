@@ -45,10 +45,6 @@ function filterWorkouts(searchValue, authorFilter, workouts, currentUser) {
         // that I just created them.
         let workout = workouts[j];
         let workoutAnchor = workoutAnchors[j];
-        console.log(searchValue)
-        console.log(authorFilter)
-
-        //TODO: fix search here.
         if (workout.name.toLowerCase().includes(searchValue.toLowerCase())) {
             switch (authorFilter) {
                 case "list-my-workouts-list":
