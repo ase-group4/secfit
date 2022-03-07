@@ -37,6 +37,47 @@ function createWorkout() {
     window.location.replace("workout.html");
 }
 
+function filterWorkouts(searchValue, authorFilter, workouts, currentUser) {
+    let workoutAnchors = document.querySelectorAll('.workout');
+    for (let j = 0; j < workouts.length; j++) {
+        // I'm assuming that the order of workout objects matches
+        // the other of the workout anchor elements. They should, given
+        // that I just created them.
+        let workout = workouts[j];
+        let workoutAnchor = workoutAnchors[j];
+        if (workout.name.toLowerCase().includes(searchValue.toLowerCase())) {
+            switch (authorFilter) {
+                case "list-my-workouts-list":
+                    if (workout.owner == currentUser.url ) {
+                        workoutAnchor.classList.remove('hide');
+                    } else {
+                        workoutAnchor.classList.add('hide');
+                    }
+                    break;
+                case "list-athlete-workouts-list":
+                    if (currentUser.athletes && currentUser.athletes.includes(workout.owner)) {
+                        workoutAnchor.classList.remove('hide');
+                    } else {
+                        workoutAnchor.classList.add('hide');
+                    }
+                    break;
+                case "list-public-workouts-list":
+                    if (workout.visibility == "PU") {
+                        workoutAnchor.classList.remove('hide');
+                    } else {
+                        workoutAnchor.classList.add('hide');
+                    }
+                    break;
+                default :
+                    workoutAnchor.classList.remove('hide');
+                    break;
+            }
+        } else {
+            workoutAnchor.classList.add('hide')
+        }
+    }
+}
+
 window.addEventListener("DOMContentLoaded", async () => {
     let createButton = document.querySelector("#btn-create-workout");
     createButton.addEventListener("click", createWorkout);
@@ -61,46 +102,21 @@ window.addEventListener("DOMContentLoaded", async () => {
         ordering += "__username";
     }
     let workouts = await fetchWorkouts(ordering);
-    
+
+    let searchInput= document.querySelector("[data-search]")
+    let searchValue= ""
+    searchInput.addEventListener("input", e =>{
+        searchValue = e.target.value
+        filterWorkouts(searchValue, authorFilter, workouts, currentUser)
+    })
+
+    let authorFilter= "list-my-workouts-list"
     let tabEls = document.querySelectorAll('a[data-bs-toggle="list"]');
     for (let i = 0; i < tabEls.length; i++) {
         let tabEl = tabEls[i];
         tabEl.addEventListener('show.bs.tab', function (event) {
-            let workoutAnchors = document.querySelectorAll('.workout');
-            for (let j = 0; j < workouts.length; j++) {
-                // I'm assuming that the order of workout objects matches
-                // the other of the workout anchor elements. They should, given
-                // that I just created them.
-                let workout = workouts[j];
-                let workoutAnchor = workoutAnchors[j];
-
-                switch (event.currentTarget.id) {
-                    case "list-my-workouts-list":
-                        if (workout.owner == currentUser.url) {
-                            workoutAnchor.classList.remove('hide');
-                        } else {
-                            workoutAnchor.classList.add('hide');
-                        }
-                        break;
-                    case "list-athlete-workouts-list":
-                        if (currentUser.athletes && currentUser.athletes.includes(workout.owner)) {
-                            workoutAnchor.classList.remove('hide');
-                        } else {
-                            workoutAnchor.classList.add('hide');
-                        }
-                        break;
-                    case "list-public-workouts-list":
-                        if (workout.visibility == "PU") {
-                            workoutAnchor.classList.remove('hide');
-                        } else {
-                            workoutAnchor.classList.add('hide');
-                        }
-                        break;
-                    default :
-                        workoutAnchor.classList.remove('hide');
-                        break;
-                }
-            }
+            authorFilter = event.currentTarget.id
+            filterWorkouts(searchValue, authorFilter, workouts, currentUser)
         });
     }
 });

@@ -6,6 +6,10 @@
   display: none !important;
 }
 
+.search-wrapper {
+  margin-top: 15px;
+}
+
 /* Adapted from https://bootsnipp.com/snippets/z8699 START */
 .divider-text {
   position: relative;
