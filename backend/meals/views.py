@@ -10,8 +10,8 @@ from rest_framework import filters
 from meals.parsers import MultipartJsonParser
 from meals.permissions import IsOwner, IsOwnerOfMeal
 from meals.mixins import CreateListModelMixin
-from meals.models import Meal, MealFile
-from meals.serializers import MealSerializer
+from meals.models import Meal, Ingredient, MealFile
+from meals.serializers import IngredientSerializer, MealSerializer
 from meals.serializers import MealFileSerializer
 
 
@@ -58,6 +58,23 @@ class MealList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
         if self.request.user:
             qs = Meal.objects.filter(Q(owner=self.request.user)).distinct()
         return qs
+
+
+class Ingredients(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    serializer_class = IngredientSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Ingredient.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(publisher=self.request.user)
 
 
 class MealDetail(
