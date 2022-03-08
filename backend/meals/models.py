@@ -59,20 +59,31 @@ class Meal(models.Model):
 
 
 class Ingredient(models.Model):
-    """Django model for ingredients that users can compose meals from."""
+    """
+    Django model for ingredients that users can compose meals from.
 
-    # Grams of protein per 100 grams of the ingredient.
-    protein = models.IntegerField()
+    Attributes:
+        name:           The name of the ingredient.
+        protein:        Grams of protein per 100 grams of the ingredient.
+        carbohydrates:  Grams of carbohydrates per 100 grams of the ingredient.
+        fat:            Grams of fat per 100 grams of the ingredient.
+        calories:       Calories in kcal of the ingredient,
+        calculated from the given protein, carbohydrates and fat.
+        publisher:      The user that published this ingredient to SecFit.
+    """
 
-    # Grams of carbohydrates per 100 grams of the ingredient.
-    carbohydrates = models.IntegerField()
-
-    # Grams of fat per 100 grams of the ingredient.
-    fat = models.IntegerField()
+    name = models.CharField(max_length=100)
+    protein = models.FloatField()
+    fat = models.FloatField()
+    carbohydrates = models.FloatField()
 
     @property
     def calories(self) -> int:
         return self.protein * 4 + self.carbohydrates * 4 + self.fat * 9
+
+    publisher = models.ForeignKey(
+        get_user_model(), on_delete=models.CASCADE, related_name="ingredients"
+    )
 
 
 class IngredientInMeal(models.Model):
