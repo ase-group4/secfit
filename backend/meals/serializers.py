@@ -1,7 +1,37 @@
 """Serializers for the meals application."""
 from rest_framework import serializers
 from rest_framework.serializers import HyperlinkedRelatedField
-from meals.models import Ingredient, Meal, MealFile
+from meals.models import Ingredient, IngredientInMeal, Meal, MealFile
+
+
+class IngredientSerializer(serializers.ModelSerializer):
+    publisher_name = serializers.ReadOnlyField(source="publisher.username")
+
+    class Meta:
+        model = Ingredient
+        fields = [
+            "id",
+            "name",
+            "protein",
+            "fat",
+            "carbohydrates",
+            "calories",
+            "publisher",
+            "publisher_name",
+        ]
+        extra_kwargs = {"publisher": {"read_only": True}}
+
+
+class IngredientInMealSerializer(serializers.ModelSerializer):
+    name = serializers.ReadOnlyField(source="ingredient.name")
+    protein = serializers.ReadOnlyField(source="ingredient.protein")
+    fat = serializers.ReadOnlyField(source="ingredient.fat")
+    carbohydrates = serializers.ReadOnlyField(source="ingredient.carbohydrates")
+    calories = serializers.ReadOnlyField(source="ingredient.calories")
+
+    class Meta:
+        model = IngredientInMeal
+        fields = ["id", "weight", "name", "protein", "carbohydrates", "fat", "calories"]
 
 
 class MealFileSerializer(serializers.HyperlinkedModelSerializer):
@@ -40,6 +70,7 @@ class MealSerializer(serializers.HyperlinkedModelSerializer):
     """
 
     owner_username = serializers.SerializerMethodField()
+    ingredients = IngredientInMealSerializer(many=True, required=True)
     files = MealFileSerializer(many=True, required=False)
 
     class Meta:
@@ -135,9 +166,3 @@ class MealSerializer(serializers.HyperlinkedModelSerializer):
             str: Username of owner
         """
         return obj.owner.username
-
-
-class IngredientSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ingredient
-        fields = ["id", "protein", "carbohydrates", "fat", "calories"]
