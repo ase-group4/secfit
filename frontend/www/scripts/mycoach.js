@@ -60,6 +60,25 @@ async function displayOffers() {
     }
 }
 
+async function fetchUsers(currentUser, athletesIds) {
+    let response = await sendRequest("GET", `${HOST}/api/users/`);
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+        let data = await response.json();
+
+        users = data.results;
+        innerHTML = ""
+        for(let j = 0; j < users.length; j++) {
+            user = users[j];
+            if (user.id != currentUser.id ){
+                innerHTML += `<option value=${user.username}> </option>`
+            }
+        }
+        return innerHTML
+    }
+}
+
 async function acceptOffer(event, offerUrl, ownerUsername) {
     let button = event.currentTarget;
     let body = {"status": "d"};
@@ -238,4 +257,11 @@ window.addEventListener("DOMContentLoaded", async () => {
     buttonSetCoach.addEventListener("click", async (event) => await setCoach(event));
     buttonEditCoach.addEventListener("click", editCoach);
     buttonCancelCoach.addEventListener("click", cancelCoach);
+
+    let currentUser = await getCurrentUser();
+    const usersHTML = await fetchUsers(currentUser)
+
+    let userlist = document.querySelector("datalist")
+    userlist.innerHTML=usersHTML
+
 });
