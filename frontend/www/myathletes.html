@@ -60,10 +60,14 @@
 
     <template id="template-empty-athlete">
         <div class="entry input-group">
-            <input class="form-control" name="athlete" type="text"/>
-                <button class="btn btn-success btn-add" type="button">
-                    <i class="fas fa-plus"></i>
-                </button>
+                <input type="text" class="form-control" placeholder="Select a user" list="userlist" name="athlete">
+                <datalist id="userlist">
+                    <option value="Jorunn"> </option>
+                    <option value="Hermann"> </option>
+                </datalist>
+            <button class="btn btn-success btn-add" type="button">
+                <i class="fas fa-plus"></i>
+            </button>
             </span>
         </div>
     </template>
