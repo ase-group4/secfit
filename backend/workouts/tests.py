@@ -1,10 +1,9 @@
 """
 Tests for the workouts application.
 """
-from django.test import RequestFactory, TestCase
-from django.contrib.auth import get_user_model
-from rest_framework.test import APITestCase, force_authenticate, APIClient, APIRequestFactory
-from workouts.models import ExerciseInstance, Exercise, Workout, WorkoutFile
+from django.test import TestCase
+from rest_framework.test import APIRequestFactory
+from workouts.models import Workout
 from comments.models import Comment
 from users.models import User
 
