@@ -193,7 +193,7 @@ class TestCoachPermissions(TestCase):
         permission = IsCoachOfWorkoutAndVisibleToCoach().has_object_permission(request, None, comment)
         self.assertfalse(permission)
 
-class TestVisibilityLevel(TestCase):
+class TestVisibilityLevels(TestCase):
     """
     Class that tests permissions linked to visibilitylevels in workouts/permissions.py
     """
