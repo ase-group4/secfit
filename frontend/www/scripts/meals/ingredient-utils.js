@@ -140,6 +140,8 @@ export function getIngredientFormData(ingredientForm, allIngredients) {
 
 /**
  * Returns an option element for the given ingredient.
+ * Sets `data-value` field rather than `value`,
+ * to enable using datalists with different display text from values.
  *
  * @param {Ingredient} ingredient
  *
@@ -147,7 +149,7 @@ export function getIngredientFormData(ingredientForm, allIngredients) {
  */
 export function createIngredientOption(ingredient) {
   const option = document.createElement("option");
-  option.setAttribute("value", ingredient.id);
+  option.setAttribute("data-value", ingredient.id);
   option.textContent = ingredient.name;
   return option;
 }
