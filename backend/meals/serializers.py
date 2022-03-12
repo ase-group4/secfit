@@ -5,6 +5,15 @@ from meals.models import Ingredient, IngredientInMeal, Meal, MealFile
 
 
 class IngredientSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Ingredient.
+
+    Serialized fields: id, name, protein, fat, carbohydrates, calories, publisher, publisher_name
+
+    Attributes:
+        publisher_name: Name of the user who published the ingredient.
+    """
+
     publisher_name = serializers.ReadOnlyField(source="publisher.username")
 
     class Meta:
@@ -23,6 +32,15 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class IngredientInMealSerializer(serializers.ModelSerializer):
+    """
+    Serializer for IngredientInMeal.
+    Meant to show details of an ingredient on a meal.
+    Overrides `to_representation` to return full ingredient on GET requests,
+    while accepting a bare foreign key for the ingredient on POST.
+
+    Serialized fields: ingredient, weight
+    """
+
     class Meta:
         model = IngredientInMeal
         fields = ["ingredient", "weight"]
@@ -32,7 +50,6 @@ class IngredientInMealSerializer(serializers.ModelSerializer):
         Overrides `to_representation` to return the full ingredient,
         not just the foreign key, on GET requests.
         """
-
         serialized = super().to_representation(instance)
         serialized["ingredient"] = IngredientSerializer(instance.ingredient).data
         return serialized
@@ -66,16 +83,18 @@ class MealSerializer(serializers.ModelSerializer):
 
     This serializer specifies nested serialization since a meal consists of MealFiles.
 
-    Serialized fields: url, id, name, date, notes, calories, owner, is_veg, owner_username, files
+    Serialized fields:
+        url, id, name, date, notes, is_veg, owner, owner_username, files, ingredient_weights
 
     Attributes:
         owner_username:     Username of the owning User
         files:              Serializer for MealFiles
+        ingredient_weights: Ingredients in the meal, with corresponding weights.
     """
 
     owner_username = serializers.SerializerMethodField()
-    ingredient_weights = IngredientInMealSerializer(many=True)
     files = MealFileSerializer(many=True, required=False)
+    ingredient_weights = IngredientInMealSerializer(many=True)
 
     class Meta:
         model = Meal
@@ -109,6 +128,7 @@ class MealSerializer(serializers.ModelSerializer):
         if "files" in validated_data:
             files_data = validated_data.pop("files")
 
+        # Pops out the ingredient weights, to serialize the nested representation afterwards.
         ingredients_data = validated_data.pop("ingredient_weights")
 
         meal = Meal.objects.create(**validated_data)

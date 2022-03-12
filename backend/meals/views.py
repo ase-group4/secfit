@@ -27,7 +27,12 @@ def api_root(request, format=None):
 
 
 class ExpandedPagination(pagination.PageNumberPagination):
-    page_size = 1000
+    """
+    Utility class to expand the pagination size for a specific view.
+    Use by adding `pagination_class = ExpandedPagination` to the view.
+    """
+
+    page_size = 1000  # Default size without this class: 10
 
 
 class MealList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):

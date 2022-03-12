@@ -34,7 +34,7 @@ class Meal(models.Model):
         name:        Name of the meal
         date:        Date and time the meal was consumed
         notes:       Notes about the meal
-        calories:    Total amount of calories in the meal
+        ingredients: Ingredients that the meal is made of, with weights.
         is_veg:      Whether the meal was vegetarian or not
         owner:       User that logged the meal
     """
@@ -68,7 +68,7 @@ class Ingredient(models.Model):
         carbohydrates:  Grams of carbohydrates per 100 grams of the ingredient.
         fat:            Grams of fat per 100 grams of the ingredient.
         calories:       Calories in kcal of the ingredient,
-        calculated from the given protein, carbohydrates and fat.
+                        calculated from the given protein, carbohydrates and fat.
         publisher:      The user that published this ingredient to SecFit.
     """
 
@@ -87,10 +87,18 @@ class Ingredient(models.Model):
 
 
 class IngredientInMeal(models.Model):
+    """
+    Intermediary model for the many-to-many relation between Meal and Ingredient.
+
+    Attributes:
+        meal: Foreign key to the meal.
+        ingredient: Foreign key to the ingredient.
+        weight: The weight in grams of the ingredient in the meal.
+    """
+
     meal = models.ForeignKey("Meal", on_delete=models.CASCADE, related_name="ingredient_weights")
     ingredient = models.ForeignKey("Ingredient", on_delete=models.CASCADE)
 
-    # The weight in grams of the ingredient in the meal.
     weight = models.IntegerField()
 
     class Meta:
