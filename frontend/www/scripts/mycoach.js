@@ -259,9 +259,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     buttonCancelCoach.addEventListener("click", cancelCoach);
 
     let currentUser = await getCurrentUser();
-    const usersHTML = await fetchUsers(currentUser)
+    const usersHTML = await fetchUsers(currentUser);
 
-    let userlist = document.querySelector("datalist")
-    userlist.innerHTML=usersHTML
+    let userlist = document.querySelector("datalist");
+    userlist.innerHTML = usersHTML;
 
 });
