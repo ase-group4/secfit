@@ -23,86 +23,86 @@ class CreateIngredientModal extends HTMLElement {
    */
   connectedCallback() {
     this.innerHTML = `
-        <div class="modal fade" id="create-ingredient-modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Create new ingredient</h5>
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                        />
-                    </div>
-
-                    <div class="modal-body">
-                        <form id="ingredient-form">
-                            <label for="ingredient-name-input">Name</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="ingredient-name-input"
-                                name="name"
-                            />
-
-                            <p class="mt-3"><strong>Nutritional values (per 100g of the ingredient)</strong></p>
-
-                            <label for="ingredient-protein-input">Protein</label>
-                            <div class="input-group mb-3">
-                                <input
-                                    type="number"
-                                    class="form-control ingredient-nutrition-input"
-                                    id="ingredient-protein-input"
-                                    name="protein"
-                                />
-                                <span class="input-group-text">grams</span>
-                            </div>
-
-                            <label for="ingredient-fat-input">Fat</label>
-                            <div class="input-group mb-3">
-                                <input
-                                    type="number"
-                                    class="form-control ingredient-nutrition-input"
-                                    id="ingredient-fat-input"
-                                    name="fat"
-                                />
-                                <span class="input-group-text">grams</span>
-                            </div>
-
-                            <label for="ingredient-carbohydrates-input">Carbohydrates</label>
-                            <div class="input-group mb-3">
-                                <input
-                                    type="number"
-                                    class="form-control ingredient-nutrition-input"
-                                    id="ingredient-carbohydrates-input"
-                                    name="carbohydrates"
-                                />
-                                <span class="input-group-text">grams</span>
-                            </div>
-                        </form>
-
-                        <label for="ingredient-calories-input">Calories (calculated)</label>
-                        <div class="input-group mb-3">
-                            <input disabled type="number" class="form-control" id="ingredient-calories-field" />
-                            <span class="input-group-text">kcal</span>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                            id="ingredient-submit-button"
-                            data-bs-dismiss="modal"
-                        >
-                            Submit
-                        </button>
-                    </div>
-                </div>
+      <div class="modal fade" id="create-ingredient-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Create new ingredient</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              />
             </div>
+
+            <div class="modal-body">
+              <form id="ingredient-form">
+                <label for="ingredient-name-input">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ingredient-name-input"
+                  name="name"
+                />
+
+                <p class="mt-3"><strong>Nutritional values (per 100g of the ingredient)</strong></p>
+
+                <label for="ingredient-protein-input">Protein</label>
+                <div class="input-group mb-3">
+                  <input
+                    type="number"
+                    class="form-control ingredient-nutrition-input"
+                    id="ingredient-protein-input"
+                    name="protein"
+                  />
+                  <span class="input-group-text">grams</span>
+                </div>
+
+                <label for="ingredient-fat-input">Fat</label>
+                <div class="input-group mb-3">
+                  <input
+                    type="number"
+                    class="form-control ingredient-nutrition-input"
+                    id="ingredient-fat-input"
+                    name="fat"
+                  />
+                  <span class="input-group-text">grams</span>
+                </div>
+
+                <label for="ingredient-carbohydrates-input">Carbohydrates</label>
+                <div class="input-group mb-3">
+                  <input
+                    type="number"
+                    class="form-control ingredient-nutrition-input"
+                    id="ingredient-carbohydrates-input"
+                    name="carbohydrates"
+                  />
+                  <span class="input-group-text">grams</span>
+                </div>
+              </form>
+
+              <label for="ingredient-calories-input">Calories (calculated)</label>
+              <div class="input-group mb-3">
+                <input disabled type="number" class="form-control" id="ingredient-calories-field" />
+                <span class="input-group-text">kcal</span>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="ingredient-submit-button"
+                data-bs-dismiss="modal"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
         </div>
-        `;
+      </div>
+    `;
 
     // Delegates handling of submit button being pressed to `handleAddIngredient`.
     const submitButton = this.querySelector("#ingredient-submit-button");
