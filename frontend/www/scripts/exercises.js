@@ -56,8 +56,7 @@ function filterExercises(exercises, searchValue, categoryFilter) {
         if (exercise.name.toLowerCase().includes(searchValue.toLowerCase())) {
             if (isNaN(categoryFilter) || Number(categoryFilter) == exercise.category){
                 exerciseAnchor.classList.remove('hide');
-            }
-            else{
+            } else {
                 exerciseAnchor.classList.add('hide');
             }
         }
