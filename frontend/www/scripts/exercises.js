@@ -45,7 +45,7 @@ async function getCategories() {
     }
 }
 
-function filterExersises(exercises, searchValue, categoryFilter) {
+function filterExercises(exercises, searchValue, categoryFilter) {
     let exerciseAnchors = document.querySelectorAll('.exercise');
     for (let j = 0; j < exercises.length; j++) {
         // I'm assuming that the order of exercise objects matches
@@ -84,7 +84,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     searchInput.addEventListener("input", e =>{
         searchValue = e.target.value
-        filterExersises(exercises, searchValue, categoryFilter)
+        filterExercises(exercises, searchValue, categoryFilter)
     })
 
     let tabEls = document.querySelectorAll('a[data-bs-toggle="list"]');
@@ -92,7 +92,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         let tabEl = tabEls[i];
         tabEl.addEventListener('show.bs.tab', function (event) {
             categoryFilter = event.currentTarget.id.split("-")[1]
-            filterExersises(exercises, searchValue, categoryFilter)
+            filterExercises(exercises, searchValue, categoryFilter)
         });
     }
     
