@@ -1,21 +1,16 @@
-// When the DOM loads, populates the ingredient overview and adds event listeners.
-window.addEventListener("DOMContentLoaded", () => {
-	refreshIngredients();
-
-	const ingredientSubmitButton = document.querySelector("#ingredient-submit-button");
-	ingredientSubmitButton.addEventListener("click", refreshIngredients);
-});
-
-/** Fetches ingredients from the backend and updates the ingredient overview. */
-async function refreshIngredients() {
+// When the DOM loads, populates the ingredient overview and listens for new ingredients.
+window.addEventListener("DOMContentLoaded", async () => {
 	const ingredients = await fetchIngredients();
 
-	if (ingredients === undefined) {
-		return;
+	if (ingredients !== undefined) {
+		updateIngredientList(ingredients);
 	}
 
-	updateIngredientList(ingredients);
-}
+	const addIngredientModal = document.querySelector("add-ingredient-modal");
+	addIngredientModal.addEventListener("ingredientCreated", (event) => {
+		updateIngredientList([...(ingredients ?? []), event.detail]);
+	});
+});
 
 /**
  * Sends a request to the backend to get all ingredients, and returns them.
