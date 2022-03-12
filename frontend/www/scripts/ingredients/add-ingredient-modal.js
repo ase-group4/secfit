@@ -24,7 +24,7 @@ class AddIngredientModal extends HTMLElement {
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Add ingredient</h5>
+                        <h5 class="modal-title">Create new ingredient</h5>
                         <button
                             type="button"
                             class="btn-close"
@@ -53,9 +53,7 @@ class AddIngredientModal extends HTMLElement {
                                     id="ingredient-protein-input"
                                     name="protein"
                                 />
-                                <div class="input-group-append">
-                                    <span class="input-group-text">grams</span>
-                                </div>
+                                <span class="input-group-text">grams</span>
                             </div>
 
                             <label for="ingredient-fat-input">Fat</label>
@@ -66,9 +64,7 @@ class AddIngredientModal extends HTMLElement {
                                     id="ingredient-fat-input"
                                     name="fat"
                                 />
-                                <div class="input-group-append">
-                                    <span class="input-group-text">grams</span>
-                                </div>
+                                <span class="input-group-text">grams</span>
                             </div>
 
                             <label for="ingredient-carbohydrates-input">Carbohydrates</label>
@@ -79,18 +75,14 @@ class AddIngredientModal extends HTMLElement {
                                     id="ingredient-carbohydrates-input"
                                     name="carbohydrates"
                                 />
-                                <div class="input-group-append">
-                                    <span class="input-group-text">grams</span>
-                                </div>
+                                <span class="input-group-text">grams</span>
                             </div>
                         </form>
 
                         <label for="ingredient-calories-input">Calories (calculated)</label>
                         <div class="input-group mb-3">
                             <input disabled type="number" class="form-control" id="ingredient-calories-field" />
-                            <div class="input-group-append">
-                                <span class="input-group-text">kcal</span>
-                            </div>
+                            <span class="input-group-text">kcal</span>
                         </div>
                     </div>
 
@@ -154,12 +146,18 @@ class AddIngredientModal extends HTMLElement {
 	async handleAddIngredient() {
 		const requestBody = this.getFormData();
 		const response = await sendRequest("POST", `${HOST}/api/ingredients/`, requestBody);
+		const data = await response.json();
 
 		if (!response.ok) {
-			const data = await response.json();
 			const alert = createAlert("Could not create new exercise!", data);
 			document.body.prepend(alert);
 		}
+
+		this.dispatchEvent(
+			new CustomEvent("ingredientCreated", {
+				detail: data,
+			})
+		);
 	}
 
 	/**
