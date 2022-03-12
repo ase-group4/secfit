@@ -4,10 +4,11 @@ async function displayCurrentRoster() {
     let controls = document.querySelector("#controls");
 
     let currentUser = await getCurrentUser();
+    let athletesIds = new Set();
     for (let athleteUrl of currentUser.athletes) {
         let response = await sendRequest("GET", athleteUrl);
         let athlete = await response.json();
-
+        athletesIds.add(athlete.id);
         createFilledRow(templateFilledAthlete, athlete.username, controls, false);
     }
     
@@ -24,13 +25,18 @@ async function displayCurrentRoster() {
         for (let offer of offers.results) {
             let response = await sendRequest("GET", offer.recipient);
             let recipient = await response.json();
+            athletesIds.add(recipient.id);
             createFilledRow(templateFilledAthlete, `${recipient.username} (pending)`, controls, true);
         }
     }
 
+    const usersHTML = await fetchUsers(currentUser, athletesIds)
+
     let emptyClone = templateEmptyAthlete.content.cloneNode(true);
     let emptyDiv = emptyClone.querySelector("div");
     let emptyButton = emptyDiv.querySelector("button");
+    let userlist = emptyDiv.querySelector("datalist");
+    userlist.innerHTML = usersHTML;
     emptyButton.addEventListener("click", addAthleteRow);
     controls.appendChild(emptyDiv);
 }
@@ -49,6 +55,25 @@ function createFilledRow(templateFilledAthlete, inputValue, controls, disabled) 
         filledButton.disabled = true;
     }
     controls.appendChild(filledDiv);
+}
+
+async function fetchUsers(currentUser, athletesIds) {
+    let response = await sendRequest("GET", `${HOST}/api/users/`);
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+        let data = await response.json();
+
+        users = data.results;
+        innerHTML = "";
+        for(let j = 0; j < users.length; j++) {
+            user = users[j];
+            if (user.id != currentUser.id && !athletesIds.has(user.id)){
+                innerHTML += `<option value=${user.username}> </option>`;
+            }
+        }
+        return innerHTML;
+    }
 }
 
 async function displayFiles() {
