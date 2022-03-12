@@ -43,13 +43,13 @@ function updateIngredientList(ingredients) {
     header.textContent = ingredient.name;
 
     const publisherField = ingredientElement.querySelector("#publisher-field");
-    publisherField.textContent += ingredient.publisher_name;
+    publisherField.textContent += ` ${ingredient.publisher_name}`;
 
     const tableRows = ingredientElement.querySelector("table").querySelectorAll("tr");
-    tableRows[0].querySelectorAll("td")[1].textContent = `${ingredient.protein} g`;
+    tableRows[0].querySelectorAll("td")[1].textContent = `${ingredient.calories} kcal`;
     tableRows[1].querySelectorAll("td")[1].textContent = `${ingredient.fat} g`;
     tableRows[2].querySelectorAll("td")[1].textContent = `${ingredient.carbohydrates} g`;
-    tableRows[3].querySelectorAll("td")[1].textContent = `${ingredient.calories} kcal`;
+    tableRows[3].querySelectorAll("td")[1].textContent = `${ingredient.protein} g`;
 
     container.appendChild(ingredientElement);
   }

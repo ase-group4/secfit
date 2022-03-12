@@ -24,13 +24,18 @@
         <div class="col-lg text-center">
           <h3 class="mt-5">Ingredients</h3>
           <p>All ingredients added by users of SecFit.</p>
-          <input
-            type="button"
-            class="btn btn-primary"
-            value="Create new ingredient"
-            data-bs-toggle="modal"
-            data-bs-target="#create-ingredient-modal"
-          />
+          <div class="d-flex justify-content-center">
+            <input
+              type="button"
+              class="btn btn-primary me-1"
+              value="Create new ingredient"
+              data-bs-toggle="modal"
+              data-bs-target="#create-ingredient-modal"
+            />
+            <a href="./meals.html">
+              <input type="button" class="btn btn-secondary" value="Back to meals" />
+            </a>
+          </div>
         </div>
       </div>
       <div class="row">
@@ -51,6 +56,10 @@
         <div><strong>Nutritional values (per 100g)</strong></div>
         <table class="table w-100 mb-1">
           <tr>
+            <td class="w-50 text-end">Calories:</td>
+            <td class="w-50 text-start"></td>
+          </tr>
+          <tr>
             <td class="w-50 text-end">Protein:</td>
             <td class="w-50 text-start"></td>
           </tr>
@@ -60,10 +69,6 @@
           </tr>
           <tr>
             <td class="w-50 text-end">Carbohydrates:</td>
-            <td class="w-50 text-start"></td>
-          </tr>
-          <tr>
-            <td class="w-50 text-end">Calories:</td>
             <td class="w-50 text-start"></td>
           </tr>
         </table>
