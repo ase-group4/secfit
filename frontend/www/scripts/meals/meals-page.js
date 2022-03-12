@@ -1,4 +1,4 @@
-import { calculateNutritionTotals } from "./calculate-nutrition.js";
+import { updateNutritionTotals } from "./ingredient-utils.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
   let createButton = document.querySelector("#btn-create-meal");
@@ -80,22 +80,13 @@ async function fetchMeals(ordering) {
 
       let localDate = new Date(meal.date);
 
-      const leftTable = aMeal.querySelector(".left-table");
-      const leftRows = leftTable.querySelectorAll("tr");
-      leftRows[0].querySelectorAll("td")[1].textContent = localDate.toLocaleDateString(); // Date
-      leftRows[1].querySelectorAll("td")[1].textContent = localDate.toLocaleTimeString(); // Time
-      leftRows[2].querySelectorAll("td")[1].textContent = meal.owner_username; //Owner
+      const table = aMeal.querySelector("table");
+      const rows = table.querySelectorAll("tr");
+      rows[0].querySelectorAll("td")[1].textContent = localDate.toLocaleDateString(); // Date
+      rows[1].querySelectorAll("td")[1].textContent = localDate.toLocaleTimeString(); // Time
+      rows[2].querySelectorAll("td")[1].textContent = meal.owner_username; //Owner
 
-      const { calories, protein, fat, carbohydrates } = calculateNutritionTotals(
-        meal.ingredient_weights
-      );
-
-      const rightTable = aMeal.querySelector(".right-table");
-      const rightRows = rightTable.querySelectorAll("tr");
-      rightRows[0].querySelectorAll("td")[1].textContent = calories;
-      rightRows[1].querySelectorAll("td")[1].textContent = protein;
-      rightRows[2].querySelectorAll("td")[1].textContent = fat;
-      rightRows[3].querySelectorAll("td")[1].textContent = carbohydrates;
+      updateNutritionTotals(meal.ingredient_weights, aMeal);
 
       container.appendChild(aMeal);
     });

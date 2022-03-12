@@ -1,144 +1,81 @@
-import { calculateNutritionTotals } from "./calculate-nutrition.js";
 import { fetchIngredients } from "./fetch-ingredients.js";
+import { updateNutritionTotals } from "./ingredient-utils.js";
+import {
+  updateIngredients,
+  getIngredientsInMeal,
+  addIngredientInput,
+  handleCreatedIngredient,
+} from "./meal-page-ingredients.js";
 
+// Global references to form buttons.
 let cancelMealButton;
 let okMealButton;
 let deleteMealButton;
 let editMealButton;
 
-let allIngredients = {};
+window.addEventListener("DOMContentLoaded", async () => {
+  cancelMealButton = document.querySelector("#btn-cancel-meal");
+  okMealButton = document.querySelector("#btn-ok-meal");
+  deleteMealButton = document.querySelector("#btn-delete-meal");
+  editMealButton = document.querySelector("#btn-edit-meal");
 
-function updateIngredients(ingredientList) {
-  const newIngredients = {};
+  updateIngredients(await fetchIngredients());
+  updateNutritionTotals(getIngredientsInMeal());
 
-  for (const ingredient of ingredientList) {
-    newIngredients[ingredient.id] = ingredient;
-  }
+  const createIngredientButton = document.querySelector("#meal-create-new-ingredient");
+  const addIngredientButton = document.querySelector("#meal-ingredient-add-button");
+  const addIngredientModal = document.querySelector("create-ingredient-modal");
 
-  allIngredients = newIngredients;
-}
+  const urlParams = new URLSearchParams(window.location.search);
+  let currentUser = await getCurrentUser();
 
-function addIngredientInput(existingIngredientWeight) {
-  const ingredientTemplate = document.querySelector("#meal-ingredient-input-template");
-  const ingredientElement = ingredientTemplate.content.firstElementChild.cloneNode(true);
-  const ingredientContainer = document.querySelector("#meal-ingredient-input-container");
-  ingredientContainer.appendChild(ingredientElement);
+  if (urlParams.has("id")) {
+    const id = urlParams.get("id");
+    let mealData = await retrieveMeal(id);
 
-  const ingredientSelect = ingredientElement.querySelector(".meal-ingredient-select");
-  const weightInput = ingredientElement.querySelector(".meal-ingredient-weight-input");
-  const removeButton = ingredientElement.querySelector(".meal-ingredient-remove-button");
-  for (const ingredient of Object.values(allIngredients)) {
-    ingredientSelect.appendChild(createIngredientOption(ingredient));
-  }
-
-  if (existingIngredientWeight) {
-    ingredientSelect.value = existingIngredientWeight.ingredient.id;
-    weightInput.value = existingIngredientWeight.weight;
-    removeButton.classList.add("hide");
-
-    updateNutritionalValues(ingredientElement);
-
-    const buttonsToDisable = [ingredientSelect, weightInput];
-    return buttonsToDisable;
-  }
-
-  updateNutritionalValues(ingredientElement);
-
-  const updateAllNutritionalValues = () => {
-    updateNutritionalValues(ingredientElement);
-    updateNutritionalValueTotals();
-  };
-  ingredientSelect.addEventListener("change", updateAllNutritionalValues);
-  weightInput.addEventListener("change", updateAllNutritionalValues);
-
-  removeButton.addEventListener("click", () => {
-    ingredientContainer.removeChild(ingredientElement);
-    updateNutritionalValueTotals();
-  });
-}
-
-function createIngredientOption(ingredient) {
-  const option = document.createElement("option");
-  option.setAttribute("value", ingredient.id);
-  option.textContent = ingredient.name;
-  return option;
-}
-
-function getIngredientFormData(ingredientForm) {
-  const formData = new FormData(ingredientForm);
-  const data = {
-    ingredient: undefined,
-    weight: 0,
-  };
-
-  const ingredientId = parseInt(formData.get("ingredient"));
-  if (!Number.isNaN(ingredientId)) {
-    data.ingredient = allIngredients[ingredientId];
-  }
-
-  const weight = parseInt(formData.get("weight"));
-  if (!Number.isNaN(weight)) {
-    data.weight = weight;
-  }
-
-  return data;
-}
-
-function capitalizeFirstLetter(string) {
-  return `${string.charAt(0).toUpperCase()}${string.slice(1)}`;
-}
-
-function updateNutritionalValues(ingredientElement) {
-  const ingredientForm = ingredientElement.querySelector(".meal-ingredient-input-form");
-  const formData = getIngredientFormData(ingredientForm);
-
-  for (const nutritionalValue of ["protein", "fat", "carbohydrates", "calories"]) {
-    const nutritionalValueField = ingredientElement.querySelector(
-      `.meal-ingredient-${nutritionalValue}-field`
-    );
-
-    let value = 0;
-    if (formData.ingredient !== undefined && formData.weight !== 0) {
-      const grams = (formData.ingredient[nutritionalValue] * formData.weight) / 100;
-      value = Math.round(grams * 10) / 10;
+    for (const hiddenButton of [createIngredientButton, addIngredientButton]) {
+      hiddenButton.classList.add("hide");
     }
-    nutritionalValueField.textContent = getNutritionalValueText(nutritionalValue, value);
+
+    const buttonsToDisable = [];
+    for (const existingIngredient of mealData.ingredient_weights) {
+      buttonsToDisable.push(...addIngredientInput(existingIngredient));
+    }
+    updateNutritionTotals(getIngredientsInMeal());
+    for (const disabledButton of buttonsToDisable) {
+      disabledButton.disabled = true;
+    }
+
+    if (mealData["owner"] == currentUser.url) {
+      editMealButton.classList.remove("hide");
+      editMealButton.addEventListener("click", handleEditMealButtonClick);
+      deleteMealButton.addEventListener(
+        "click",
+        (async (id) => await deleteMeal(id)).bind(undefined, id)
+      );
+      okMealButton.addEventListener(
+        "click",
+        (async (id) => await updateMeal(id)).bind(undefined, id)
+      );
+    }
+  } else {
+    let ownerInput = document.querySelector("#inputOwner");
+    ownerInput.value = currentUser.username;
+    setReadOnly(false, "#form-meal");
+    ownerInput.readOnly = !ownerInput.readOnly;
+
+    okMealButton.className = okMealButton.className.replace(" hide", "");
+    cancelMealButton.className = cancelMealButton.className.replace(" hide", "");
+
+    okMealButton.addEventListener("click", async () => await createMeal());
+    cancelMealButton.addEventListener("click", handleCancelDuringMealCreate);
+
+    addIngredientButton.addEventListener("click", () => addIngredientInput());
+    addIngredientModal.addEventListener("ingredientCreated", (event) => {
+      handleCreatedIngredient(event.detail);
+    });
   }
-}
-
-function getNutritionalValueText(key, value) {
-  let text = `${capitalizeFirstLetter(key)}: `;
-
-  if (value === 0) {
-    text += "—";
-    return text;
-  }
-
-  text += `${value} ${key === "calories" ? "kcal" : "g"}`;
-  return text;
-}
-
-function updateNutritionalValueTotals() {
-  const ingredientWeights = getIngredientsInMeal();
-
-  const nutritionalValues = calculateNutritionTotals(ingredientWeights);
-
-  for (const [key, value] of Object.entries(nutritionalValues)) {
-    document.querySelector(`#meal-ingredient-${key}-total`).textContent = getNutritionalValueText(
-      key,
-      value
-    );
-  }
-}
-
-function handleCreatedIngredient(ingredient) {
-  allIngredients[ingredient.id] = ingredient;
-
-  const ingredientSelects = document.querySelectorAll(".meal-ingredient-select");
-  for (const select of ingredientSelects) {
-    select.appendChild(createIngredientOption(ingredient));
-  }
-}
+});
 
 async function retrieveMeal(id) {
   let mealData = null;
@@ -221,24 +158,6 @@ async function updateMeal(id) {
   }
 }
 
-function getIngredientsInMeal() {
-  const ingredientsInMeal = [];
-
-  for (const ingredientForm of document.querySelectorAll(".meal-ingredient-input-form")) {
-    const ingredientFormData = getIngredientFormData(ingredientForm);
-    if (ingredientFormData.ingredient === undefined || ingredientFormData.weight === 0) {
-      continue;
-    }
-
-    ingredientsInMeal.push({
-      ingredient: ingredientFormData.ingredient,
-      weight: ingredientFormData.weight,
-    });
-  }
-
-  return ingredientsInMeal;
-}
-
 function generateMealForm() {
   let form = document.querySelector("#form-meal");
 
@@ -280,67 +199,3 @@ async function createMeal() {
 function handleCancelDuringMealCreate() {
   window.location.replace("meals.html");
 }
-
-window.addEventListener("DOMContentLoaded", async () => {
-  cancelMealButton = document.querySelector("#btn-cancel-meal");
-  okMealButton = document.querySelector("#btn-ok-meal");
-  deleteMealButton = document.querySelector("#btn-delete-meal");
-  editMealButton = document.querySelector("#btn-edit-meal");
-
-  updateIngredients(await fetchIngredients());
-  updateNutritionalValueTotals();
-
-  const createIngredientButton = document.querySelector("#meal-create-new-ingredient");
-  const addIngredientButton = document.querySelector("#meal-ingredient-add-button");
-  const addIngredientModal = document.querySelector("create-ingredient-modal");
-
-  const urlParams = new URLSearchParams(window.location.search);
-  let currentUser = await getCurrentUser();
-
-  if (urlParams.has("id")) {
-    const id = urlParams.get("id");
-    let mealData = await retrieveMeal(id);
-
-    for (const hiddenButton of [createIngredientButton, addIngredientButton]) {
-      hiddenButton.classList.add("hide");
-    }
-
-    const buttonsToDisable = [];
-    for (const existingIngredient of mealData.ingredient_weights) {
-      buttonsToDisable.push(...addIngredientInput(existingIngredient));
-    }
-    updateNutritionalValueTotals();
-    for (const disabledButton of buttonsToDisable) {
-      disabledButton.disabled = true;
-    }
-
-    if (mealData["owner"] == currentUser.url) {
-      editMealButton.classList.remove("hide");
-      editMealButton.addEventListener("click", handleEditMealButtonClick);
-      deleteMealButton.addEventListener(
-        "click",
-        (async (id) => await deleteMeal(id)).bind(undefined, id)
-      );
-      okMealButton.addEventListener(
-        "click",
-        (async (id) => await updateMeal(id)).bind(undefined, id)
-      );
-    }
-  } else {
-    let ownerInput = document.querySelector("#inputOwner");
-    ownerInput.value = currentUser.username;
-    setReadOnly(false, "#form-meal");
-    ownerInput.readOnly = !ownerInput.readOnly;
-
-    okMealButton.className = okMealButton.className.replace(" hide", "");
-    cancelMealButton.className = cancelMealButton.className.replace(" hide", "");
-
-    okMealButton.addEventListener("click", async () => await createMeal());
-    cancelMealButton.addEventListener("click", handleCancelDuringMealCreate);
-
-    addIngredientButton.addEventListener("click", () => addIngredientInput());
-    addIngredientModal.addEventListener("ingredientCreated", (event) => {
-      handleCreatedIngredient(event.detail);
-    });
-  }
-});
