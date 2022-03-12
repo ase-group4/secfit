@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.db.models import Q
-from rest_framework import filters
+from rest_framework import filters, pagination
 from meals.parsers import MultipartJsonParser
 from meals.permissions import IsOwner, IsOwnerOfMeal
 from meals.mixins import CreateListModelMixin
@@ -26,6 +26,10 @@ def api_root(request, format=None):
     )
 
 
+class ExpandedPagination(pagination.PageNumberPagination):
+    page_size = 1000
+
+
 class MealList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     """Class defining the web response for the creation of a Meal, or displaying a list
     of Meals
@@ -43,6 +47,7 @@ class MealList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
     ]  # For parsing JSON and Multi-part requests
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ["name", "date", "owner__username"]
+    pagination_class = ExpandedPagination
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -61,8 +66,15 @@ class MealList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
 
 
 class Ingredients(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    """
+    View for fetching and creating Ingredients.
+
+    HTTP methods: GET, POST
+    """
+
     serializer_class = IngredientSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = ExpandedPagination
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
