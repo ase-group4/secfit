@@ -68,14 +68,14 @@ async function fetchUsers(currentUser, athletesIds) {
         let data = await response.json();
 
         users = data.results;
-        innerHTML = ""
+        innerHTML = "";
         for(let j = 0; j < users.length; j++) {
             user = users[j];
-            if (user.id != currentUser.id ){
-                innerHTML += `<option value=${user.username}> </option>`
+            if (user.id != currentUser.id) {
+                innerHTML += `<option value=${user.username}> </option>`;
             }
         }
-        return innerHTML
+        return innerHTML;
     }
 }
 
