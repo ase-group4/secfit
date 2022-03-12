@@ -187,8 +187,6 @@ async function updateExercise(id) {
 async function getCategories() {
     let response = await sendRequest("GET", `${HOST}/api/exercise-categories/`);
 
-    console.log(response.ok)
-
     if (!response.ok) {
         let data = await response.json();
         let alert = createAlert("Could not retrieve category data!", data);

@@ -27,7 +27,25 @@ async function fetchExerciseTypes(request) {
     }
 }
 
-function filterExersises(exercises, searchValue) {
+async function getCategories() {
+    let response = await sendRequest("GET", `${HOST}/api/exercise-categories/`);
+    if (!response.ok) {
+        let data = await response.json();
+        let alert = createAlert("Could not retrieve category data!", data);
+        document.body.prepend(alert);
+    } else {
+        let categoriesData = await response.json();
+        let categorySelect = document.querySelector('#list-tab');
+
+        let output= `<a class="list-group-item list-group-item-action active" id="list-all" data-bs-toggle="list" href="#list-all" role="tab" aria-controls="all">All</a>`
+        categoriesData['results'].forEach(category =>{
+            output += `<a class="list-group-item list-group-item-action" id="list-${category.id}" data-bs-toggle="list" href="#list-${category.id}" role="tab" aria-controls=${category.name}>${category.name}</a>`;
+        })
+        categorySelect.innerHTML = output
+    }
+}
+
+function filterExercises(exercises, searchValue, categoryFilter) {
     let exerciseAnchors = document.querySelectorAll('.exercise');
     for (let j = 0; j < exercises.length; j++) {
         // I'm assuming that the order of exercise objects matches
@@ -36,7 +54,11 @@ function filterExersises(exercises, searchValue) {
         let exercise = exercises[j];
         let exerciseAnchor = exerciseAnchors[j];
         if (exercise.name.toLowerCase().includes(searchValue.toLowerCase())) {
-            exerciseAnchor.classList.remove('hide');
+            if (isNaN(categoryFilter) || Number(categoryFilter) == exercise.category){
+                exerciseAnchor.classList.remove('hide');
+            } else {
+                exerciseAnchor.classList.add('hide');
+            }
         }
         else {
             exerciseAnchor.classList.add('hide');
@@ -51,14 +73,26 @@ function createExercise() {
 window.addEventListener("DOMContentLoaded", async () => {
     let createButton = document.querySelector("#btn-create-exercise");
     createButton.addEventListener("click", createExercise);
+    getCategories()
 
     let exercises = await fetchExerciseTypes();
 
-    let searchInput= document.querySelector("[data-search]")
-    let searchValue= ""
+    let searchInput = document.querySelector("[data-search]")
+    let searchValue = ""
+    let categoryFilter = ""
+
     searchInput.addEventListener("input", e =>{
         searchValue = e.target.value
-        filterExersises(exercises, searchValue)
+        filterExercises(exercises, searchValue, categoryFilter)
     })
+
+    let tabEls = document.querySelectorAll('a[data-bs-toggle="list"]');
+    for (let i = 0; i < tabEls.length; i++) {
+        let tabEl = tabEls[i];
+        tabEl.addEventListener('show.bs.tab', function (event) {
+            categoryFilter = event.currentTarget.id.split("-")[1]
+            filterExercises(exercises, searchValue, categoryFilter)
+        });
+    }
     
 });
