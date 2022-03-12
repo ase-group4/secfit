@@ -187,10 +187,10 @@ class TestCoachPermissions(TestCase):
         not_coach_user.save()
 
         request = APIRequestFactory().get('/')
-        request.user = self.coach_user
+        request.user = not_coach_user
         comment = self.comment
         permission = IsCoachOfWorkoutAndVisibleToCoach().has_object_permission(request, None, comment)
-        self.assertfalse(permission)
+        self.assertFalse(permission)
 
 class TestVisibilityLevels(TestCase):
     """
