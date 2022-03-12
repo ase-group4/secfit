@@ -6,6 +6,9 @@
  * - `data-bs-toggle="modal"`
  * - `data-bs-target="#add-ingredient-modal"`
  *
+ * Upon successful creation of the ingredient, dispatches the custom event `ingredientCreated`.
+ * The `event.detail` field contains the newly created event, to use for updating the page.
+ *
  * The Submit button has id `ingredient-submit-button`,
  * which can be used to add additional event listeners.
  */
@@ -113,12 +116,14 @@ class AddIngredientModal extends HTMLElement {
   }
 
   /**
-   * Reads the inputs provided in the ingredient form
-   * and returns them as an object with the following properties:
-   * - `name` (string)
-   * - `protein` (number)
-   * - `fat` (number)
-   * - `carbohydrates` (number)
+   * Reads the inputs provided in the ingredient form, and returns them in an object.
+   *
+   * @returns {{
+   *  name: string,
+   *  protein: number,
+   *  fat: number,
+   *  carbohydrates: number
+   * }} Object containing the form data.
    */
   getFormData() {
     const form = this.querySelector("#ingredient-form");
@@ -142,7 +147,7 @@ class AddIngredientModal extends HTMLElement {
     return data;
   }
 
-  /** Reads the inputs of the form and sends a POST request to the backend to create the ingredient. */
+  /** Reads the inputs of the form, and sends a POST request to the backend to create the ingredient. */
   async handleAddIngredient() {
     const requestBody = this.getFormData();
     const response = await sendRequest("POST", `${HOST}/api/ingredients/`, requestBody);
