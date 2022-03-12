@@ -1,5 +1,4 @@
-import { fetchIngredients } from "./fetch-ingredients.js";
-import { updateNutritionTotals } from "./ingredient-utils.js";
+import { fetchIngredients, updateNutritionTotals } from "./ingredient-utils.js";
 import {
   updateIngredients,
   getIngredientsInMeal,

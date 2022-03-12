@@ -1,4 +1,4 @@
-import { fetchIngredients } from "./fetch-ingredients.js";
+import { fetchIngredients } from "./ingredient-utils.js";
 
 // When the DOM loads, populates the ingredient overview and listens for new ingredients.
 window.addEventListener("DOMContentLoaded", async () => {
