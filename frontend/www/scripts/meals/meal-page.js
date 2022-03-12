@@ -308,7 +308,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   const createIngredientButton = document.querySelector("#meal-create-new-ingredient");
   const addIngredientButton = document.querySelector("#meal-ingredient-add-button");
-  const addIngredientModal = document.querySelector("add-ingredient-modal");
+  const addIngredientModal = document.querySelector("create-ingredient-modal");
 
   const urlParams = new URLSearchParams(window.location.search);
   let currentUser = await getCurrentUser();

@@ -6,7 +6,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     updateIngredientList(ingredients);
   }
 
-  const addIngredientModal = document.querySelector("add-ingredient-modal");
+  const addIngredientModal = document.querySelector("create-ingredient-modal");
   addIngredientModal.addEventListener("ingredientCreated", (event) => {
     updateIngredientList([...(ingredients ?? []), event.detail]);
   });

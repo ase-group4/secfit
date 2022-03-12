@@ -1,10 +1,10 @@
 /**
- * Provides a custom component called `add-ingredient-modal`
- * that renders a Bootstrap Modal for adding new ingredients to SecFit.
+ * Provides a custom component called `create-ingredient-modal`
+ * that renders a Bootstrap Modal for creating and publishin new ingredients at SecFit.
  *
  * Visibility is toggled by adding the following attributes to a button on the same page:
  * - `data-bs-toggle="modal"`
- * - `data-bs-target="#add-ingredient-modal"`
+ * - `data-bs-target="#create-ingredient-modal"`
  *
  * Upon successful creation of the ingredient, dispatches the custom event `ingredientCreated`.
  * The `event.detail` field contains the newly created event, to use for updating the page.
@@ -12,7 +12,7 @@
  * The Submit button has id `ingredient-submit-button`,
  * which can be used to add additional event listeners.
  */
-class AddIngredientModal extends HTMLElement {
+class CreateIngredientModal extends HTMLElement {
   constructor() {
     super();
   }
@@ -23,7 +23,7 @@ class AddIngredientModal extends HTMLElement {
    */
   connectedCallback() {
     this.innerHTML = `
-        <div class="modal fade" id="add-ingredient-modal" tabindex="-1" role="dialog">
+        <div class="modal fade" id="create-ingredient-modal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -106,7 +106,7 @@ class AddIngredientModal extends HTMLElement {
 
     // Delegates handling of submit button being pressed to `handleAddIngredient`.
     const submitButton = this.querySelector("#ingredient-submit-button");
-    submitButton.addEventListener("click", this.handleAddIngredient.bind(this));
+    submitButton.addEventListener("click", this.createIngredient.bind(this));
 
     // Listens for changes in provided inputs and forwards them to `calculateCalories`.
     const nutritionInputs = this.querySelectorAll(".ingredient-nutrition-input");
@@ -147,8 +147,11 @@ class AddIngredientModal extends HTMLElement {
     return data;
   }
 
-  /** Reads the inputs of the form, and sends a POST request to the backend to create the ingredient. */
-  async handleAddIngredient() {
+  /**
+   * Reads the inputs of the form, and sends a POST request to the backend to create the ingredient.
+   * If the response is OK, dispatches the custom event `ingredientCreated` with the new ingredient.
+   */
+  async createIngredient() {
     const requestBody = this.getFormData();
     const response = await sendRequest("POST", `${HOST}/api/ingredients/`, requestBody);
     const data = await response.json();
@@ -179,4 +182,4 @@ class AddIngredientModal extends HTMLElement {
 }
 
 // Registers the custom component.
-customElements.define("add-ingredient-modal", AddIngredientModal);
+customElements.define("create-ingredient-modal", CreateIngredientModal);
