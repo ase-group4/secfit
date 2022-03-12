@@ -39,7 +39,7 @@ async function getCategories() {
 
         let output= `<a class="list-group-item list-group-item-action active" id="list-all" data-bs-toggle="list" href="#list-all" role="tab" aria-controls="all">All</a>`
         categoriesData['results'].forEach(category =>{
-            output += `<a class="list-group-item list-group-item-action" id="list-${category.id.toString()}" data-bs-toggle="list" href="#list-${category.id}" role="tab" aria-controls=${category.name}>${category.name}</a>`;
+            output += `<a class="list-group-item list-group-item-action" id="list-${category.id}" data-bs-toggle="list" href="#list-${category.id}" role="tab" aria-controls=${category.name}>${category.name}</a>`;
         })
         categorySelect.innerHTML = output
     }
