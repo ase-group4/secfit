@@ -9,6 +9,7 @@ async function fetchMeals(ordering) {
         let meals = data.results;
         let container = document.getElementById('div-content');
         meals.forEach(meal => {
+            console.log(meal);
             let templateMeal = document.querySelector("#template-meal");
             let cloneMeal = templateMeal.content.cloneNode(true);
 
@@ -20,16 +21,45 @@ async function fetchMeals(ordering) {
 
             let localDate = new Date(meal.date);
 
-            let table = aMeal.querySelector("table");
-            let rows = table.querySelectorAll("tr");
-            rows[0].querySelectorAll("td")[1].textContent = localDate.toLocaleDateString(); // Date
-            rows[1].querySelectorAll("td")[1].textContent = localDate.toLocaleTimeString(); // Time
-            rows[2].querySelectorAll("td")[1].textContent = meal.owner_username; //Owner
+            const leftTable = aMeal.querySelector(".left-table");
+            const leftRows = leftTable.querySelectorAll("tr");
+            leftRows[0].querySelectorAll("td")[1].textContent = localDate.toLocaleDateString(); // Date
+            leftRows[1].querySelectorAll("td")[1].textContent = localDate.toLocaleTimeString(); // Time
+            leftRows[2].querySelectorAll("td")[1].textContent = meal.owner_username; //Owner
+
+            const { calories, protein, fat, carbohydrates } = calculateNutritionalValues(meal.ingredient_weights);
+
+            const rightTable = aMeal.querySelector(".right-table");
+            const rightRows = rightTable.querySelectorAll("tr");
+            rightRows[0].querySelectorAll("td")[1].textContent = calories;
+            rightRows[1].querySelectorAll("td")[1].textContent = protein;
+            rightRows[2].querySelectorAll("td")[1].textContent = fat;
+            rightRows[3].querySelectorAll("td")[1].textContent = carbohydrates;
 
             container.appendChild(aMeal);
         });
         return meals;
     }
+}
+
+function calculateNutritionalValues(ingredientWeights) {
+    const nutritionalValues = {
+        calories: 0,
+        protein: 0,
+        fat: 0,
+        carbohydrates: 0,
+    }
+
+    for (const ingredientWeight of ingredientWeights) {
+        const { ingredient, weight } = ingredientWeight;
+
+        for (const nutritionalValue of Object.keys(nutritionalValues)) {
+            const grams = (ingredient[nutritionalValue] * weight) / 100;
+            nutritionalValues[nutritionalValue] += Math.round(grams * 10) / 10
+        }
+    }
+
+    return nutritionalValues;
 }
 
 function createMeal() {
