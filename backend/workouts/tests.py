@@ -56,7 +56,8 @@ class TestOwnerPermissions(TestCase):
 
     def test_IsOwner_false(self):
         """
-        IsOwner().has_object_permission returns False for a user that is not the of the object.
+        IsOwner().has_object_permission returns False
+        for a user that is not the owner of the object.
         """
         request = APIRequestFactory().get("/")
         request.user = User.objects.create(username="not_owner")
@@ -203,7 +204,7 @@ class TestCoachPermissions(TestCase):
 
 class TestVisibilityLevels(TestCase):
     """
-    Class that tests permissions linked to visibilitylevels in workouts/permissions.py
+    Class that tests permissions linked to visibilitylevels in workouts/permissions.py.
     """
 
     def setUp(self):
@@ -217,7 +218,7 @@ class TestVisibilityLevels(TestCase):
     def test_IsPublic_true(self):
         """
         IsPublic().has_object_permission returns True
-        for a object that has visibility "PU" (public).
+        for an object that has visibility "PU" (public).
         """
         request = APIRequestFactory().get("/")
         workout = self.pu_workout
@@ -227,7 +228,7 @@ class TestVisibilityLevels(TestCase):
     def test_IsPublic_false(self):
         """
         IsPublic().has_object_permission returns False
-        for a object that has visibility "PR" (private).
+        for an object that has visibility "PR" (private).
         """
         request = APIRequestFactory().get("/")
         workout = self.pr_workout
@@ -237,7 +238,7 @@ class TestVisibilityLevels(TestCase):
     def test_IsWorkoutPublic_true(self):
         """
         IsWorkoutPublic().has_object_permission returns True
-        for a object with a workout that has visibility "PU" (public).
+        for an object with a workout that has visibility "PU" (public).
         """
         request = APIRequestFactory().get("/")
         comment = self.pu_comment
@@ -247,7 +248,7 @@ class TestVisibilityLevels(TestCase):
     def test_IsWorkoutPublic_false(self):
         """
         IsWorkoutPublic().has_object_permission returns False
-        for a object with a workout that has visibility "PR" (private).
+        for an object with a workout that has visibility "PR" (private).
         """
         request = APIRequestFactory().get("/")
         comment = self.pr_comment
@@ -258,7 +259,7 @@ class TestVisibilityLevels(TestCase):
 class TestReadOnly(TestCase):
     def test_IsReadOnly_true(self):
         """
-        IsReadOnly().has_object_permission returns True for a object GET request.
+        IsReadOnly().has_object_permission returns True for an object GET request.
         """
         request = APIRequestFactory().get("/")
         permission = IsReadOnly().has_object_permission(request, None, None)
@@ -266,7 +267,7 @@ class TestReadOnly(TestCase):
 
     def test_IsReadOnly_false(self):
         """
-        IsReadOnly().has_object_permission returns Frue for a object POST request.
+        IsReadOnly().has_object_permission returns False for an object POST request.
         """
         request = APIRequestFactory().post("/")
         permission = IsReadOnly().has_object_permission(request, None, None)
