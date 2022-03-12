@@ -72,7 +72,7 @@ class Ingredient(models.Model):
         publisher:      The user that published this ingredient to SecFit.
     """
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     protein = models.FloatField()
     fat = models.FloatField()
     carbohydrates = models.FloatField()
