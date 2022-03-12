@@ -5,6 +5,8 @@ import {
   updateNutritionTotals,
 } from "./ingredient-utils.js";
 
+//@ts-check
+
 // Type definitions for JSDoc documentation.
 /**
  * @typedef {{
@@ -100,9 +102,7 @@ export function addIngredientInput(ingredientInMeal) {
   const ingredientContainer = document.querySelector("#meal-ingredient-input-container");
   ingredientContainer.appendChild(ingredientElement);
 
-  const ingredientInput = ingredientElement.querySelector(".meal-ingredient-input");
-  addIngredientListener(ingredientInput);
-
+  const ingredientInput = setupIngredientInput(ingredientElement);
   const weightInput = ingredientElement.querySelector(".meal-ingredient-weight-input");
   const removeButton = ingredientElement.querySelector(".meal-ingredient-remove-button");
 
@@ -159,12 +159,15 @@ function updateNutritionFields(ingredientElement) {
 }
 
 /**
- * Listens for changes to the given ingredient input,
+ * Listens for changes to the ingredient input on the given ingredient element,
  * and updates the corresponding hidden input in order to keep the ingredient ID.
  *
- * @param {HTMLInputElement} ingredientInput
+ * @param {HTMLElement} ingredientElement
+ * @returns {HTMLInputElement} The ingredient input field.
  */
-function addIngredientListener(ingredientInput) {
+function setupIngredientInput(ingredientElement) {
+  const ingredientInput = ingredientElement.querySelector(".meal-ingredient-input");
+
   // Inspired by https://stackoverflow.com/a/29882539/15587134
   ingredientInput.addEventListener("change", () => {
     const hiddenInput = ingredientElement.querySelector(".meal-ingredient-hidden-input");
@@ -177,6 +180,8 @@ function addIngredientListener(ingredientInput) {
       }
     }
   });
+
+  return ingredientInput;
 }
 
 /** Synchronizes the ingredient data list with the data from `allIngredients`. */
