@@ -1,3 +1,5 @@
+import { calculateNutritionTotals } from "./calculate-nutrition.js";
+
 let cancelMealButton;
 let okMealButton;
 let deleteMealButton;
@@ -56,6 +58,8 @@ function addIngredientInput(existingIngredientWeight) {
     return buttonsToDisable;
   }
 
+  updateNutritionalValues(ingredientElement);
+
   const updateAllNutritionalValues = () => {
     updateNutritionalValues(ingredientElement);
     updateNutritionalValueTotals();
@@ -102,7 +106,6 @@ function capitalizeFirstLetter(string) {
 
 function updateNutritionalValues(ingredientElement) {
   const ingredientForm = ingredientElement.querySelector(".meal-ingredient-input-form");
-  console.log(ingredientForm);
   const formData = getIngredientFormData(ingredientForm);
 
   for (const nutritionalValue of ["protein", "fat", "carbohydrates", "calories"]) {
@@ -134,7 +137,7 @@ function getNutritionalValueText(key, value) {
 function updateNutritionalValueTotals() {
   const ingredientWeights = getIngredientsInMeal();
 
-  const nutritionalValues = calculateNutritionalValues(ingredientWeights);
+  const nutritionalValues = calculateNutritionTotals(ingredientWeights);
 
   for (const [key, value] of Object.entries(nutritionalValues)) {
     document.querySelector(`#meal-ingredient-${key}-total`).textContent = getNutritionalValueText(
@@ -142,26 +145,6 @@ function updateNutritionalValueTotals() {
       value
     );
   }
-}
-
-function calculateNutritionalValues(ingredientWeights) {
-  const nutritionalValues = {
-    calories: 0,
-    protein: 0,
-    fat: 0,
-    carbohydrates: 0,
-  };
-
-  for (const ingredientWeight of ingredientWeights) {
-    const { ingredient, weight } = ingredientWeight;
-
-    for (const nutritionalValue of Object.keys(nutritionalValues)) {
-      const grams = (ingredient[nutritionalValue] * weight) / 100;
-      nutritionalValues[nutritionalValue] += Math.round(grams * 10) / 10;
-    }
-  }
-
-  return nutritionalValues;
 }
 
 function handleCreatedIngredient(ingredient) {
@@ -305,7 +288,6 @@ async function createMeal() {
     window.location.replace("meals.html");
   } else {
     let data = await response.json();
-    console.log(data);
     let alert = createAlert("Could not create new meal", data);
     document.body.prepend(alert);
   }

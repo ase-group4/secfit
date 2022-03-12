@@ -1,3 +1,5 @@
+import { calculateNutritionTotals } from "./calculate-nutrition.js";
+
 async function fetchMeals(ordering) {
   let response = await sendRequest("GET", `${HOST}/api/meals/?ordering=${ordering}`);
 
@@ -9,7 +11,6 @@ async function fetchMeals(ordering) {
     let meals = data.results;
     let container = document.getElementById("div-content");
     meals.forEach((meal) => {
-      console.log(meal);
       let templateMeal = document.querySelector("#template-meal");
       let cloneMeal = templateMeal.content.cloneNode(true);
 
@@ -27,7 +28,7 @@ async function fetchMeals(ordering) {
       leftRows[1].querySelectorAll("td")[1].textContent = localDate.toLocaleTimeString(); // Time
       leftRows[2].querySelectorAll("td")[1].textContent = meal.owner_username; //Owner
 
-      const { calories, protein, fat, carbohydrates } = calculateNutritionalValues(
+      const { calories, protein, fat, carbohydrates } = calculateNutritionTotals(
         meal.ingredient_weights
       );
 
@@ -42,26 +43,6 @@ async function fetchMeals(ordering) {
     });
     return meals;
   }
-}
-
-function calculateNutritionalValues(ingredientWeights) {
-  const nutritionalValues = {
-    calories: 0,
-    protein: 0,
-    fat: 0,
-    carbohydrates: 0,
-  };
-
-  for (const ingredientWeight of ingredientWeights) {
-    const { ingredient, weight } = ingredientWeight;
-
-    for (const nutritionalValue of Object.keys(nutritionalValues)) {
-      const grams = (ingredient[nutritionalValue] * weight) / 100;
-      nutritionalValues[nutritionalValue] += Math.round(grams * 10) / 10;
-    }
-  }
-
-  return nutritionalValues;
 }
 
 function createMeal() {
