@@ -1,3 +1,5 @@
+import { fetchIngredients } from "./fetch-ingredients.js";
+
 // When the DOM loads, populates the ingredient overview and listens for new ingredients.
 window.addEventListener("DOMContentLoaded", async () => {
   const ingredients = await fetchIngredients();
@@ -11,23 +13,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     updateIngredientList([...(ingredients ?? []), event.detail]);
   });
 });
-
-/**
- * Sends a request to the backend to get all ingredients, and returns them.
- * If backend returns an error, shows it at the top of the page.
- */
-async function fetchIngredients() {
-  const response = await sendRequest("GET", `${HOST}/api/ingredients`);
-  const data = await response.json();
-
-  if (!response.ok) {
-    const alert = createAlert("Could not fetch ingredients!", data);
-    document.body.prepend(alert);
-    return;
-  }
-
-  return data.results;
-}
 
 /** Takes a list of ingredients and populates the ingredient overview page with them. */
 function updateIngredientList(ingredients) {

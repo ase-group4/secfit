@@ -1,4 +1,5 @@
 import { calculateNutritionTotals } from "./calculate-nutrition.js";
+import { fetchIngredients } from "./fetch-ingredients.js";
 
 let cancelMealButton;
 let okMealButton;
@@ -6,23 +7,6 @@ let deleteMealButton;
 let editMealButton;
 
 let allIngredients = {};
-
-/**
- * Sends a request to the backend to get all ingredients, and returns them.
- * If backend returns an error, shows it at the top of the page.
- */
-async function fetchIngredients() {
-  const response = await sendRequest("GET", `${HOST}/api/ingredients`);
-  const data = await response.json();
-
-  if (!response.ok) {
-    const alert = createAlert("Could not fetch ingredients!", data);
-    document.body.prepend(alert);
-    return;
-  }
-
-  return data.results;
-}
 
 function updateIngredients(ingredientList) {
   const newIngredients = {};
