@@ -9,41 +9,72 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('meals', '0001_initial'),
+        ("meals", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Ingredient',
+            name="Ingredient",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('protein', models.FloatField()),
-                ('carbohydrates', models.FloatField()),
-                ('fat', models.FloatField()),
-                ('publisher', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='ingredients', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("protein", models.FloatField()),
+                ("carbohydrates", models.FloatField()),
+                ("fat", models.FloatField()),
+                (
+                    "publisher",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="ingredients",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.RemoveField(
-            model_name='meal',
-            name='calories',
+            model_name="meal",
+            name="calories",
         ),
         migrations.CreateModel(
-            name='IngredientInMeal',
+            name="IngredientInMeal",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('weight', models.IntegerField()),
-                ('ingredient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='meals.ingredient')),
-                ('meal', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='ingredient_weights', to='meals.meal')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("weight", models.IntegerField()),
+                (
+                    "ingredient",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="meals.ingredient"
+                    ),
+                ),
+                (
+                    "meal",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="ingredient_weights",
+                        to="meals.meal",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='meal',
-            name='ingredients',
-            field=models.ManyToManyField(through='meals.IngredientInMeal', to='meals.Ingredient'),
+            model_name="meal",
+            name="ingredients",
+            field=models.ManyToManyField(through="meals.IngredientInMeal", to="meals.Ingredient"),
         ),
         migrations.AddConstraint(
-            model_name='ingredientinmeal',
-            constraint=models.UniqueConstraint(fields=('ingredient', 'meal'), name='unique_ingredient_in_meal'),
+            model_name="ingredientinmeal",
+            constraint=models.UniqueConstraint(
+                fields=("ingredient", "meal"), name="unique_ingredient_in_meal"
+            ),
         ),
     ]
