@@ -1,6 +1,6 @@
 /**
  * Provides a custom component called `create-ingredient-modal`
- * that renders a Bootstrap Modal for creating and publishin new ingredients at SecFit.
+ * that renders a Bootstrap Modal for creating and publishing new ingredients to SecFit.
  *
  * Visibility is toggled by adding the following attributes to a button on the same page:
  * - `data-bs-toggle="modal"`
