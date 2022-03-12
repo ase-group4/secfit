@@ -17,7 +17,6 @@ def createWorkout(owner, visibility="PU"):
         notes="note",
         visibility=visibility
     )
-    workout.save()
     return workout
 
 def createComment(owner, workout):
@@ -27,7 +26,6 @@ def createComment(owner, workout):
         timestamp="2022-03-03T18:14:00Z",
         content="content"
     )
-    comment.save()
     return comment
 
 
@@ -38,7 +36,6 @@ class TestOwnerPermissions(TestCase):
     """
     def setUp(self):
         self.owner_user = User.objects.create(username="owner")
-        self.owner_user.save()
         self.workout = createWorkout(owner = self.owner_user)
 
     def test_IsOwner_true(self):
@@ -139,9 +136,7 @@ class TestCoachPermissions(TestCase):
     """
     def setUp(self):
         self.coach_user = User.objects.create(username="coach")
-        self.coach_user.save()
         self.athlete_user = User.objects.create(username="owner", coach=self.coach_user)
-        self.athlete_user.save()
         self.workout = createWorkout(owner=self.athlete_user)
         self.comment = createComment(owner=self.athlete_user, workout=self.workout)
 
@@ -161,7 +156,6 @@ class TestCoachPermissions(TestCase):
         IsCoachAndVisibleToCoach().has_object_permission returns False for a user that is not the coach of the object's owner.
         """
         not_coach_user = User.objects.create(username="not_coach")
-        not_coach_user.save()
 
         request = APIRequestFactory().get('/')
         request.user = not_coach_user
@@ -184,7 +178,6 @@ class TestCoachPermissions(TestCase):
         IsCoachOfWorkoutAndVisibleToCoach().has_object_permission returns False for a user that is not the coach of the owner of the object's workout.
         """
         not_coach_user = User.objects.create(username="not_coach")
-        not_coach_user.save()
 
         request = APIRequestFactory().get('/')
         request.user = not_coach_user
@@ -198,7 +191,7 @@ class TestVisibilityLevels(TestCase):
     """
     def setUp(self):
         owner_user = User.objects.create(username="owner")
-        owner_user.save()
+
         self.pu_workout = createWorkout(owner=owner_user)
         self.pu_comment = createComment(owner=owner_user, workout=self.pu_workout)
         self.pr_workout = createWorkout(owner=owner_user, visibility="PR")
