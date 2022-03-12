@@ -14,8 +14,21 @@ window.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-/** Takes a list of ingredients and populates the ingredient overview page with them. */
+/**
+ * Takes a list of ingredients and populates the ingredient overview page with them.
+ *
+ * @param {{
+ *  id: number,
+ *  name: string,
+ *  publisher_name: string,
+ *  calories: number,
+ *  protein: number,
+ *  fat: number,
+ *  carbohydrates: number,
+ * }} ingredients
+ */
 function updateIngredientList(ingredients) {
+  // Clears out any existing ingredient elements.
   const container = document.querySelector("#div-content");
   while (container.firstChild) {
     container.removeChild(container.lastChild);
