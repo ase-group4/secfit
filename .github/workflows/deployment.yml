@@ -1,10 +1,9 @@
-name: CI
+name: Deployment
 
 # Triggers workflow on pushes to main.
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   # Uses Heroku secrets to log in and deploy the frontend and backend apps.
