@@ -23,15 +23,19 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class IngredientInMealSerializer(serializers.ModelSerializer):
-    name = serializers.ReadOnlyField(source="ingredient.name")
-    protein = serializers.ReadOnlyField(source="ingredient.protein")
-    fat = serializers.ReadOnlyField(source="ingredient.fat")
-    carbohydrates = serializers.ReadOnlyField(source="ingredient.carbohydrates")
-    calories = serializers.ReadOnlyField(source="ingredient.calories")
-
     class Meta:
         model = IngredientInMeal
-        fields = ["id", "weight", "name", "protein", "carbohydrates", "fat", "calories"]
+        fields = ["ingredient", "weight"]
+
+    def to_representation(self, instance):
+        """
+        Overrides `to_representation` to return the full ingredient,
+        not just the foreign key, on GET requests.
+        """
+
+        serialized = super().to_representation(instance)
+        serialized["ingredient"] = IngredientSerializer(instance.ingredient).data
+        return serialized
 
 
 class MealFileSerializer(serializers.HyperlinkedModelSerializer):
@@ -57,7 +61,7 @@ class MealFileSerializer(serializers.HyperlinkedModelSerializer):
         return MealFile.objects.create(**validated_data)
 
 
-class MealSerializer(serializers.HyperlinkedModelSerializer):
+class MealSerializer(serializers.ModelSerializer):
     """Serializer for a Meal. Hyperlinks are used for relationships by default.
 
     This serializer specifies nested serialization since a meal consists of MealFiles.
@@ -70,7 +74,7 @@ class MealSerializer(serializers.HyperlinkedModelSerializer):
     """
 
     owner_username = serializers.SerializerMethodField()
-    ingredients = IngredientInMealSerializer(many=True, required=True)
+    ingredient_weights = IngredientInMealSerializer(many=True)
     files = MealFileSerializer(many=True, required=False)
 
     class Meta:
@@ -81,11 +85,11 @@ class MealSerializer(serializers.HyperlinkedModelSerializer):
             "name",
             "date",
             "notes",
-            "ingredients",
             "is_veg",
             "owner",
             "owner_username",
             "files",
+            "ingredient_weights",
         ]
         extra_kwargs = {"owner": {"read_only": True}}
 
@@ -100,11 +104,17 @@ class MealSerializer(serializers.HyperlinkedModelSerializer):
         Returns:
             Meal: A newly created Meal
         """
+
         files_data = []
         if "files" in validated_data:
             files_data = validated_data.pop("files")
 
+        ingredients_data = validated_data.pop("ingredient_weights")
+
         meal = Meal.objects.create(**validated_data)
+
+        for ingredient in ingredients_data:
+            IngredientInMeal.objects.create(meal=meal, **ingredient)
 
         for file_data in files_data:
             MealFile.objects.create(meal=meal, owner=meal.owner, file=file_data.get("file"))
