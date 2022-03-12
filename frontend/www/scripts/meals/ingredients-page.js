@@ -4,6 +4,11 @@ import { fetchIngredients } from "./ingredient-utils.js";
 window.addEventListener("DOMContentLoaded", async () => {
   const ingredients = await fetchIngredients();
 
+  const ingredientSearch = document.querySelector("#ingredient-search-field");
+  ingredientSearch.addEventListener("change", (event) => {
+    filterSearchResults(event.target.value);
+  });
+
   if (ingredients !== undefined) {
     updateIngredientList(ingredients);
   }
@@ -39,10 +44,10 @@ function updateIngredientList(ingredients) {
   for (const ingredient of ingredients) {
     const ingredientElement = ingredientTemplate.content.firstElementChild.cloneNode(true);
 
-    const header = ingredientElement.querySelector("h5");
+    const header = ingredientElement.querySelector(".ingredient-name");
     header.textContent = ingredient.name;
 
-    const publisherField = ingredientElement.querySelector("#publisher-field");
+    const publisherField = ingredientElement.querySelector(".publisher-field");
     publisherField.textContent += ` ${ingredient.publisher_name}`;
 
     const tableRows = ingredientElement.querySelector("table").querySelectorAll("tr");
@@ -52,5 +57,24 @@ function updateIngredientList(ingredients) {
     tableRows[3].querySelectorAll("td")[1].textContent = `${ingredient.protein} g`;
 
     container.appendChild(ingredientElement);
+  }
+}
+
+/**
+ * Hides all ingredient elements without `searchText` in their name.
+ *
+ * @param {string} searchText
+ */
+function filterSearchResults(searchText) {
+  const ingredientElements = document.querySelectorAll(".ingredient");
+
+  for (const element of ingredientElements) {
+    const name = element.querySelector(".ingredient-name").innerText;
+
+    if (name.toLowerCase().includes(searchText.toLowerCase())) {
+      element.classList.remove("hide");
+    } else {
+      element.classList.add("hide");
+    }
   }
 }
