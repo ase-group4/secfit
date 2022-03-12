@@ -125,8 +125,8 @@ class TestUserSerializer(TestCase):
         data = self.serializer.data
         self.assertEqual(data["workouts"], ["http://testserver/api/workouts/1/"])
 
-    def tests_validate_password(self):
-        """UserSerializer.validate_password() validates and returnes new password"""
+    def test_validate_password(self):
+        """UserSerializer.validate_password() validates and returns new password"""
         new_password = "new_password"
         self.user.set_password(new_password)
         user_serializer = UserSerializer(self.user, context=self.context)
