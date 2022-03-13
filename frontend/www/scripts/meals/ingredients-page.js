@@ -4,8 +4,10 @@ import { fetchIngredients } from "./ingredient-utils.js";
 window.addEventListener("DOMContentLoaded", async () => {
   const ingredients = await fetchIngredients();
 
+  let searchText=""
   const ingredientSearch = document.querySelector("#ingredient-search-field");
-  ingredientSearch.addEventListener("change", (event) => {
+  ingredientSearch.addEventListener("input", (event) => {
+    searchText = event.target.value
     filterSearchResults(event.target.value);
   });
 
@@ -15,7 +17,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   const addIngredientModal = document.querySelector("create-ingredient-modal");
   addIngredientModal.addEventListener("ingredientCreated", (event) => {
-    updateIngredientList([...(ingredients ?? []), event.detail]);
+    updateIngredientList([...(ingredients ?? []), event.detail], searchText);
   });
 });
 
@@ -32,7 +34,7 @@ window.addEventListener("DOMContentLoaded", async () => {
  *  carbohydrates: number,
  * }} ingredients
  */
-function updateIngredientList(ingredients) {
+function updateIngredientList(ingredients, searchText="") {
   // Clears out any existing ingredient elements.
   const container = document.querySelector("#div-content");
   while (container.firstChild) {
@@ -57,6 +59,12 @@ function updateIngredientList(ingredients) {
     tableRows[3].querySelectorAll("td")[1].textContent = `${ingredient.protein} g`;
 
     container.appendChild(ingredientElement);
+  
+    if (ingredient.name.toLowerCase().includes(searchText.toLowerCase())) {
+      ingredientElement.classList.remove("hide");
+    } else {
+      ingredientElement.classList.add("hide");
+    }
   }
 }
 
