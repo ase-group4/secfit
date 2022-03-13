@@ -43,6 +43,8 @@ function updateIngredientList(ingredients, searchText="") {
 
   const ingredientTemplate = document.querySelector("#template-ingredient");
 
+  ingredients.sort(sortByName)
+
   for (const ingredient of ingredients) {
     const ingredientElement = ingredientTemplate.content.firstElementChild.cloneNode(true);
 
@@ -60,12 +62,23 @@ function updateIngredientList(ingredients, searchText="") {
 
     container.appendChild(ingredientElement);
   
-    if (ingredient.name.toLowerCase().includes(searchText.toLowerCase())) {
-      ingredientElement.classList.remove("hide");
-    } else {
+    if (!ingredient.name.toLowerCase().includes(searchText.toLowerCase())) {
       ingredientElement.classList.add("hide");
     }
   }
+}
+
+/**
+ * Sort function to sort objects (ingredients) by name
+ */
+function sortByName( a, b ) {
+  if ( a.name < b.name ){
+    return -1;
+  }
+  if ( a.name > b.name ){
+    return 1;
+  }
+  return 0;
 }
 
 /**
