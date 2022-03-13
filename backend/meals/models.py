@@ -25,7 +25,6 @@ class OverwriteStorage(FileSystemStorage):
             os.remove(os.path.join(settings.MEDIA_ROOT, name))
 
 
-# Create your models here.
 class Meal(models.Model):
     """Django model for a meal that users can log.
 
@@ -35,7 +34,7 @@ class Meal(models.Model):
         name:        Name of the meal
         date:        Date and time the meal was consumed
         notes:       Notes about the meal
-        calories:    Total amount of calories in the meal
+        ingredients: Ingredients that the meal is made of, with weights.
         is_veg:      Whether the meal was vegetarian or not
         owner:       User that logged the meal
     """
@@ -43,7 +42,12 @@ class Meal(models.Model):
     name = models.CharField(max_length=100)
     date = models.DateTimeField()
     notes = models.TextField()
-    calories = models.IntegerField()
+
+    ingredients = models.ManyToManyField(
+        to="Ingredient",
+        through="IngredientInMeal",
+    )
+
     is_veg = models.BooleanField(default=False)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="meals")
 
@@ -52,6 +56,59 @@ class Meal(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Ingredient(models.Model):
+    """
+    Django model for ingredients that users can compose meals from.
+
+    Attributes:
+        name:           The name of the ingredient.
+        protein:        Grams of protein per 100 grams of the ingredient.
+        carbohydrates:  Grams of carbohydrates per 100 grams of the ingredient.
+        fat:            Grams of fat per 100 grams of the ingredient.
+        calories:       Calories in kcal of the ingredient,
+                        calculated from the given protein, carbohydrates and fat.
+        publisher:      The user that published this ingredient to SecFit.
+    """
+
+    name = models.CharField(max_length=100)
+    protein = models.FloatField()
+    fat = models.FloatField()
+    carbohydrates = models.FloatField()
+
+    @property
+    def calories(self) -> int:
+        return self.protein * 4 + self.carbohydrates * 4 + self.fat * 9
+
+    publisher = models.ForeignKey(
+        get_user_model(), on_delete=models.CASCADE, related_name="ingredients"
+    )
+
+
+class IngredientInMeal(models.Model):
+    """
+    Intermediary model for the many-to-many relation between Meal and Ingredient.
+
+    Attributes:
+        meal: Foreign key to the meal.
+        ingredient: Foreign key to the ingredient.
+        weight: The weight in grams of the ingredient in the meal.
+    """
+
+    meal = models.ForeignKey("Meal", on_delete=models.CASCADE, related_name="ingredient_weights")
+    ingredient = models.ForeignKey("Ingredient", on_delete=models.CASCADE)
+
+    weight = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            # Disallows adding the same ingredient twice to the same meal
+            # (increase weight instead).
+            models.UniqueConstraint(
+                fields=["ingredient", "meal"], name="unique_ingredient_in_meal"
+            )
+        ]
 
 
 def meal_directory_path(instance, filename):

@@ -6,12 +6,12 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.db.models import Q
-from rest_framework import filters
+from rest_framework import filters, pagination
 from meals.parsers import MultipartJsonParser
 from meals.permissions import IsOwner, IsOwnerOfMeal
 from meals.mixins import CreateListModelMixin
-from meals.models import Meal, MealFile
-from meals.serializers import MealSerializer
+from meals.models import Meal, Ingredient, MealFile
+from meals.serializers import IngredientSerializer, MealSerializer
 from meals.serializers import MealFileSerializer
 
 
@@ -24,6 +24,15 @@ def api_root(request, format=None):
             "meal-files": reverse("meal-file-list", request=request, format=format),
         }
     )
+
+
+class ExpandedPagination(pagination.PageNumberPagination):
+    """
+    Utility class to expand the pagination size for a specific view.
+    Use by adding `pagination_class = ExpandedPagination` to the view.
+    """
+
+    page_size = 1000  # Default size without this class: 10
 
 
 class MealList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
@@ -43,6 +52,7 @@ class MealList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
     ]  # For parsing JSON and Multi-part requests
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ["name", "date", "owner__username"]
+    pagination_class = ExpandedPagination
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -58,6 +68,30 @@ class MealList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
         if self.request.user:
             qs = Meal.objects.filter(Q(owner=self.request.user)).distinct()
         return qs
+
+
+class Ingredients(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    """
+    View for fetching and creating Ingredients.
+
+    HTTP methods: GET, POST
+    """
+
+    serializer_class = IngredientSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = ExpandedPagination
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Ingredient.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(publisher=self.request.user)
 
 
 class MealDetail(

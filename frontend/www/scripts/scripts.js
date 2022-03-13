@@ -23,7 +23,7 @@ function updateNavBar() {
   } else if (window.location.pathname == "/myathletes.html") {
     makeNavLinkActive("nav-myathletes");
   } else if (window.location.pathname == "/meals.html") {
-    makeNavLinkActive("nav-myathletes");
+    makeNavLinkActive("nav-meals");
   }
 
   if (isUserAuthenticated()) {

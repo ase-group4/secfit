@@ -1,7 +1,58 @@
 """Serializers for the meals application."""
 from rest_framework import serializers
 from rest_framework.serializers import HyperlinkedRelatedField
-from meals.models import Meal, MealFile
+from meals.models import Ingredient, IngredientInMeal, Meal, MealFile
+
+
+class IngredientSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Ingredient.
+
+    Serialized fields: id, name, protein, fat, carbohydrates, calories, publisher, publisher_name
+
+    Attributes:
+        publisher_name: Name of the user who published the ingredient.
+    """
+
+    publisher_name = serializers.ReadOnlyField(source="publisher.username")
+
+    class Meta:
+        model = Ingredient
+        fields = [
+            "id",
+            "name",
+            "protein",
+            "fat",
+            "carbohydrates",
+            "calories",
+            "publisher",
+            "publisher_name",
+        ]
+        extra_kwargs = {"publisher": {"read_only": True}}
+
+
+class IngredientInMealSerializer(serializers.ModelSerializer):
+    """
+    Serializer for IngredientInMeal.
+    Meant to show details of an ingredient on a meal.
+    Overrides `to_representation` to return full ingredient on GET requests,
+    while accepting a bare foreign key for the ingredient on POST.
+
+    Serialized fields: ingredient, weight
+    """
+
+    class Meta:
+        model = IngredientInMeal
+        fields = ["ingredient", "weight"]
+
+    def to_representation(self, instance):
+        """
+        Overrides `to_representation` to return the full ingredient,
+        not just the foreign key, on GET requests.
+        """
+        serialized = super().to_representation(instance)
+        serialized["ingredient"] = IngredientSerializer(instance.ingredient).data
+        return serialized
 
 
 class MealFileSerializer(serializers.HyperlinkedModelSerializer):
@@ -27,20 +78,23 @@ class MealFileSerializer(serializers.HyperlinkedModelSerializer):
         return MealFile.objects.create(**validated_data)
 
 
-class MealSerializer(serializers.HyperlinkedModelSerializer):
+class MealSerializer(serializers.ModelSerializer):
     """Serializer for a Meal. Hyperlinks are used for relationships by default.
 
     This serializer specifies nested serialization since a meal consists of MealFiles.
 
-    Serialized fields: url, id, name, date, notes, calories, owner, is_veg, owner_username, files
+    Serialized fields:
+        url, id, name, date, notes, is_veg, owner, owner_username, files, ingredient_weights
 
     Attributes:
         owner_username:     Username of the owning User
         files:              Serializer for MealFiles
+        ingredient_weights: Ingredients in the meal, with corresponding weights.
     """
 
     owner_username = serializers.SerializerMethodField()
     files = MealFileSerializer(many=True, required=False)
+    ingredient_weights = IngredientInMealSerializer(many=True)
 
     class Meta:
         model = Meal
@@ -50,11 +104,11 @@ class MealSerializer(serializers.HyperlinkedModelSerializer):
             "name",
             "date",
             "notes",
-            "calories",
             "is_veg",
             "owner",
             "owner_username",
             "files",
+            "ingredient_weights",
         ]
         extra_kwargs = {"owner": {"read_only": True}}
 
@@ -69,11 +123,18 @@ class MealSerializer(serializers.HyperlinkedModelSerializer):
         Returns:
             Meal: A newly created Meal
         """
+
         files_data = []
         if "files" in validated_data:
             files_data = validated_data.pop("files")
 
+        # Pops out the ingredient weights, to serialize the nested representation afterwards.
+        ingredients_data = validated_data.pop("ingredient_weights")
+
         meal = Meal.objects.create(**validated_data)
+
+        for ingredient in ingredients_data:
+            IngredientInMeal.objects.create(meal=meal, **ingredient)
 
         for file_data in files_data:
             MealFile.objects.create(meal=meal, owner=meal.owner, file=file_data.get("file"))
