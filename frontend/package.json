@@ -5,7 +5,8 @@
   "description": "A sample Apache Cordova application that responds to the deviceready event.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "e2e": "cypress"
   },
   "keywords": [
     "ecosystem:cordova"
@@ -13,6 +14,7 @@
   "author": "Apache Cordova Team",
   "license": "Apache-2.0",
   "devDependencies": {
+    "chance": "^1.1.8",
     "cordova-android": "^9.0.0",
     "cordova-browser": "^6.0.0",
     "cordova-plugin-camera": "^4.1.0",
@@ -31,5 +33,9 @@
       "browser",
       "android"
     ]
+  },
+  "dependencies": {
+    "chance": "^1.1.8",
+    "cypress": "^9.5.1"
   }
 }
