@@ -173,6 +173,11 @@ class CreateIngredientModal extends HTMLElement {
           detail: data,
         })
       );
+
+      // Clear form after submitting.
+      const form = this.querySelector("#ingredient-form");
+      form.reset();
+      this.calculateCalories();
     }
   }
 
