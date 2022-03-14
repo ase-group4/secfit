@@ -5,6 +5,8 @@ import {
   updateNutritionTotals,
 } from "./ingredient-utils.js";
 
+//@ts-check
+
 // Type definitions for JSDoc documentation.
 /**
  * @typedef {{
@@ -45,6 +47,8 @@ export function updateIngredients(ingredientList) {
   }
 
   allIngredients = newIngredients;
+
+  updateIngredientDatalist();
 }
 
 /**
@@ -56,10 +60,8 @@ export function updateIngredients(ingredientList) {
 export function handleCreatedIngredient(ingredient) {
   allIngredients[ingredient.id] = ingredient;
 
-  const ingredientSelects = document.querySelectorAll(".meal-ingredient-select");
-  for (const select of ingredientSelects) {
-    select.appendChild(createIngredientOption(ingredient));
-  }
+  const ingredientDatalist = document.querySelector("#meal-ingredient-options");
+  ingredientDatalist.appendChild(createIngredientOption(ingredient));
 }
 
 /**
@@ -100,22 +102,21 @@ export function addIngredientInput(ingredientInMeal) {
   const ingredientContainer = document.querySelector("#meal-ingredient-input-container");
   ingredientContainer.appendChild(ingredientElement);
 
-  const ingredientSelect = ingredientElement.querySelector(".meal-ingredient-select");
+  const ingredientInput = setupIngredientInput(ingredientElement);
   const weightInput = ingredientElement.querySelector(".meal-ingredient-weight-input");
   const removeButton = ingredientElement.querySelector(".meal-ingredient-remove-button");
 
-  for (const ingredient of Object.values(allIngredients)) {
-    ingredientSelect.appendChild(createIngredientOption(ingredient));
-  }
-
   if (ingredientInMeal) {
-    ingredientSelect.value = ingredientInMeal.ingredient.id;
+    ingredientInput.value = ingredientInMeal.ingredient.name;
+    const hiddenInput = ingredientElement.querySelector(".meal-ingredient-hidden-input");
+    hiddenInput.value = ingredientInMeal.ingredient.id;
+
     weightInput.value = ingredientInMeal.weight;
     removeButton.classList.add("hide");
 
     updateNutritionFields(ingredientElement);
 
-    const buttonsToDisable = [ingredientSelect, weightInput];
+    const buttonsToDisable = [ingredientInput, weightInput];
     return buttonsToDisable;
   }
 
@@ -125,7 +126,7 @@ export function addIngredientInput(ingredientInMeal) {
     updateNutritionFields(ingredientElement);
     updateNutritionTotals(getIngredientsInMeal());
   };
-  ingredientSelect.addEventListener("change", updateAllNutritionalValues);
+  ingredientInput.addEventListener("change", updateAllNutritionalValues);
   weightInput.addEventListener("change", updateAllNutritionalValues);
 
   removeButton.addEventListener("click", () => {
@@ -154,5 +155,40 @@ function updateNutritionFields(ingredientElement) {
       value = Math.round(grams * 10) / 10;
     }
     nutritionalValueField.textContent = getNutritionalValueText(nutritionalValue, value);
+  }
+}
+
+/**
+ * Listens for changes to the ingredient input on the given ingredient element,
+ * and updates the corresponding hidden input in order to keep the ingredient ID.
+ *
+ * @param {HTMLElement} ingredientElement
+ * @returns {HTMLInputElement} The ingredient input field.
+ */
+function setupIngredientInput(ingredientElement) {
+  const ingredientInput = ingredientElement.querySelector(".meal-ingredient-input");
+
+  // Inspired by https://stackoverflow.com/a/29882539/15587134
+  ingredientInput.addEventListener("change", () => {
+    const hiddenInput = ingredientElement.querySelector(".meal-ingredient-hidden-input");
+    const datalist = document.querySelector("#meal-ingredient-options");
+
+    for (const ingredientOption of datalist.querySelectorAll("option")) {
+      if (ingredientOption.innerText === ingredientInput.value) {
+        hiddenInput.value = ingredientOption.getAttribute("data-value");
+        break;
+      }
+    }
+  });
+
+  return ingredientInput;
+}
+
+/** Synchronizes the ingredient data list with the data from `allIngredients`. */
+function updateIngredientDatalist() {
+  const datalist = document.querySelector("#meal-ingredient-options");
+
+  for (const ingredient of Object.values(allIngredients)) {
+    datalist.appendChild(createIngredientOption(ingredient));
   }
 }

@@ -160,12 +160,13 @@ class CreateIngredientModal extends HTMLElement {
       const alert = createAlert("Could not create new exercise!", data);
       document.body.prepend(alert);
     }
-
-    this.dispatchEvent(
-      new CustomEvent("ingredientCreated", {
-        detail: data,
-      })
-    );
+    else{
+      this.dispatchEvent(
+        new CustomEvent("ingredientCreated", {
+          detail: data,
+        })
+      );
+    }
   }
 
   /**

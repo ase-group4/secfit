@@ -21,11 +21,10 @@
     <navbar-el></navbar-el>
 
     <div class="container">
-      <div class="row">
-        <div class="col-lg">
-          <h3 class="mt-3">Meal Log</h3>
-        </div>
-      </div>
+      <a href="./meals.html">
+        <input type="button" class="btn btn-secondary mt-3" value="Back to meals" />
+      </a>
+      <h3 class="mt-3">Meal Log</h3>
       <form class="row g-3 mb-4" id="form-meal">
         <div class="col-lg-6">
           <label for="inputName" class="form-label">Name</label>
@@ -76,13 +75,17 @@
             </div>
           </div>
           <div id="meal-ingredient-input-container">
+            <datalist id="meal-ingredient-options"></datalist>
             <template id="meal-ingredient-input-template">
               <div class="p-2 border border-secondary rounded mb-2">
                 <div class="d-flex align-items-center justify-content-between mb-2">
                   <form class="meal-ingredient-input-form d-flex align-items-center flex-grow-1">
-                    <select name="ingredient" class="form-select me-2 meal-ingredient-select">
-                      <option selected>Choose ingredient</option>
-                    </select>
+                    <input
+                      class="form-control me-2 meal-ingredient-input"
+                      list="meal-ingredient-options"
+                      placeholder="Choose ingredient..."
+                    />
+                    <input type="hidden" name="ingredient" class="meal-ingredient-hidden-input" />
                     <div class="input-group me-2">
                       <input
                         type="number"
