@@ -114,7 +114,7 @@ class CreateIngredientModal extends HTMLElement {
     // Listens for changes in provided inputs and forwards them to `calculateCalories`.
     const nutritionInputs = this.querySelectorAll(".ingredient-nutrition-input");
     for (const input of nutritionInputs) {
-      input.addEventListener("change", this.calculateCalories.bind(this));
+      input.addEventListener("input", this.calculateCalories.bind(this));
     }
   }
 
