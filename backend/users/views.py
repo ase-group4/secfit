@@ -1,4 +1,5 @@
 from rest_framework import mixins, generics
+from utils.pagination import ExpandedPagination
 from workouts.mixins import CreateListModelMixin
 from rest_framework import permissions
 from users.serializers import (
@@ -19,6 +20,7 @@ from workouts.permissions import IsOwner, IsReadOnly
 
 class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     serializer_class = UserSerializer
+    pagination_class = ExpandedPagination
     users = []
     admins = []
 
