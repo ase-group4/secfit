@@ -120,7 +120,7 @@ class MealSerializer(serializers.ModelSerializer):
             raise ValidationError("meal must contain at least 1 ingredient")
 
         for ingredient in value:
-            if ingredient.get("weight") is None or ingredient.get("weight") == 0:
+            if ingredient.get("weight") is None or ingredient.get("weight") <= 0:
                 raise ValidationError("ingredient in meal must have weight")
 
         return value
