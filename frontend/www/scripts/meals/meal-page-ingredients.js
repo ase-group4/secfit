@@ -74,7 +74,7 @@ export function getIngredientsInMeal() {
 
   for (const ingredientForm of document.querySelectorAll(".meal-ingredient-input-form")) {
     const ingredientFormData = getIngredientFormData(ingredientForm, allIngredients);
-    if (ingredientFormData.ingredient === undefined || ingredientFormData.weight === 0) {
+    if (ingredientFormData.ingredient === undefined) {
       continue;
     }
 
