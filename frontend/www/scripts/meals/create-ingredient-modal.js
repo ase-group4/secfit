@@ -1,3 +1,5 @@
+import { Ingredient } from "./types.js";
+
 /**
  * Provides a custom component called `create-ingredient-modal`
  * that renders a Bootstrap Modal for creating and publishing new ingredients to SecFit.
@@ -154,13 +156,17 @@ class CreateIngredientModal extends HTMLElement {
   async createIngredient() {
     const requestBody = this.getFormData();
     const response = await sendRequest("POST", `${HOST}/api/ingredients/`, requestBody);
+
+    /**
+     * Either a successfully created ingredient, or an error message.
+     * @type {Ingredient | string}
+     */
     const data = await response.json();
 
     if (!response.ok) {
       const alert = createAlert("Could not create new exercise!", data);
       document.body.prepend(alert);
-    }
-    else{
+    } else {
       this.dispatchEvent(
         new CustomEvent("ingredientCreated", {
           detail: data,

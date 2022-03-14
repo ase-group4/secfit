@@ -1,20 +1,4 @@
-// Type definitions for JSDoc documentation.
-/**
- * @typedef {{
- *  id: number,
- *  name: string,
- *  publisher_name: string,
- *  calories: number,
- *  protein: number,
- *  fat: number,
- *  carbohydrates: number,
- * }} Ingredient An entry from SecFit's ingredient database.
- *
- * @typedef {{
- *  ingredient: Ingredient,
- *  weight: number,
- * }} IngredientInMeal An ingredient in a meal, with weight.
- */
+import { Ingredient, IngredientInMeal } from "./types.js";
 
 /**
  * Sends an API request to get all ingredients, and returns them.

@@ -1,4 +1,5 @@
 import { fetchIngredients } from "./ingredient-utils.js";
+import { Ingredient } from "./types.js";
 
 // When the DOM loads, populates the ingredient overview and listens for new ingredients.
 window.addEventListener("DOMContentLoaded", async () => {
@@ -24,15 +25,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 /**
  * Takes a list of ingredients and populates the ingredient overview page with them.
  *
- * @param {{
- *  id: number,
- *  name: string,
- *  publisher_name: string,
- *  calories: number,
- *  protein: number,
- *  fat: number,
- *  carbohydrates: number,
- * }} ingredients
+ * @param {Ingredient[]} ingredients
  */
 function updateIngredientList(ingredients, searchText = "") {
   // Clears out any existing ingredient elements.
@@ -69,13 +62,17 @@ function updateIngredientList(ingredients, searchText = "") {
 }
 
 /**
- * Sort function to sort objects (ingredients) by name
+ * Sorts the given ingredients by name.
+ *
+ * @param {Ingredient} ingredient1
+ * @param {Ingredient} ingredient2
+ * @returns {number}
  */
-function sortByName(a, b) {
-  if (a.name < b.name) {
+function sortByName(ingredient1, ingredient2) {
+  if (ingredient1.name < ingredient2.name) {
     return -1;
   }
-  if (a.name > b.name) {
+  if (ingredient1.name > ingredient2.name) {
     return 1;
   }
   return 0;
