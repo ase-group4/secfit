@@ -1,3 +1,6 @@
+// JSDoc type imports.
+/** @typedef {import("./types.js").Ingredient} Ingredient */
+
 /**
  * Provides a custom component called `create-ingredient-modal`
  * that renders a Bootstrap Modal for creating and publishing new ingredients to SecFit.
@@ -111,7 +114,7 @@ class CreateIngredientModal extends HTMLElement {
     // Listens for changes in provided inputs and forwards them to `calculateCalories`.
     const nutritionInputs = this.querySelectorAll(".ingredient-nutrition-input");
     for (const input of nutritionInputs) {
-      input.addEventListener("change", this.calculateCalories.bind(this));
+      input.addEventListener("input", this.calculateCalories.bind(this));
     }
   }
 
@@ -154,18 +157,27 @@ class CreateIngredientModal extends HTMLElement {
   async createIngredient() {
     const requestBody = this.getFormData();
     const response = await sendRequest("POST", `${HOST}/api/ingredients/`, requestBody);
+
+    /**
+     * Either a successfully created ingredient, or an error message.
+     * @type {Ingredient | string}
+     */
     const data = await response.json();
 
     if (!response.ok) {
       const alert = createAlert("Could not create new exercise!", data);
       document.body.prepend(alert);
-    }
-    else{
+    } else {
       this.dispatchEvent(
         new CustomEvent("ingredientCreated", {
           detail: data,
         })
       );
+
+      // Clear form after submitting.
+      const form = this.querySelector("#ingredient-form");
+      form.reset();
+      this.calculateCalories();
     }
   }
 

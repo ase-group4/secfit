@@ -6,13 +6,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.db.models import Q
-from rest_framework import filters, pagination
+from rest_framework import filters
 from meals.parsers import MultipartJsonParser
 from meals.permissions import IsOwner, IsOwnerOfMeal
 from meals.mixins import CreateListModelMixin
 from meals.models import Meal, Ingredient, MealFile
 from meals.serializers import IngredientSerializer, MealSerializer
 from meals.serializers import MealFileSerializer
+from utils.pagination import ExpandedPagination
 
 
 @api_view(["GET"])
@@ -24,15 +25,6 @@ def api_root(request, format=None):
             "meal-files": reverse("meal-file-list", request=request, format=format),
         }
     )
-
-
-class ExpandedPagination(pagination.PageNumberPagination):
-    """
-    Utility class to expand the pagination size for a specific view.
-    Use by adding `pagination_class = ExpandedPagination` to the view.
-    """
-
-    page_size = 1000  # Default size without this class: 10
 
 
 class MealList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):

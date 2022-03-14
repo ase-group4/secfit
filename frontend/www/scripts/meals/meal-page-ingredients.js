@@ -5,25 +5,9 @@ import {
   updateNutritionTotals,
 } from "./ingredient-utils.js";
 
-//@ts-check
-
-// Type definitions for JSDoc documentation.
-/**
- * @typedef {{
- *  id: number,
- *  name: string,
- *  publisher_name: string,
- *  calories: number,
- *  protein: number,
- *  fat: number,
- *  carbohydrates: number,
- * }} Ingredient An entry from SecFit's ingredient database.
- *
- * @typedef {{
- *  ingredient: Ingredient,
- *  weight: number,
- * }} IngredientInMeal An ingredient in a meal, with weight.
- */
+// JSDoc type imports.
+/** @typedef {import("./types.js").Ingredient} Ingredient */
+/** @typedef {import("./types.js").IngredientInMeal} IngredientInMeal */
 
 /**
  * Global map of all ingredients fetched from the API.
@@ -74,7 +58,7 @@ export function getIngredientsInMeal() {
 
   for (const ingredientForm of document.querySelectorAll(".meal-ingredient-input-form")) {
     const ingredientFormData = getIngredientFormData(ingredientForm, allIngredients);
-    if (ingredientFormData.ingredient === undefined || ingredientFormData.weight === 0) {
+    if (ingredientFormData.ingredient === undefined) {
       continue;
     }
 
@@ -93,7 +77,6 @@ export function getIngredientsInMeal() {
  * sets the input's values to the given ingredient, and returns inputs to disable.
  *
  * @param {IngredientInMeal} [ingredientInMeal]
- *
  * @returns {HTMLInputElement[] | undefined} Buttons to disable, if `ingredientInMeal` was provided.
  */
 export function addIngredientInput(ingredientInMeal) {
