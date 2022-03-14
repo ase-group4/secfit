@@ -1,9 +1,20 @@
 import { fetchIngredients } from "./ingredient-utils.js";
-import { Ingredient } from "./types.js";
+
+// JSDoc type imports.
+/** @typedef {import("./types.js").Ingredient} Ingredient */
+/** @typedef {import("./types.js").IngredientInMeal} IngredientInMeal */
 
 // When the DOM loads, populates the ingredient overview and listens for new ingredients.
 window.addEventListener("DOMContentLoaded", async () => {
-  const ingredients = await fetchIngredients();
+  /**
+   * List of ingredients in the ingredients overview.
+   * Updates on fetch from API and ingredient creation.
+   *
+   * @type {Ingredient[]}
+   */
+  let ingredients = [];
+
+  ingredients = await fetchIngredients();
 
   let searchText = "";
   const ingredientSearch = document.querySelector("#ingredient-search-field");
@@ -18,7 +29,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   const addIngredientModal = document.querySelector("create-ingredient-modal");
   addIngredientModal.addEventListener("ingredientCreated", (event) => {
-    updateIngredientList([...(ingredients ?? []), event.detail], searchText);
+    ingredients.push(event.detail);
+    updateIngredientList(ingredients, searchText);
   });
 });
 

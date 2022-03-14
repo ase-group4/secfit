@@ -1,4 +1,6 @@
-import { Ingredient, IngredientInMeal } from "./types.js";
+// JSDoc type imports.
+/** @typedef {import("./types.js").Ingredient} Ingredient */
+/** @typedef {import("./types.js").IngredientInMeal} IngredientInMeal */
 
 /**
  * Sends an API request to get all ingredients, and returns them.

@@ -1,4 +1,5 @@
-import { Ingredient } from "./types.js";
+// JSDoc type imports.
+/** @typedef {import("./types.js").Ingredient} Ingredient */
 
 /**
  * Provides a custom component called `create-ingredient-modal`

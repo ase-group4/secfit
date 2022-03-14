@@ -4,7 +4,10 @@ import {
   createIngredientOption,
   updateNutritionTotals,
 } from "./ingredient-utils.js";
-import { Ingredient, IngredientInMeal } from "./types.js";
+
+// JSDoc type imports.
+/** @typedef {import("./types.js").Ingredient} Ingredient */
+/** @typedef {import("./types.js").IngredientInMeal} IngredientInMeal */
 
 /**
  * Global map of all ingredients fetched from the API.
