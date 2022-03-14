@@ -2,6 +2,15 @@
 
 SecFit (Secure Fitness) is a hybrid mobile application for fitness logging.
 
+## Deployment
+
+The application is deployed as two applications on Heroku: one for the frontend, and one for the backend. Their links are as follows:
+
+- Frontend: https://ase-group4-secfit-frontend.herokuapp.com/
+- Backend: https://ase-group4-secfit-backend.herokuapp.com/
+
+The application is configured to deploy automatically on pushes to the `main` branch, using GitHub Actions as specified in `.github/workflows`.
+
 ## Running with Docker
 
 1. **Install prerequisites**
@@ -40,7 +49,7 @@ This hosts the application on http://localhost:8080.
 - **package.json** - Node.js dependencies for Cordova
 - **backend/** django project folder containing the project modules
   - **[app_name]/** - generic structure of a django application
-    - **admin.py** - file contaning definitions to connect models to the django admin panel
+    - **admin.py** - file containing definitions to connect models to the django admin panel
     - **urls.py** - contains mapping between urls and views
     - **models.py** - contains data models
     - **permissions.py** - contains custom permissions that govern access
@@ -56,6 +65,7 @@ This hosts the application on http://localhost:8080.
   - **secfit/** - The projects main module containing project-level settings.
   - **users/** - application handling users and requests
   - **workouts/** - application handling exercises and workouts
+  - **meals/** - application handling meals and ingredients
   - **manage.py** - entry point for running the project.
   - **seed.json** - contains seed data for the project to get it up and running quickly
 
