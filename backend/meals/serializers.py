@@ -1,6 +1,6 @@
 """Serializers for the meals application."""
 from rest_framework import serializers
-from rest_framework.serializers import HyperlinkedRelatedField
+from rest_framework.serializers import HyperlinkedRelatedField, ValidationError
 from meals.models import Ingredient, IngredientInMeal, Meal, MealFile
 
 
@@ -111,6 +111,19 @@ class MealSerializer(serializers.ModelSerializer):
             "ingredient_weights",
         ]
         extra_kwargs = {"owner": {"read_only": True}}
+
+    def validate_ingredient_weights(self, value):
+        if type(value) != list:
+            raise ValidationError("meal must have list of ingredients")
+
+        if len(value) == 0:
+            raise ValidationError("meal must contain at least 1 ingredient")
+
+        for ingredient in value:
+            if ingredient.get("weight") is None or ingredient.get("weight") == 0:
+                raise ValidationError("ingredient in meal must have weight")
+
+        return value
 
     def create(self, validated_data):
         """Custom logic for creating MealFiles, and a Meal.
