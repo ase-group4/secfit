@@ -4,10 +4,10 @@ import { fetchIngredients } from "./ingredient-utils.js";
 window.addEventListener("DOMContentLoaded", async () => {
   const ingredients = await fetchIngredients();
 
-  let searchText=""
+  let searchText = "";
   const ingredientSearch = document.querySelector("#ingredient-search-field");
   ingredientSearch.addEventListener("input", (event) => {
-    searchText = event.target.value
+    searchText = event.target.value;
     filterSearchResults(event.target.value);
   });
 
@@ -34,7 +34,7 @@ window.addEventListener("DOMContentLoaded", async () => {
  *  carbohydrates: number,
  * }} ingredients
  */
-function updateIngredientList(ingredients, searchText="") {
+function updateIngredientList(ingredients, searchText = "") {
   // Clears out any existing ingredient elements.
   const container = document.querySelector("#div-content");
   while (container.firstChild) {
@@ -43,7 +43,7 @@ function updateIngredientList(ingredients, searchText="") {
 
   const ingredientTemplate = document.querySelector("#template-ingredient");
 
-  ingredients.sort(sortByName)
+  ingredients.sort(sortByName);
 
   for (const ingredient of ingredients) {
     const ingredientElement = ingredientTemplate.content.firstElementChild.cloneNode(true);
@@ -61,7 +61,7 @@ function updateIngredientList(ingredients, searchText="") {
     tableRows[3].querySelectorAll("td")[1].textContent = `${ingredient.protein} g`;
 
     container.appendChild(ingredientElement);
-  
+
     if (!ingredient.name.toLowerCase().includes(searchText.toLowerCase())) {
       ingredientElement.classList.add("hide");
     }
@@ -71,11 +71,11 @@ function updateIngredientList(ingredients, searchText="") {
 /**
  * Sort function to sort objects (ingredients) by name
  */
-function sortByName( a, b ) {
-  if ( a.name < b.name ){
+function sortByName(a, b) {
+  if (a.name < b.name) {
     return -1;
   }
-  if ( a.name > b.name ){
+  if (a.name > b.name) {
     return 1;
   }
   return 0;
