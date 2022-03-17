@@ -157,19 +157,20 @@ describe('Workouts visibility', () => {
             goToWorkout(workout_CO)
             testCanViewDetails(workout_CO, "CO")
         })
-        //This test is commented out, as it should pass, but due to pre-existing bugs it does not, and the task does not ask us to fix bugs we find in the original code.
-//        it('may not see their athletes private visibility excercise', () => {
-//            login(athlete, athlete_password)
-//            goToWorkout(workout_PR)
-//            cy.url().as('workoutUrl');
-//            login(coach, coach_password)
-//            cy.get('@workoutUrl').then(url => {
-//                cy.window().then(win => {
-//                    return win.open(url, '_self');
-//                  });
-//            })
-//            testCanNotViewDetails()
-//        })
+        /*This test is commented out, as it should pass, but due to pre-existing bugs it does not, and the task does not ask us to fix bugs we find in the original code.
+
+        it('may not see their athletes private visibility excercise', () => {
+            login(athlete, athlete_password)
+            goToWorkout(workout_PR)
+            cy.url().as('workoutUrl');
+            login(coach, coach_password)
+            cy.get('@workoutUrl').then(url => {
+                cy.window().then(win => {
+                    return win.open(url, '_self');
+                  });
+            })
+            testCanNotViewDetails()
+        })*/
     })
 
     describe('User', function () {
