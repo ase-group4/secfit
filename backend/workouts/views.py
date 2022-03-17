@@ -134,7 +134,9 @@ class WorkoutList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Gener
             # - The owner of the workout is the requesting user
             # - The workout has coach visibility and the requesting user is the owner's coach
             qs = Workout.objects.filter(
-                Q(visibility="PU") | (Q(visibility="CO") & Q(owner__coach=self.request.user))
+                Q(visibility="PU")
+                | Q(owner=self.request.user)
+                | (Q(visibility="CO") & Q(owner__coach=self.request.user))
             ).distinct()
 
         return qs
