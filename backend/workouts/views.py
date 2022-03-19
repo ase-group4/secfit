@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from django.db.models import Q
 from rest_framework import filters
+from utils.pagination import ExpandedPagination
 from workouts.parsers import MultipartJsonParser
 from workouts.permissions import (
     IsOwner,
@@ -123,6 +124,7 @@ class WorkoutList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Gener
     ]  # For parsing JSON and Multi-part requests
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ["name", "date", "owner__username"]
+    pagination_class = ExpandedPagination
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -188,6 +190,7 @@ class ExerciseList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Gene
     queryset = Exercise.objects.all()
     serializer_class = ExerciseSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = ExpandedPagination
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
