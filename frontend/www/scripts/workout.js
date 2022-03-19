@@ -227,8 +227,10 @@ async function createBlankExercise() {
         exerciseTypeSelect.append(option);
     }
 
-    let currentExerciseType = exerciseTypes.results[0];
-    exerciseTypeSelect.value = currentExerciseType.name;
+    if (exerciseTypes.results.length > 0) {
+        const currentExerciseType = exerciseTypes.results[0];
+        exerciseTypeSelect.value = currentExerciseType.name;
+    }
     
     let divExercises = document.querySelector("#div-exercises");
     divExercises.appendChild(divExerciseContainer);
