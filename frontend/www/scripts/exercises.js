@@ -79,7 +79,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     let searchInput = document.querySelector("[data-search]")
     let searchValue = ""
-    let categoryFilter = ""
+    let categoryFilter = "all"
 
     searchInput.addEventListener("input", e =>{
         searchValue = e.target.value
