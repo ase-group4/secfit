@@ -3,294 +3,281 @@
 import Chance from "chance";
 const chance = new Chance();
 
+const valid_user_data = {
+  email: chance.email(),
+  password: "password",
+  password1: "password",
+  phone: "12345678",
+  country: "Norway",
+  city: "Trondheim",
+  address: "Kongens gate 1",
+};
+
+/** Helper function that returns a username. */
+function generateUsername() {
+  return chance.first() + chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-");
+}
+
 describe("Register page boundary tests", () => {
-  beforeEach(() => {
-    cy.visit("../../www/register.html");
-  });
   describe("username ", () => {
     it("may not be blank", () => {
-      //inputs password, so 'may not be blank alert for password is not shown
-      let password = chance.string({ length: 10, pool: "abcd" });
-      cy.get('input[name="password"]').type(password);
-      cy.get('input[name="password1"]').type(password);
+      // inputs password, so 'may not be blank' alert for password is not shown
+      let user = { ...valid_user_data };
+      cy.addUser("", user);
+      cy.get(".alert").should("be.visible");
+      cy.get(".alert").contains("Registration failed!");
+      cy.get(".alert")
+        .contains("username")
+        .then((textAlert) => {
+          cy.expect(textAlert[0].outerText).to.equal("username\nThis field may not be blank.");
+        });
+      cy.get(".btn-close").click();
+    });
 
-      cy.get("#btn-create-account").click();
+    it("may not be 151 characters", () => {
+      let user = { ...valid_user_data };
+      cy.addUser(chance.string({ length: 151, pool: "abcd" }), user);
       cy.get(".alert").should("be.visible");
-      cy.get(".alert").contains("username");
-      cy.get(".alert").contains("This field may not be blank.");
+      cy.get(".alert").contains("Registration failed!");
+      cy.get(".alert")
+        .contains("username")
+        .then((textAlert) => {
+          cy.expect(textAlert[0].outerText).to.equal(
+            "username\nEnsure this field has no more than 150 characters."
+          );
+        });
       cy.get(".btn-close").click();
     });
-    it("must be no more than 150 characters", () => {
-      cy.get('input[name="username"]').type(chance.string({ length: 151, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
-      cy.get(".alert").should("be.visible");
-      cy.get(".alert").contains("username");
-      cy.get(".alert").contains("Ensure this field has no more than 150 characters.");
-      cy.get(".btn-close").click();
-    });
+
     it("may be 1 character", () => {
-      cy.get('input[name="username"]').type(chance.letter());
-      cy.get("#btn-create-account").click();
-      cy.get(".alert").contains("username").should("not.exist");
-      cy.get(".btn-close").click();
+      const username = chance.string({ length: 1, pool: "abcdefghijklmnopqrstuvwxyzæøå" });
+      let user = { ...valid_user_data };
+      cy.addUser(username, user);
+      cy.url().should("include", "/workouts.html");
     });
+
     it("may be 150 characters", () => {
-      cy.get('input[name="username"]').type(chance.string({ length: 150, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
-      cy.get(".alert").contains("username").should("not.exist");
-      cy.get(".btn-close").click();
-    });
-    it("may be authenticated", () => {
-      let password = chance.string({ length: 10, pool: "abcd" });
-      cy.get('input[name="username"]').type(
-        chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-")
-      );
-      cy.get('input[name="password"]').type(password);
-      cy.get('input[name="password1"]').type(password);
-      cy.get("#btn-create-account").click();
+      const username = chance.string({ length: 150, pool: "abcdefghijklmnopqrstuvwxyzæøå" });
+      let user = { ...valid_user_data };
+      cy.addUser(username, user);
       cy.url().should("include", "/workouts.html");
     });
   });
 
   describe("email", () => {
     it("may be blank", () => {
-      cy.get("#btn-create-account").click();
-      cy.get(".alert").contains("email").should("not.exist");
-      cy.get(".btn-close").click();
+      let user = { ...valid_user_data };
+      user["email"] = "";
+      cy.addUser(generateUsername(), user);
+      cy.url().should("include", "/workouts.html");
     });
-    it("must be valid", () => {
-      cy.get('input[name="email"]').type(chance.string({ length: 5, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
+
+    it("may not be invalid", () => {
+      let user = { ...valid_user_data };
+      user["email"] = chance.string({ length: 5, pool: "abcd" });
+      cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
-      cy.get(".alert").contains("email");
-      cy.get(".alert").contains("Enter a valid email address.");
+      cy.get(".alert").contains("Registration failed!");
+      cy.get(".alert")
+        .contains("email")
+        .then((textAlert) => {
+          cy.expect(textAlert[0].outerText).to.equal("Enter a valid email address.");
+        });
       cy.get(".btn-close").click();
     });
-    it("must be no more than 254 characters", () => {
-      cy.get('input[name="email"]').type(
-        chance.string({ length: 6, pool: "abcd" }) +
-          "@" +
-          chance.string({ length: 245, pool: "abcd" }) +
-          ".no"
-      );
-      cy.get("#btn-create-account").click();
+
+    it("may not be 255 characters", () => {
+      let user = { ...valid_user_data };
+      user["email"] = chance.string({ length: 245, pool: "abcd" }) + "@gmail.com";
+      cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
-      cy.get(".alert").contains("email");
-      cy.get(".alert").contains("Ensure this field has no more than 254 characters.");
+      cy.get(".alert").contains("Registration failed!");
+      cy.get(".alert")
+        .contains("email")
+        .then((textAlert) => {
+          cy.expect(textAlert[0].outerText).to.equal(
+            "email\nEnsure this field has no more than 254 characters."
+          );
+        });
       cy.get(".btn-close").click();
     });
-    it("may be authenticated", () => {
-      let password = chance.string({ length: 10, pool: "abcd" });
-      cy.get('input[name="username"]').type(
-        chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-")
-      );
-      cy.get('input[name="email"]').type(chance.email());
-      cy.get('input[name="password"]').type(password);
-      cy.get('input[name="password1"]').type(password);
-      cy.get("#btn-create-account").click();
+
+    it("may be 254 characters", () => {
+      let user = { ...valid_user_data };
+      user["email"] = chance.string({ length: 244, pool: "abcd" }) + "@gmail.com";
+      cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
     });
   });
 
-  describe("passwords", () => {
-    it("password may not be blank", () => {
-      cy.get('input[name="username"]').type(
-        chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-")
-      );
-      cy.get('input[name="password1"]').type(chance.string({ length: 10, pool: "abcd" }));
-
-      cy.get("#btn-create-account").click();
+  describe("password", () => {
+    it("may not be blank", () => {
+      let user = { ...valid_user_data };
+      user["password"] = "";
+      cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
-      cy.get(".alert").contains("password");
-      cy.get(".alert").contains("This field may not be blank.");
+      cy.get(".alert").contains("Registration failed!");
+      cy.get(".alert")
+        .contains("password")
+        .then((textAlert) => {
+          cy.expect(textAlert[0].outerText).to.equal("password\nThis field may not be blank.");
+        });
       cy.get(".btn-close").click();
     });
-    it("password1 may not be blank", () => {
-      cy.get('input[name="username"]').type(
-        chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-")
-      );
-      cy.get('input[name="password"]').type(chance.string({ length: 10, pool: "abcd" }));
-
-      cy.get("#btn-create-account").click();
-      cy.get(".alert").should("be.visible");
-      cy.get(".alert").contains("password1");
-      cy.get(".alert").contains("This field may not be blank.");
-      cy.get(".btn-close").click();
-    });
-
-    it("may be 1 character", () => {
-      cy.get('input[name="password"]').type(chance.string({ length: 1, pool: "abcd" }));
-      cy.get('input[name="password1"]').type(chance.string({ length: 1, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
-      cy.get(".alert").should("not.contain", "password");
-      cy.get(".alert").should("not.contain", "password1");
-      cy.get(".btn-close").click();
-    });
-
-    // This is a weird one
-    it("may be different", () => {
-      cy.get('input[name="username"]').type(
-        chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-")
-      );
-      cy.get('input[name="password"]').type(chance.string({ length: 10, pool: "abcd" }));
-      cy.get('input[name="password1"]').type(chance.string({ length: 10, pool: "efgh" }));
-      cy.get("#btn-create-account").click();
+    it("may be one character", () => {
+      let user = { ...valid_user_data };
+      user["password"] = "a";
+      cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
     });
+  });
 
-    it("may be authenticated", () => {
-      let password = chance.string({ length: 10, pool: "abcd" });
-      cy.get('input[name="username"]').type(
-        chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-")
-      );
-      cy.get('input[name="password"]').type(password);
-      cy.get('input[name="password1"]').type(password);
-      cy.get("#btn-create-account").click();
-      cy.get("#btn-create-account").click();
+  describe("password1", () => {
+    it("may not be blank", () => {
+      let user = { ...valid_user_data };
+      user["password1"] = "";
+      cy.addUser(generateUsername(), user);
+      cy.get(".alert").should("be.visible");
+      cy.get(".alert").contains("Registration failed!");
+      cy.get(".alert")
+        .contains("password1")
+        .then((textAlert) => {
+          cy.expect(textAlert[0].outerText).to.equal("password1\nThis field may not be blank.");
+        });
+      cy.get(".btn-close").click();
+    });
+    it("may be one character", () => {
+      let user = { ...valid_user_data };
+      user["password1"] = "a";
+      cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
     });
   });
 
   describe("phone number", () => {
     it("may be blank", () => {
-      cy.get("#btn-create-account").click();
-      cy.get(".alert").should("not.contain", "phone_number");
-      cy.get(".btn-close").click();
+      let user = { ...valid_user_data };
+      user["phone"] = "";
+      cy.addUser(generateUsername(), user);
+      cy.url().should("include", "/workouts.html");
     });
 
-    it("must be no more than 50 characters", () => {
-      cy.get('input[name="phone_number"]').type(chance.string({ length: 51, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
+    it("may not be 51 characters", () => {
+      let user = { ...valid_user_data };
+      user["phone"] = chance.string({ length: 51, pool: "abcd" });
+      cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
-      cy.get(".alert").contains("phone_number");
-      cy.get(".alert").contains("Ensure this field has no more than 50 characters.");
+      cy.get(".alert").contains("Registration failed!");
+      cy.get(".alert")
+        .contains("phone_number")
+        .then((textAlert) => {
+          cy.expect(textAlert[0].outerText).to.equal(
+            "phone_number\nEnsure this field has no more than 50 characters."
+          );
+        });
       cy.get(".btn-close").click();
     });
 
-    it("may be 50 characters", () => {
-      cy.get('input[name="phone_number"]').type(chance.string({ length: 50, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
-      cy.get(".alert").should("not.contain", "phone_number");
-      cy.get(".btn-close").click();
-    });
-
-    it("may be authenticated", () => {
-      let password = chance.string({ length: 10, pool: "abcd" });
-      cy.get('input[name="username"]').type(
-        chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-")
-      );
-      cy.get('input[name="password"]').type(password);
-      cy.get('input[name="password1"]').type(password);
-      cy.get('input[name="phone_number"]').type(chance.string({ length: 10, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
+    it("may be 50 charcters", () => {
+      let user = { ...valid_user_data };
+      user["phone"] = chance.string({ length: 50, pool: "123456789" });
+      cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
     });
   });
 
   describe("country", () => {
     it("may be blank", () => {
-      cy.get("#btn-create-account").click();
-      cy.get(".alert").should("not.contain", "country");
-      cy.get(".btn-close").click();
+      let user = { ...valid_user_data };
+      user["country"] = "";
+      cy.addUser(generateUsername(), user);
+      cy.url().should("include", "/workouts.html");
     });
 
-    it("must be no more than 50 characters", () => {
-      cy.get('input[name="country"]').type(chance.string({ length: 51, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
+    it("may not be 51 characters", () => {
+      let user = { ...valid_user_data };
+      user["country"] = chance.string({ length: 51, pool: "abcd" });
+      cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
-      cy.get(".alert").contains("country");
-      cy.get(".alert").contains("Ensure this field has no more than 50 characters.");
+      cy.get(".alert").contains("Registration failed!");
+      cy.get(".alert")
+        .contains("country")
+        .then((textAlert) => {
+          cy.expect(textAlert[0].outerText).to.equal(
+            "country\nEnsure this field has no more than 50 characters."
+          );
+        });
       cy.get(".btn-close").click();
     });
 
-    it("may be 50 characters", () => {
-      cy.get('input[name="country"]').type(chance.string({ length: 50, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
-      cy.get(".alert").should("not.contain", "country");
-      cy.get(".btn-close").click();
-    });
-
-    it("may be authenticated", () => {
-      let password = chance.string({ length: 10, pool: "abcd" });
-      cy.get('input[name="username"]').type(
-        chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-")
-      );
-      cy.get('input[name="password"]').type(password);
-      cy.get('input[name="password1"]').type(password);
-      cy.get('input[name="country"]').type(chance.string({ length: 10, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
+    it("may be 50 charcters", () => {
+      let user = { ...valid_user_data };
+      user["country"] = chance.string({ length: 50, pool: "abcde" });
+      cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
     });
   });
 
   describe("city", () => {
     it("may be blank", () => {
-      cy.get("#btn-create-account").click();
-      cy.get(".alert").should("not.contain", "city");
-      cy.get(".btn-close").click();
+      let user = { ...valid_user_data };
+      user["city"] = "";
+      cy.addUser(generateUsername(), user);
+      cy.url().should("include", "/workouts.html");
     });
 
-    it("must be no more than 50 characters", () => {
-      cy.get('input[name="city"]').type(chance.string({ length: 51, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
+    it("may not be 51 characters", () => {
+      let user = { ...valid_user_data };
+      user["city"] = chance.string({ length: 51, pool: "abcd" });
+      cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
-      cy.get(".alert").contains("city");
-      cy.get(".alert").contains("Ensure this field has no more than 50 characters.");
+      cy.get(".alert").contains("Registration failed!");
+      cy.get(".alert")
+        .contains("city")
+        .then((textAlert) => {
+          cy.expect(textAlert[0].outerText).to.equal(
+            "city\nEnsure this field has no more than 50 characters."
+          );
+        });
       cy.get(".btn-close").click();
     });
 
-    it("may be 50 characters", () => {
-      cy.get('input[name="city"]').type(chance.string({ length: 50, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
-      cy.get(".alert").should("not.contain", "city");
-      cy.get(".btn-close").click();
-    });
-
-    it("may be authenticated", () => {
-      let password = chance.string({ length: 10, pool: "abcd" });
-      cy.get('input[name="username"]').type(
-        chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-")
-      );
-      cy.get('input[name="password"]').type(password);
-      cy.get('input[name="password1"]').type(password);
-      cy.get('input[name="city"]').type(chance.string({ length: 10, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
+    it("may be 50 charcters", () => {
+      let user = { ...valid_user_data };
+      user["city"] = chance.string({ length: 50, pool: "abcde" });
+      cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
     });
   });
 
   describe("street address", () => {
     it("may be blank", () => {
-      cy.get("#btn-create-account").click();
-      cy.get(".alert").should("not.contain", "street_address");
-      cy.get(".btn-close").click();
+      let user = { ...valid_user_data };
+      user["address"] = "";
+      cy.addUser(generateUsername(), user);
+      cy.url().should("include", "/workouts.html");
     });
 
-    it("must be no more than 50 characters", () => {
-      cy.get('input[name="street_address"]').type(chance.string({ length: 51, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
+    it("may not be 51 characters", () => {
+      let user = { ...valid_user_data };
+      user["address"] = chance.string({ length: 51, pool: "abcd" });
+      cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
-      cy.get(".alert").contains("street_address");
-      cy.get(".alert").contains("Ensure this field has no more than 50 characters.");
+      cy.get(".alert").contains("Registration failed!");
+      cy.get(".alert")
+        .contains("street_address")
+        .then((textAlert) => {
+          cy.expect(textAlert[0].outerText).to.equal(
+            "street_address\nEnsure this field has no more than 50 characters."
+          );
+        });
       cy.get(".btn-close").click();
     });
 
-    it("may be 50 characters", () => {
-      cy.get('input[name="street_address"]').type(chance.string({ length: 50, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
-      cy.get(".alert").should("not.contain", "street_address");
-      cy.get(".btn-close").click();
-    });
-
-    it("may be authenticated", () => {
-      let password = chance.string({ length: 10, pool: "abcd" });
-      cy.get('input[name="username"]').type(
-        chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-")
-      );
-      cy.get('input[name="password"]').type(password);
-      cy.get('input[name="password1"]').type(password);
-      cy.get('input[name="street_address"]').type(chance.string({ length: 10, pool: "abcd" }));
-      cy.get("#btn-create-account").click();
+    it("may be 50 charcters", () => {
+      let user = { ...valid_user_data };
+      user["address"] = chance.string({ length: 50, pool: "abcde" });
+      cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
     });
   });
