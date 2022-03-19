@@ -62,12 +62,12 @@ const combinations = {
  * The function uses values from the defined lists for each input field.
  */
 function inputRegister(combination) {
-    let username = ''
-    if (combination[0] == 0) {
-        username = chance.first() + chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-");
-    } else {
-        username = usernames[combination[0]];
-    }
+  let username = "";
+  if (combination[0] == 0) {
+    username = chance.first() + chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-");
+  } else {
+    username = usernames[combination[0]];
+  }
 
   const userdata = {
     email: emails[combination[1]],
@@ -76,13 +76,12 @@ function inputRegister(combination) {
     phone: phones[combination[4]],
     country: countries[combination[5]],
     city: cities[combination[6]],
-    address: addresses[combination[7]]
-  }
-  cy.addUser(username, userdata)
+    address: addresses[combination[7]],
+  };
+  cy.addUser(username, userdata);
 }
 
 describe("Register page 2-way domain tests", () => {
-
   /** Function that tests that the expected values are in the alert after a registration has failed. */
   function testRegisterFail(value) {
     cy.wait(500);

@@ -2,14 +2,14 @@ import "cypress-file-upload";
 import Chance from "chance";
 const chance = new Chance();
 
-const valid_exercise={name: "Workout",
-                date: '2017-04-30T13:00:00',
-                unit: '2017-04-30T13:00:00',
-                notes: "This is a note.",
-                visibility:"PU",
-                files: 'images/bugs.jpg'
-}
-
+const valid_exercise = {
+  name: "Workout",
+  date: "2017-04-30T13:00:00",
+  unit: "2017-04-30T13:00:00",
+  notes: "This is a note.",
+  visibility: "PU",
+  files: "images/bugs.jpg",
+};
 
 describe("Workouts visibility", () => {
   const user = chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-");
@@ -21,17 +21,17 @@ describe("Workouts visibility", () => {
   const athlete_password = chance.string({ length: 10, pool: "abcd" });
   const athlete = chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-");
 
-  let workout_PU = {...valid_exercise};
-  workout_PU["name"]= "Workout-PU-" + athlete;
-  workout_PU["visibility"]= "PU";
+  let workout_PU = { ...valid_exercise };
+  workout_PU["name"] = "Workout-PU-" + athlete;
+  workout_PU["visibility"] = "PU";
 
-  let workout_PR = {...valid_exercise};
-  workout_PR["name"]= "Workout-PR-" + athlete;
-  workout_PR["visibility"]= "PR";
+  let workout_PR = { ...valid_exercise };
+  workout_PR["name"] = "Workout-PR-" + athlete;
+  workout_PR["visibility"] = "PR";
 
-  let workout_CO = {...valid_exercise};
-  workout_CO["name"]= "Workout-CO-" + athlete;
-  workout_CO["visibility"]= "CO";
+  let workout_CO = { ...valid_exercise };
+  workout_CO["name"] = "Workout-CO-" + athlete;
+  workout_CO["visibility"] = "CO";
 
   function testCanNotViewDetails() {
     cy.get(".alert").should("be.visible");
@@ -67,11 +67,11 @@ describe("Workouts visibility", () => {
 
     cy.addSimpleUser(athlete, athlete_password);
 
-    cy.login(athlete, athlete_password)
+    cy.login(athlete, athlete_password);
     cy.addCoach(coach);
     cy.wait(1000);
 
-    cy.login(athlete, athlete_password)
+    cy.login(athlete, athlete_password);
     cy.addWorkout(workout_PU);
     cy.addWorkout(workout_PR);
     cy.addWorkout(workout_CO);
