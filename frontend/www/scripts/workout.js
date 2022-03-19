@@ -220,10 +220,10 @@ async function createBlankExercise() {
     let divExerciseContainer = exerciseTemplate.content.firstElementChild.cloneNode(true);
     let exerciseTypeSelect = divExerciseContainer.querySelector("select");
     
-    for (let i = 0; i < exerciseTypes.count; i++) {
-        let option = document.createElement("option");
-        option.value = exerciseTypes.results[i].id;
-        option.innerText = exerciseTypes.results[i].name;
+    for (const result of exerciseTypes.results) {
+        const option = document.createElement("option");
+        option.value = result.id;
+        option.innerText = result.name;
         exerciseTypeSelect.append(option);
     }
 
