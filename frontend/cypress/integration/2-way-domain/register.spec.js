@@ -62,48 +62,26 @@ const combinations = {
  * The function uses values from the defined lists for each input field.
  */
 function inputRegister(combination) {
-  const username = combination[0];
-  const email = combination[1];
-  const password = combination[2];
-  const password1 = combination[3];
-  const phone = combination[4];
-  const country = combination[5];
-  const city = combination[6];
-  const address = combination[7];
-
-  if (username == 0) {
-    cy.get('input[name="username"]').type(getAUsername());
-  } else {
-    if (usernames[username].length > 0) {
-      cy.get('input[name="username"]').type(usernames[username]);
+    let username = ''
+    if (combination[0] == 0) {
+        username = chance.first() + chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-");
+    } else {
+        username = usernames[combination[0]];
     }
-  }
-  cy.get('input[name="email"]').type(emails[email]);
-  if (passwords[password].length > 0) {
-    cy.get('input[name="password"]').type(passwords[password]);
-  }
-  if (password1s[password1].length > 0) {
-    cy.get('input[name="password1"]').type(password1s[password1]);
-  }
-  cy.get('input[name="phone_number"]').type(phones[phone]);
-  cy.get('input[name="country"]').type(countries[country]);
-  cy.get('input[name="city"]').type(cities[city]);
-  cy.get('input[name="street_address"]').type(addresses[address]);
-  cy.get("#btn-create-account").click();
-}
 
-/** Helper function that returns a username. */
-function getAUsername() {
-  return chance.first() + chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-");
+  const userdata = {
+    email: emails[combination[1]],
+    password: passwords[combination[2]],
+    password1: password1s[combination[3]],
+    phone: phones[combination[4]],
+    country: countries[combination[5]],
+    city: cities[combination[6]],
+    address: addresses[combination[7]]
+  }
+  cy.addUser(username, userdata)
 }
 
 describe("Register page 2-way domain tests", () => {
-  beforeEach(() => {
-    cy.visit("../../www/logout.html");
-    cy.wait(200);
-    cy.visit("../../www/register.html");
-    cy.wait(500);
-  });
 
   /** Function that tests that the expected values are in the alert after a registration has failed. */
   function testRegisterFail(value) {
