@@ -86,23 +86,35 @@ describe("Register page boundary tests", () => {
       cy.get('#list-tab').contains("Strength").click()
       cy.wait(500)
       cy.get("#div-content").contains("Strength-"+ user).should("be.visible")
+      cy.get("#div-content").contains("Balance-"+ user).should("not.be.visible")
+      cy.get("#div-content").contains("Endurance-"+ user).should("not.be.visible")
+      cy.get("#div-content").contains("Flexibility-"+ user).should("not.be.visible")
     });
 
     it("Balance", () => {
       cy.get('#list-tab').contains("Balance").click()
       cy.wait(500)
+      cy.get("#div-content").contains("Strength-"+ user).should("not.be.visible")
       cy.get("#div-content").contains("Balance-"+ user).should("be.visible")
+      cy.get("#div-content").contains("Endurance-"+ user).should("not.be.visible")
+      cy.get("#div-content").contains("Flexibility-"+ user).should("not.be.visible")
     });
 
     it("Endurance", () => {
       cy.get('#list-tab').contains("Endurance").click()
       cy.wait(500)
+      cy.get("#div-content").contains("Strength-"+ user).should("not.be.visible")
+      cy.get("#div-content").contains("Balance-"+ user).should("not.be.visible")
       cy.get("#div-content").contains("Endurance-"+ user).should("be.visible")
+      cy.get("#div-content").contains("Flexibility-"+ user).should("not.be.visible")
     });
 
     it("Flexibility", () => {
       cy.get('#list-tab').contains("Flexibility").click()
       cy.wait(500)
+      cy.get("#div-content").contains("Strength-"+ user).should("not.be.visible")
+      cy.get("#div-content").contains("Balance-"+ user).should("not.be.visible")
+      cy.get("#div-content").contains("Endurance-"+ user).should("not.be.visible")
       cy.get("#div-content").contains("Flexibility-"+ user).should("be.visible")
     });
   });
@@ -124,23 +136,35 @@ describe("Register page boundary tests", () => {
       cy.get('#search-input').type("Strength" + '{enter}')
       cy.wait(500)
       cy.get("#div-content").contains("Strength-"+ user).should("be.visible")
+      cy.get("#div-content").contains("Balance-"+ user).should("not.be.visible")
+      cy.get("#div-content").contains("Endurance-"+ user).should("not.be.visible")
+      cy.get("#div-content").contains("Flexibility-"+ user).should("not.be.visible")
     });
 
     it("Balance", () => {
       cy.get('#search-input').type("Balance")
       cy.wait(500)
+      cy.get("#div-content").contains("Strength-"+ user).should("not.be.visible")
       cy.get("#div-content").contains("Balance-"+ user).should("be.visible")
+      cy.get("#div-content").contains("Endurance-"+ user).should("not.be.visible")
+      cy.get("#div-content").contains("Flexibility-"+ user).should("not.be.visible")
     });
 
     it("Endurance", () => {
       cy.get('#search-input').type("Endurance")
       cy.wait(500)
+      cy.get("#div-content").contains("Strength-"+ user).should("not.be.visible")
+      cy.get("#div-content").contains("Balance-"+ user).should("not.be.visible")
       cy.get("#div-content").contains("Endurance-"+ user).should("be.visible")
+      cy.get("#div-content").contains("Flexibility-"+ user).should("not.be.visible")
     });
 
     it("Flexibility", () => {
       cy.wait(500)
       cy.get('#search-input').type("Flexibility")
+      cy.get("#div-content").contains("Strength-"+ user).should("not.be.visible")
+      cy.get("#div-content").contains("Balance-"+ user).should("not.be.visible")
+      cy.get("#div-content").contains("Endurance-"+ user).should("not.be.visible")
       cy.get("#div-content").contains("Flexibility-"+ user).should("be.visible")
     });
   });
