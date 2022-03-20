@@ -7,14 +7,7 @@ class AllUsageDataFlow extends DataFlow::Configuration {
     source instanceof DataFlow::SsaDefinitionNode
   }
 
-  override predicate isSink(DataFlow::Node sink) {
-    not sink instanceof DataFlow::SsaDefinitionNode
-    // (
-    //   sink instanceof DataFlow::ExprNode or
-    //   sink instanceof DataFlow::SourceNode or
-    //   sink.asExpr() instanceof AssignExpr
-    // )
-  }
+  override predicate isSink(DataFlow::Node sink) { not sink instanceof DataFlow::SsaDefinitionNode }
 }
 
 from Function func, AllUsageDataFlow flow, DataFlow::PathNode source, DataFlow::PathNode sink
