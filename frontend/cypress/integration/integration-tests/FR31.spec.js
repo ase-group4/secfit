@@ -20,14 +20,13 @@ describe("Integration tests", () => {
   describe("FR32:The user should be able to search through users and get a list of users matching the input in the search field", () => {
     /*
     Checks that the users are in the userlist, and the userlist is given as list in the inputfield.
-    This automatically gives search functionality in the input field.
+    The <datalist> tag provides an "autocomplete" feature for <input> elements, which equals search functionallity.
     */
     it("coaches ares member of datalist for input element", () => {
       cy.login(user1, user1_password);
       cy.visit("../../www/mycoach.html");
       cy.wait(500);
       cy.get('input[name="coach"]').should("have.attr", "list", "userlist");
-      //cy.get("#userlist").contains(`option[value=${coach}]`);
       cy.get("#userlist").within(() => {
         cy.get(`option[value=${user1}]`).should("not.exist");
         cy.get(`option[value=${user2}]`);
@@ -40,7 +39,6 @@ describe("Integration tests", () => {
       cy.visit("../../www/myathletes.html");
       cy.wait(500);
       cy.get('input[name="athlete"]').should("have.attr", "list", "userlist");
-      //cy.get("#userlist").contains(`option[value=${coach}]`);
       cy.get("#userlist").within(() => {
         cy.get(`option[value=${user1}]`);
         cy.get(`option[value=${user2}]`).should("not.exist");
