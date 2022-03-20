@@ -116,6 +116,7 @@ Cypress.Commands.add("addWorkout", (exercisedata) => {
   cy.get('textarea[name="notes"]').type(exercisedata.notes);
   cy.get("#inputVisibility").select(exercisedata.visibility);
   cy.get('input[name="files"]').attachFile(exercisedata.files);
+  cy.get("#btn-remove-exercise").click();
   cy.get("#btn-ok-workout").click();
   cy.wait(1000);
   cy.goToWorkout(exercisedata.name);
