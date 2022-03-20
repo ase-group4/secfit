@@ -2,7 +2,7 @@ import "cypress-file-upload";
 import Chance from "chance";
 const chance = new Chance();
 
-const valid_exercise = {
+const valid_workout = {
   name: "Workout",
   date: "2017-04-30T13:00:00",
   unit: "2017-04-30T13:00:00",
@@ -21,15 +21,15 @@ describe("Workouts visibility", () => {
   const athlete_password = chance.string({ length: 10, pool: "abcd" });
   const athlete = chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-");
 
-  let workout_PU = { ...valid_exercise };
+  let workout_PU = { ...valid_workout };
   workout_PU["name"] = "Workout-PU-" + athlete;
   workout_PU["visibility"] = "PU";
 
-  let workout_PR = { ...valid_exercise };
+  let workout_PR = { ...valid_workout };
   workout_PR["name"] = "Workout-PR-" + athlete;
   workout_PR["visibility"] = "PR";
 
-  let workout_CO = { ...valid_exercise };
+  let workout_CO = { ...valid_workout };
   workout_CO["name"] = "Workout-CO-" + athlete;
   workout_CO["visibility"] = "CO";
 
@@ -78,17 +78,17 @@ describe("Workouts visibility", () => {
   });
 
   describe("Athlete", function () {
-    it("may see their own public visibility excercise", () => {
+    it("may see their own public visibility workout", () => {
       cy.login(athlete, athlete_password);
       cy.goToWorkout(workout_PU.name);
       testCanViewDetails(workout_PU.name, workout_PU.visibility);
     });
-    it("may see their own coach visibility excercise", () => {
+    it("may see their own coach visibility workout", () => {
       cy.login(athlete, athlete_password);
       cy.goToWorkout(workout_CO.name);
       testCanViewDetails(workout_CO.name, "CO");
     });
-    it("may see their own private visibility excercise", () => {
+    it("may see their own private visibility workout", () => {
       cy.login(athlete, athlete_password);
       cy.goToWorkout(workout_PR.name);
       testCanViewDetails(workout_PR.name, workout_PR.visibility);
@@ -96,12 +96,12 @@ describe("Workouts visibility", () => {
   });
 
   describe("Coach", function () {
-    it("may see their athletes public visibility excercise", () => {
+    it("may see their athletes public visibility workout", () => {
       cy.login(coach, coach_password);
       cy.goToWorkout(workout_PU.name);
       testCanViewDetails(workout_PU.name, workout_PU.visibility);
     });
-    it("may see their athletes coach visibility excercise", () => {
+    it("may see their athletes coach visibility workout", () => {
       cy.login(coach, coach_password);
       cy.goToWorkout(workout_CO.name);
       testCanViewDetails(workout_CO.name, workout_CO.visibility);
@@ -125,13 +125,13 @@ describe("Workouts visibility", () => {
   });
 
   describe("User", function () {
-    it("may see others public visibility excercise", () => {
+    it("may see others public visibility workout", () => {
       cy.login(user, user_password);
       cy.goToWorkout(workout_PU.name);
       testCanViewDetails(workout_PU.name, workout_PU.visibility);
     });
 
-    it("may not see others coach visibility excercise", () => {
+    it("may not see others coach visibility workout", () => {
       cy.on("uncaught:exception", (err, runnable) => {
         expect(err.message).to.include("Cannot read properties of null (reading 'owner')");
         return false;
@@ -149,7 +149,7 @@ describe("Workouts visibility", () => {
       testCanNotViewDetails();
     });
 
-    it("may not see others private visibility excercise", () => {
+    it("may not see others private visibility workout", () => {
       cy.on("uncaught:exception", (err, runnable) => {
         expect(err.message).to.include("Cannot read properties of null (reading 'owner')");
         return false;
