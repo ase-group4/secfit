@@ -9,6 +9,7 @@ const valid_exercise = {
   unit: 1,
   duration: 1,
   calories: 1,
+  category: "Strength",
 };
 
 describe("Register page boundary tests", () => {
@@ -19,7 +20,6 @@ describe("Register page boundary tests", () => {
     cy.addSimpleUser(user, user_password);
   });
   beforeEach(() => {
-    cy.visit("../../www/register.html");
     cy.login(user, user_password);
   });
 
