@@ -83,11 +83,11 @@ Cypress.Commands.add("goToWorkout", (name) => {
 });
 
 Cypress.Commands.add("goToExercise", (name) => {
-    cy.visit("../../www/exercises.html");
-    cy.wait(500);
-    cy.contains(name).click();
-    cy.wait(500);
-  });
+  cy.visit("../../www/exercises.html");
+  cy.wait(500);
+  cy.contains(name).click();
+  cy.wait(500);
+});
 
 Cypress.Commands.add("addComment", () => {
   cy.get("#comment-area").type("This is a comment.");
@@ -135,6 +135,6 @@ Cypress.Commands.add("createExercise", (exercisedata) => {
   if (exercisedata.calories) {
     cy.get('input[name="calories"]').type(exercisedata.calories);
   }
-  cy.get('select[name="category"]').select(exercisedata.category)
+  cy.get('select[name="category"]').select(exercisedata.category);
   cy.get("#btn-ok-exercise").click();
 });

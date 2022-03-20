@@ -73,26 +73,25 @@ function createExercise() {
 window.addEventListener("DOMContentLoaded", async () => {
     let createButton = document.querySelector("#btn-create-exercise");
     createButton.addEventListener("click", createExercise);
-    getCategories()
+    getCategories();
 
     let exercises = await fetchExerciseTypes();
 
-    let searchInput = document.querySelector("[data-search]")
-    let searchValue = ""
-    let categoryFilter = "all"
+    let searchInput = document.querySelector("[data-search]");
+    let searchValue = "";
+    let categoryFilter = "all";
 
     searchInput.addEventListener("input", e =>{
-        searchValue = e.target.value
-        filterExercises(exercises, searchValue, categoryFilter)
-    })
+        searchValue = e.target.value;
+        filterExercises(exercises, searchValue, categoryFilter);
+    });
 
     let tabEls = document.querySelectorAll('a[data-bs-toggle="list"]');
     for (let i = 0; i < tabEls.length; i++) {
         let tabEl = tabEls[i];
         tabEl.addEventListener('show.bs.tab', function (event) {
-            categoryFilter = event.currentTarget.id.split("-")[1]
-            filterExercises(exercises, searchValue, categoryFilter)
+            categoryFilter = event.currentTarget.id.split("-")[1];
+            filterExercises(exercises, searchValue, categoryFilter);
         });
     }
-    
 });
