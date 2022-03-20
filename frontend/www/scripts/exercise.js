@@ -122,13 +122,13 @@ async function retrieveExercise(id) {
         let alert = createAlert("Could not retrieve exercise data!", data);
         document.body.prepend(alert);
     } else {
-        document.querySelector(`select[name="muscleGroup"]`).removeAttribute("disabled")
+        document.querySelector('select[name="muscleGroup"]').removeAttribute("disabled");
         let exerciseData = await response.json();
         let form = document.querySelector("#form-exercise");
         let formData = new FormData(form);
 
-        const categorySelector = document.querySelector('select[name="category"]')
-        categorySelector.value=exerciseData["category"]
+        const categorySelector = document.querySelector('select[name="category"]');
+        categorySelector.value = exerciseData["category"];
 
         for (let key of formData.keys()) {
             let selector
@@ -137,7 +137,7 @@ async function retrieveExercise(id) {
             let newVal = exerciseData[key];
             input.value = newVal;
         }
-        document.querySelector('select[name="muscleGroup"]').setAttribute("disabled", "")
+        document.querySelector('select[name="muscleGroup"]').setAttribute("disabled", "");
     }
 }
 
@@ -145,8 +145,8 @@ async function updateExercise(id) {
     let form = document.querySelector("#form-exercise");
     let formData = new FormData(form);
 
-    let muscleGroupSelector = document.querySelector('select[name="muscleGroup"]')
-    muscleGroupSelector.removeAttribute("disabled")
+    let muscleGroupSelector = document.querySelector('select[name="muscleGroup"]');
+    muscleGroupSelector.removeAttribute("disabled");
 
     let selectedMuscleGroup = new MuscleGroup(formData.get("muscleGroup"));
 
@@ -192,17 +192,17 @@ async function getCategories() {
         let data = await response.json();
         let alert = createAlert("Could not retrieve category data!", data);
         document.body.prepend(alert);
-        return
+        return;
     } else {
         let categoriesData = await response.json();
         let categoryDrop = document.querySelector('select[name="category"]');
 
-        let output= ""
+        let output= "";
         categoriesData['results'].forEach(category =>{
             output += `<option value=${category.id}>${category.name}</option>`;
         })
-        categoryDrop.innerHTML = output
-        return categoriesData['results']
+        categoryDrop.innerHTML = output;
+        return categoriesData['results'];
     }
 }
 
@@ -215,7 +215,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     
-    categories = await getCategories()
+    categories = await getCategories();
 
     // view/edit
     if (urlParams.has('id')) {
