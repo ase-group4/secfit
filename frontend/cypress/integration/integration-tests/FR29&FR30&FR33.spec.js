@@ -12,7 +12,7 @@ const valid_exercise = {
   category: "Strength"
 };
 
-describe("Register page boundary tests", () => {
+describe("Integration tests", () => {
   const user = chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-");
   const user_password = chance.string({ length: 10, pool: "abcd" });
 
@@ -124,7 +124,7 @@ describe("Register page boundary tests", () => {
       cy.visit("/../../www/exercises.html")      
     })
     it("Username", () => {
-      cy.get('#search-input').type(user + '{enter}')
+      cy.get('#search-input').type(user)
       cy.wait(500)
       cy.get("#div-content").contains("Strength-"+ user).should("be.visible")
       cy.get("#div-content").contains("Balance-"+ user).should("be.visible")
@@ -133,7 +133,7 @@ describe("Register page boundary tests", () => {
     });
 
     it("Strength", () => {
-      cy.get('#search-input').type("Strength" + '{enter}')
+      cy.get('#search-input').type("Strength")
       cy.wait(500)
       cy.get("#div-content").contains("Strength-"+ user).should("be.visible")
       cy.get("#div-content").contains("Balance-"+ user).should("not.be.visible")
