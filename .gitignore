@@ -11,5 +11,7 @@ venv
 .vscode
 *.code-workspace
 
-# CodeQL cache
+# CodeQL cache and test files
 .cache
+*.testproj
+*.actual
