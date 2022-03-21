@@ -32,7 +32,7 @@ The application is configured to deploy automatically on pushes to the `main` br
 - **Frontend**
   - **Browser** - HTML5/CSS/JS, Bootstrap v5 (no jQuery dependency)
   - **Mobile** Apache Cordova (uses same website)
-- **Aunthentication** JWT
+- **Authentication** JWT
 
 ## Project Structure
 
