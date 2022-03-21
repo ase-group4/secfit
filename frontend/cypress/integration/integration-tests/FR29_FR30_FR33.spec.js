@@ -68,7 +68,7 @@ describe("Integration tests", () => {
     });
   });
 
-  describe("FR33:The user should be able to filter exercises by categories", () => {
+  describe("FR29:The user should be able to filter exercises by categories", () => {
     beforeEach(() => {
       cy.visit("/../../www/exercises.html");
     });

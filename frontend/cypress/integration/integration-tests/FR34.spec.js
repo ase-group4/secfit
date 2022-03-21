@@ -63,7 +63,7 @@ describe("Integration tests", () => {
     cy.login(user, user_password);
   });
 
-  describe("FR34.2: The athlete should be able to create their own ingredients, with nutritional value specified with the amount of protein, fat and carbohydrates per 100 grams", () => {
+  describe("FR34: The athlete should be able to create their own ingredients, with nutritional value specified with the amount of protein, fat and carbohydrates per 100 grams", () => {
     it("create ingredient from ingredientpage", () => {
       cy.visit("../../www/ingredients.html");
       cy.get("#btn-create-ingredient").click();

@@ -22,7 +22,7 @@ describe("Integration tests", () => {
     Checks that the users are in the userlist, and the userlist is given as list in the inputfield.
     The <datalist> tag provides an "autocomplete" feature for <input> elements, which equals search functionallity.
     */
-    it("coaches ares member of datalist for input element", () => {
+    it("coaches are member of datalist for input element", () => {
       cy.login(user1, user1_password);
       cy.visit("../../www/mycoach.html");
       cy.wait(500);
