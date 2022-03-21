@@ -1,5 +1,0 @@
-name: secfit-data-flow-query-tests
-version: 1.0.0
-libraryPathDependencies: secfit-data-flow-queries
-extractor: javascript
-tests: .
