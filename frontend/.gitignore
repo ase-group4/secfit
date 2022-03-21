@@ -9,3 +9,9 @@ platforms/browser/www/
 
 # Videos from integration testing
 cypress/videos
+
+# CodeQL cache and test files
+.cache
+*.testproj
+*.actual
+codeql-repo

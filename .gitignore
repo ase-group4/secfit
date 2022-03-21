@@ -10,8 +10,3 @@ venv
 # VSCode workspace settings
 .vscode
 *.code-workspace
-
-# CodeQL cache and test files
-.cache
-*.testproj
-*.actual
