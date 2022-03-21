@@ -5,7 +5,6 @@ const chance = new Chance();
 const valid_workout = {
   name: "Workout",
   date: "2017-04-30T13:00:00",
-  unit: "2017-04-30T13:00:00",
   notes: "This is a note.",
   visibility: "PU",
   files: "images/bugs.jpg",
