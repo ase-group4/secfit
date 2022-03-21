@@ -63,73 +63,6 @@ describe("Integration tests", () => {
     cy.login(user, user_password);
   });
 
-  describe("FR34: The athlete should be able to compose a meal by inputting its ingredients and their weights.", () => {
-    it("create meal with ingredient", () => {
-      cy.visit("../../www/meal.html");
-      cy.wait(5000);
-      cy.get("#meal-ingredient-add-button").click();
-      cy.wait(1000);
-      cy.get(".meal-ingredient-input").type(ingredient1.name);
-      cy.get('input[name="weight"]').type(200);
-      fillOutMeal(meal1);
-      cy.wait(5000);
-      cy.get("#btn-ok-meal").click();
-      cy.wait(500);
-    });
-
-    it("view meal with ingredient", () => {
-      cy.visit("../../www/meals.html");
-      cy.wait(1000);
-      cy.get("#div-content").contains(meal1.name).should("be.visible");
-      cy.get("#div-content")
-        .contains(meal1.name)
-        .parent()
-        .parent()
-        .within(() => {
-          cy.contains(
-            "Calories: " +
-              (
-                ingredient1.carbohydrates * 2 * 4 +
-                ingredient1.fat * 2 * 9 +
-                ingredient1.protein * 2 * 4
-              ).toString() +
-              " kcal"
-          );
-          cy.contains("Protein: " + (ingredient1.protein * 2).toString() + " g");
-          cy.contains("Fat: " + (ingredient1.fat * 2).toString() + " g");
-          cy.contains("Carbohydrates: " + (ingredient1.carbohydrates * 2).toString() + " g");
-        });
-    });
-  });
-
-  describe("FR34.1: The athlete should be able to select ingredients by searching through a database of ingredients.", () => {
-    it("search on ingredient page, ingredient1", () => {
-      cy.visit("../../www/ingredients.html");
-      cy.get("#ingredient-search-field").type(ingredient1.name);
-      cy.wait(500);
-      cy.get("#div-content").contains(ingredient1["name"]).should("be.visible");
-    });
-
-    it("search on ingredient page, ingredient2", () => {
-      cy.visit("../../www/ingredients.html");
-      cy.get("#ingredient-search-field").type(ingredient2.name);
-      cy.wait(500);
-      cy.get("#div-content").contains(ingredient2["name"]).should("be.visible");
-    });
-
-    it("search on meal page", () => {
-      cy.visit("../../www/meal.html");
-      cy.wait(5000);
-      cy.get("#meal-ingredient-add-button").click();
-      cy.wait(1000);
-      cy.get(".meal-ingredient-input").should("have.attr", "list", "meal-ingredient-options");
-      cy.get("#meal-ingredient-options").within(() => {
-        cy.contains(ingredient1.name);
-        cy.contains(ingredient2.name);
-      });
-    });
-  });
-
   describe("FR34.2: The athlete should be able to create their own ingredients, with nutritional value specified with the amount of protein, fat and carbohydrates per 100 grams.", () => {
     it("create ingredient from ingredientpage", () => {
       cy.visit("../../www/ingredients.html");
@@ -210,6 +143,73 @@ describe("Integration tests", () => {
             .within(() => {
               cy.contains(ingredient2.carbohydrates.toString() + " g");
             });
+        });
+    });
+  });
+
+  describe("FR34.1: The athlete should be able to select ingredients by searching through a database of ingredients.", () => {
+    it("search on ingredient page, ingredient1", () => {
+      cy.visit("../../www/ingredients.html");
+      cy.get("#ingredient-search-field").type(ingredient1.name);
+      cy.wait(500);
+      cy.get("#div-content").contains(ingredient1["name"]).should("be.visible");
+    });
+
+    it("search on ingredient page, ingredient2", () => {
+      cy.visit("../../www/ingredients.html");
+      cy.get("#ingredient-search-field").type(ingredient2.name);
+      cy.wait(500);
+      cy.get("#div-content").contains(ingredient2["name"]).should("be.visible");
+    });
+
+    it("search on meal page", () => {
+      cy.visit("../../www/meal.html");
+      cy.wait(5000);
+      cy.get("#meal-ingredient-add-button").click();
+      cy.wait(1000);
+      cy.get(".meal-ingredient-input").should("have.attr", "list", "meal-ingredient-options");
+      cy.get("#meal-ingredient-options").within(() => {
+        cy.contains(ingredient1.name);
+        cy.contains(ingredient2.name);
+      });
+    });
+  });
+
+  describe("FR34: The athlete should be able to compose a meal by inputting its ingredients and their weights.", () => {
+    it("create meal with ingredient", () => {
+      cy.visit("../../www/meal.html");
+      cy.wait(5000);
+      cy.get("#meal-ingredient-add-button").click();
+      cy.wait(1000);
+      cy.get(".meal-ingredient-input").type(ingredient1.name);
+      cy.get('input[name="weight"]').type(200);
+      fillOutMeal(meal1);
+      cy.wait(5000);
+      cy.get("#btn-ok-meal").click();
+      cy.wait(500);
+    });
+
+    it("view meal with ingredient", () => {
+      cy.visit("../../www/meals.html");
+      cy.wait(1000);
+      cy.get("#div-content").contains(meal1.name).should("be.visible");
+      cy.get("#div-content")
+        .contains(meal1.name)
+        .parent()
+        .parent()
+        .within(() => {
+          cy.contains(
+            "Calories: " +
+              (
+                ingredient1.carbohydrates * 2 * 4 +
+                ingredient1.fat * 2 * 9 +
+                ingredient1.protein * 2 * 4
+              ).toString() +
+              " kcal"
+          );
+          cy.contains("Protein: " + (ingredient1.protein * 2).toString() + " g");
+          cy.contains("Fat: " + (ingredient1.fat * 2).toString() + " g");
+          cy.contains("Carbohydrates: " + (ingredient1.carbohydrates * 2).toString() + " g");
         });
     });
   });
