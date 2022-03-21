@@ -1,3 +1,8 @@
+/*
+Copy of `retrieveWorkoutImages` function from `frontend/www/scripts/gallery.js`,
+along with its dependencies, to enable simple CodeQL query testing.
+*/
+
 let goBackButton;
 let submitNewFileButton;
 
@@ -94,6 +99,7 @@ async function retrieveWorkoutImages(id) {
       })
     );
   }
+
   return workoutData;
 }
 
