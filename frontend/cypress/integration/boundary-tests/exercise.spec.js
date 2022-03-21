@@ -89,7 +89,7 @@ describe("Exercise page boundary tests", () => {
         });
       cy.url().should("include", "/exercise.html");
     });
-  
+
     it("may be one", () => {
       var exercise = { ...valid_exercise };
       exercise["duration"] = 1;
@@ -124,6 +124,7 @@ describe("Exercise page boundary tests", () => {
     });
     */
   });
+
   describe("calories", () => {
     it("may not be blank", () => {
       var exercise = { ...valid_exercise };
@@ -142,13 +143,13 @@ describe("Exercise page boundary tests", () => {
       exercise["calories"] = 0;
       cy.createExercise(exercise);
       cy.get(".alert")
-      .contains("calories")
-      .then((textAlert) => {
-        cy.expect(textAlert[0].outerText).to.equal("calories\nA valid integer is required.");
-      });
+        .contains("calories")
+        .then((textAlert) => {
+          cy.expect(textAlert[0].outerText).to.equal("calories\nA valid integer is required.");
+        });
       cy.url().should("include", "/exercise.html");
     });
-  
+
     it("may be one", () => {
       var exercise = { ...valid_exercise };
       exercise["duration"] = 1;

@@ -15,7 +15,7 @@ const emails = [
 
 // passwords & password1s = [valid password, empty (invalid)]
 const passwords = [chance.string({ length: 10, pool: "abcd" }), ""];
-const password1s = {...passwords}
+const password1s = { ...passwords };
 
 // below: [valid value, too long]
 const phones = ["12345678", chance.string({ length: 51, pool: "abcd" })];
@@ -167,22 +167,23 @@ describe("Register page 2-way domain tests", () => {
       });
   }
 
-    /** Function that tests that different passwords resulted in the expected warning in the alert.*/
-    function testPasswordsEqualFail(value1, value2) {
-      if (value1 == value2) {
-        return;
-      }
-      /*
-      This test currently fail due to errors in the pre-existing code, due to the fact that it is allowd for the two inputted passwords to be different
-      cy.get(".alert")
-        .contains("password")
-        .then((textAlert) => {
-          console.log(textAlert);
-          cy.expect(value).to.equal(1);
-          cy.expect(textAlert[0].outerText).to.equal("password\nPasswords must be equal.");
-        });
-      */
+  /** Function that tests that different passwords resulted in the expected warning in the alert.*/
+  function testPasswordsEqualFail(value1, value2) {
+    if (value1 == value2) {
+      return;
     }
+    /*
+    This test currently fail due to errors in the pre-existing code,
+    due to the fact that it is allowed for the two inputted passwords to be different.
+    cy.get(".alert")
+      .contains("password")
+      .then((textAlert) => {
+        console.log(textAlert);
+        cy.expect(value).to.equal(1);
+        cy.expect(textAlert[0].outerText).to.equal("password\nPasswords must be equal.");
+      });
+    */
+  }
 
   /** Function that tests that the input in the phone_number field resulted in the expected warning in the alert. */
   function testPhoneFail(value) {
