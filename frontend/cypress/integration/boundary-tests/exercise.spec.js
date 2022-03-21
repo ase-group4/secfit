@@ -12,7 +12,7 @@ const valid_exercise = {
   category: "Strength",
 };
 
-describe("Register page boundary tests", () => {
+describe("Exercise page boundary tests", () => {
   const user = chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-");
   const user_password = chance.string({ length: 10, pool: "abcd" });
 
@@ -78,6 +78,25 @@ describe("Register page boundary tests", () => {
       cy.url().should("include", "/exercise.html");
     });
 
+    it("may not be zero", () => {
+      var exercise = { ...valid_exercise };
+      exercise["duration"] = 0;
+      cy.createExercise(exercise);
+      cy.get(".alert")
+        .contains("duration")
+        .then((textAlert) => {
+          cy.expect(textAlert[0].outerText).to.equal("duration\nA valid integer is required.");
+        });
+      cy.url().should("include", "/exercise.html");
+    });
+
+    it("may be one", () => {
+      var exercise = { ...valid_exercise };
+      exercise["duration"] = 1;
+      cy.createExercise(exercise);
+      cy.url().should("include", "/exercises.html");
+    });
+
     it("may not be a string", () => {
       var exercise = { ...valid_exercise };
       exercise["duration"] = "abc";
@@ -104,14 +123,8 @@ describe("Register page boundary tests", () => {
       cy.url().should("include", "/exercise.html");
     });
     */
-
-    it("may be a number", () => {
-      var exercise = { ...valid_exercise };
-      exercise["duration"] = 1;
-      cy.createExercise(exercise);
-      cy.url().should("include", "/exercises.html");
-    });
   });
+
   describe("calories", () => {
     it("may not be blank", () => {
       var exercise = { ...valid_exercise };
@@ -123,6 +136,25 @@ describe("Register page boundary tests", () => {
           cy.expect(textAlert[0].outerText).to.equal("calories\nA valid integer is required.");
         });
       cy.url().should("include", "/exercise.html");
+    });
+
+    it("may not be zero", () => {
+      var exercise = { ...valid_exercise };
+      exercise["calories"] = 0;
+      cy.createExercise(exercise);
+      cy.get(".alert")
+        .contains("calories")
+        .then((textAlert) => {
+          cy.expect(textAlert[0].outerText).to.equal("calories\nA valid integer is required.");
+        });
+      cy.url().should("include", "/exercise.html");
+    });
+
+    it("may be one", () => {
+      var exercise = { ...valid_exercise };
+      exercise["duration"] = 1;
+      cy.createExercise(exercise);
+      cy.url().should("include", "/exercises.html");
     });
 
     it("may not be a string", () => {
@@ -151,12 +183,5 @@ describe("Register page boundary tests", () => {
       cy.url().should("include", "/exercise.html");
     });
     */
-
-    it("may be a number", () => {
-      var exercise = { ...valid_exercise };
-      exercise["calories"] = 1;
-      cy.createExercise(exercise);
-      cy.url().should("include", "/exercises.html");
-    });
   });
 });
