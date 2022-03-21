@@ -15,4 +15,4 @@ where
   func.getName() = "retrieveWorkoutImages" and
   source.getNode().getContainer() = func and
   flow.hasFlowPath(source, sink)
-select source, sink
+select source
