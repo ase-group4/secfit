@@ -169,6 +169,72 @@ Additional Cordova resources:
 
 The following sections describe how to run the various types of tests made for SecFit.
 
+### Full statement coverage tests
+
+To run the tests, do the following in the terminal:
+
+1. Navigate to the `backend` folder.
+
+```
+cd backend
+```
+
+2. Run the tests.
+
+```
+python3 manage.py test
+```
+
+To run the tests with coverage report, run this command instead:
+
+```
+python3 manage.py test --testrunner django_nose.NoseTestSuiteRunner --with-coverage
+```
+
+To run tests in a specific package with coverage report, run this command instead:
+
+```
+python3 manage.py test {PACKAGE_NAME}.tests --testrunner django_nose.NoseTestSuiteRunner --with-coverage --cover-package {PACKAGE_NAME}
+```
+
+for example for the workouts package:
+
+```
+python3 manage.py test workouts.tests --testrunner django_nose.NoseTestSuiteRunner --with-coverage --cover-package workouts
+```
+
+If `django_nose` or `coverage` is missing, make sure that you have installed dependencies:
+
+```
+pip install -r requirements.txt
+```
+
+### Cypress tests (Blackbox tests)
+
+To run the tests, do the following in the terminal:
+
+1. Navigate to the `frontend` folder.
+
+```
+cd frontend
+```
+
+2. Run the tests (must have [Node](https://nodejs.org/en/) installed).
+
+```
+npx cypress run
+```
+
+Individual tests can be run in the terminal using the `--spec` flag and giving path to the test, as documented in the [Cypress documentation](https://docs.cypress.io/guides/guides/command-line#cypress-run-spec-lt-spec-gt).
+
+The tests can also be run in Cypress Test Runner, using this command:
+
+```
+npx cypress open
+```
+
+If you encounter any issues, refer to the cypress documentation: https://docs.cypress.io/.
+
 ### Data Flow Tests
 
 The `frontend/codeql` folder contains [CodeQL queries](https://codeql.github.com/) to analyze the data flow of the `retrieveWorkoutImages` function in `frontend/www/scripts/gallery/gallery.js`. The `gallery` folder contains further CodeQL files to test that the queries follow the all-uses (AU) strategy.
