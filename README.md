@@ -211,7 +211,9 @@ pip install -r requirements.txt
 
 ### Cypress tests (Blackbox tests)
 
-To run the tests, do the following in the terminal:
+To run the tests, there need to be a locally running instance of the backend for the tests to send requests to, set up for this is [explained above](#backend). 
+
+While running a backend, do the following in the terminal to run the tests:
 
 1. Navigate to the `frontend` folder.
 
@@ -233,7 +235,7 @@ The tests can also be run in Cypress Test Runner, using this command:
 npx cypress open
 ```
 
-If you encounter any issues, refer to the cypress documentation: https://docs.cypress.io/.
+If you encounter any issues, refer to the Cypress documentation: https://docs.cypress.io/.
 
 ### Data Flow Tests
 

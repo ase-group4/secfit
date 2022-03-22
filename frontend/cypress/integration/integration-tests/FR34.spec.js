@@ -29,7 +29,7 @@ function fillOutIngredient(ingredientdata) {
   cy.get('input[name="protein"]').type(ingredientdata.protein);
   cy.get('input[name="fat"]').type(ingredientdata.fat);
   cy.get('input[name="carbohydrates"]').type(ingredientdata.carbohydrates);
-  cy.wait(2000);
+  cy.wait(1000);
   cy.get("#ingredient-submit-button").click();
 }
 
@@ -164,7 +164,7 @@ describe("Integration tests", () => {
 
     it("search on meal page", () => {
       cy.visit("../../www/meal.html");
-      cy.wait(5000);
+      cy.wait(3000);
       cy.get("#meal-ingredient-add-button").click();
       cy.wait(1000);
       cy.get(".meal-ingredient-input").should("have.attr", "list", "meal-ingredient-options");
@@ -178,18 +178,18 @@ describe("Integration tests", () => {
   describe("FR34: The athlete should be able to compose a meal by inputting its ingredients and their weights.", () => {
     it("create meal with ingredient", () => {
       cy.visit("../../www/meal.html");
-      cy.wait(5000);
-      cy.get("#meal-ingredient-add-button").click();
       cy.wait(1000);
+      cy.get("#meal-ingredient-add-button").click();
+      cy.wait(500);
       cy.get(".meal-ingredient-input").type(ingredient1.name);
       cy.get('input[name="weight"]').type(200);
       fillOutMeal(meal1);
-      cy.wait(5000);
+      cy.wait(1000)
       cy.get("#btn-ok-meal").click();
-      cy.wait(500);
     });
 
     it("view meal with ingredient", () => {
+      cy.wait(500);
       cy.visit("../../www/meals.html");
       cy.wait(1000);
       cy.get("#div-content").contains(meal1.name).should("be.visible");
@@ -222,30 +222,30 @@ describe("Integration tests", () => {
     */
     it("remove ingredient during meal logging", () => {
       cy.visit("../../www/meal.html");
-      cy.wait(5000);
+      cy.wait(2000);
       cy.get("#meal-ingredient-add-button").click();
+      cy.wait(500);
 
       //adds ingredient1
-      cy.get(".meal-ingredient-input").type(ingredient1.name);
       cy.get('input[name="weight"]').type(200);
+      cy.get(".meal-ingredient-input").type(ingredient1.name);
 
       //removes ingredient1
-      cy.wait(1000);
       cy.get('textarea[name="notes"]').type(chance.sentence());
       cy.get(".meal-ingredient-remove-button").click();
-      cy.wait(1000);
 
       fillOutMeal(meal2);
 
       //adds ingredient2
       cy.get("#meal-ingredient-add-button").click();
-      cy.wait(1000);
-      cy.get(".meal-ingredient-input").type(ingredient2.name);
       cy.get('input[name="weight"]').type(200);
-      cy.wait(1000);
+      cy.get(".meal-ingredient-input").type(ingredient2.name);
+
       cy.get('textarea[name="notes"]').type(chance.sentence());
       cy.get('textarea[name="notes"]').type(chance.sentence());
+      cy.wait(1000)
       cy.get("#btn-ok-meal").click();
+      cy.wait(1000)
     });
 
     it("view meal with ingredient", () => {

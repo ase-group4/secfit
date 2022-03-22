@@ -10,7 +10,7 @@
  * - `data-bs-target="#create-ingredient-modal"`
  *
  * Upon successful creation of the ingredient, dispatches the custom event `ingredientCreated`.
- * The `event.detail` field contains the newly created event, to use for updating the page.
+ * The `event.detail` field contains the newly created ingredient, to use for updating the page.
  *
  * The Submit button has id `ingredient-submit-button`,
  * which can be used to add additional event listeners.
