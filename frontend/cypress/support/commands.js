@@ -72,7 +72,7 @@ Cypress.Commands.add("login", (username, password) => {
   cy.get('input[name="username"]').type(username);
   cy.get('input[name="password"]').type(password);
   cy.get("#btn-login").click();
-  cy.wait(1000);
+  cy.wait(1500);
 });
 
 Cypress.Commands.add("goToWorkout", (name) => {
