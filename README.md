@@ -233,7 +233,7 @@ The tests can also be run in Cypress Test Runner, using this command:
 npx cypress open
 ```
 
-If you encounter any issues, refer to the cypress documentation: https://docs.cypress.io/.
+If you encounter any issues, refer to the Cypress documentation: https://docs.cypress.io/.
 
 ### Data Flow Tests
 
