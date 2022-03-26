@@ -1,0 +1,14 @@
+{
+  "root": true,
+  "env": {
+    "es6": true
+  },
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "rules": {
+    "prettier/prettier": ["error", {}, { "usePrettierrc": true }]
+  },
+  "ignorePatterns": ["/plugins", "/platforms", "/codeql-repo", "/node_modules"]
+}
