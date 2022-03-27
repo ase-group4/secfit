@@ -167,9 +167,9 @@ npm install --frozen-lockfile
 This will also install `husky` and `lint-staged` to lint and format code changes on every commit. This can be skipped by using the `--no-verify` flag on commit, though this should only be used when absolutely necessary.
 
 4. **Run Cordova**
-   - For browser: `cordova run browser`
-   - For Android: `cordova run android`
-   - For iOS: `cordova run ios`
+   - For browser: `cordova run browser --port=3000`
+   - For Android: `cordova run android --port=3000`
+   - For iOS: `cordova run ios --port=3000`
 
 Additional Cordova resources:
 
