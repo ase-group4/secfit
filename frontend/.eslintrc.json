@@ -11,5 +11,5 @@
     "prettier/prettier": ["error", {}, { "usePrettierrc": true }],
     "prefer-const": "error"
   },
-  "ignorePatterns": ["/plugins", "/platforms", "/codeql-repo", "/node_modules"]
+  "ignorePatterns": ["/platforms", "/plugins", "/node_modules", "/codeql-repo"]
 }

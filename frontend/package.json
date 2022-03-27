@@ -11,16 +11,16 @@
   ],
   "scripts": {
     "e2e": "cypress",
-    "lint": "eslint --fix",
-    "format": "prettier --write",
+    "lint": "eslint",
+    "format": "prettier",
     "prepare": "cd .. && husky install frontend/.husky"
   },
   "lint-staged": {
     "*.{html,js,json,md}": [
-      "npm run format"
+      "npm run format -- --write"
     ],
     "*.js": [
-      "npm run lint"
+      "npm run lint -- --fix"
     ],
     "../backend/**/*.py": [
       "black",
