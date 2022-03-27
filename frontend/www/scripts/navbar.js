@@ -1,4 +1,4 @@
-import { getCookieValue } from "./helpers.js";
+import { getCookieValue } from "./utils/cookies.js";
 
 class NavBar extends HTMLElement {
   constructor() {

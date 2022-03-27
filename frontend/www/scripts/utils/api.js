@@ -1,6 +1,5 @@
 import { getCookieValue, setCookie } from "./cookies.js";
-
-export const HOST = "http://localhost:8000";
+import { HOST } from "./host.js";
 
 export async function sendRequest(
   method,

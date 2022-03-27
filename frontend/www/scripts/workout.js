@@ -1,3 +1,7 @@
+import { sendRequest, getCurrentUser } from "./utils/api.js";
+import { HOST } from "./utils/host.js";
+import { createAlert, setReadOnly } from "./utils/dom.js";
+
 let cancelWorkoutButton;
 let okWorkoutButton;
 let deleteWorkoutButton;

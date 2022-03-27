@@ -1,3 +1,7 @@
+import { sendRequest, getCurrentUser } from "./utils/api.js";
+import { HOST } from "./utils/host.js";
+import { createAlert } from "./utils/dom.js";
+
 async function displayCurrentRoster() {
   let templateFilledAthlete = document.querySelector("#template-filled-athlete");
   let templateEmptyAthlete = document.querySelector("#template-empty-athlete");

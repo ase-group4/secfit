@@ -1,3 +1,5 @@
+import { deleteCookie } from "./utils/cookies.js";
+
 deleteCookie("access");
 deleteCookie("refresh");
 deleteCookie("remember_me");

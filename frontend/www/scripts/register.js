@@ -1,3 +1,8 @@
+import { sendRequest } from "./utils/api.js";
+import { HOST } from "./utils/host.js";
+import { createAlert } from "./utils/dom.js";
+import { setCookie } from "./utils/cookies.js";
+
 async function createNewUser(event) {
   let form = document.querySelector("#form-register-user");
   let formData = new FormData(form);

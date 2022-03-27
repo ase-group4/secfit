@@ -1,3 +1,8 @@
+import { sendRequest } from "./utils/api.js";
+import { HOST } from "./utils/host.js";
+import { setCookie, getCookieValue } from "./utils/cookies.js";
+import { createAlert } from "./utils/dom.js";
+
 async function login() {
   let form = document.querySelector("#form-login");
   let formData = new FormData(form);
