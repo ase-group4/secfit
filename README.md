@@ -12,6 +12,8 @@ SecFit (Secure Fitness) is a hybrid mobile application for fitness logging.
   - [Backend](#backend)
   - [Frontend](#frontend)
 - [Running Tests](#running-tests)
+  - [Full statement coverage tests](#full-statement-coverage-tests)
+  - [Cypress tests (Blackbox tests)](#cypress-tests-blackbox-tests)
   - [Data Flow Tests](#data-flow-tests)
 
 ## Deployment
@@ -149,11 +151,13 @@ python3 manage.py loaddata
 
 1. **Download Node.js** (https://nodejs.org/en/)
 2. **Navigate to `secfit/frontend`**
-3. **Install Cordova**
+3. **Install dependencies**
 
 ```
-npm install -g cordova
+npm install --frozen-lockfile
 ```
+
+This will also install `husky` and `lint-staged` to lint and format code changes on every commit. This can be skipped by using the `--no-verify` flag on commit, though this should only be used when absolutely necessary.
 
 4. **Run Cordova**
    - For browser: `cordova run browser`
@@ -211,7 +215,7 @@ pip install -r requirements.txt
 
 ### Cypress tests (Blackbox tests)
 
-To run the tests, there need to be a locally running instance of the backend for the tests to send requests to, set up for this is [explained above](#backend). 
+To run the tests, there need to be a locally running instance of the backend for the tests to send requests to, set up for this is [explained above](#backend).
 
 While running a backend, do the following in the terminal to run the tests:
 
