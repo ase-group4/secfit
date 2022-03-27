@@ -38,8 +38,6 @@ class NavBar extends HTMLElement {
 customElements.define("navbar-el", NavBar);
 
 function updateNavBar() {
-  let nav = document.querySelector("nav");
-
   // Emphasize link to current page
   if (window.location.pathname == "/" || window.location.pathname == "/index.html") {
     makeNavLinkActive("nav-index");

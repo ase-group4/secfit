@@ -70,10 +70,10 @@ async function fetchUsers(currentUser, athletesIds) {
   } else {
     let data = await response.json();
 
-    users = data.results;
-    innerHTML = "";
+    const users = data.results;
+    let innerHTML = "";
     for (let j = 0; j < users.length; j++) {
-      user = users[j];
+      const user = users[j];
       if (user.id != currentUser.id && !athletesIds.has(user.id)) {
         innerHTML += `<option value=${user.username}> </option>`;
       }
@@ -210,7 +210,7 @@ async function submitRoster() {
       }
     }
   }
-  let response = await sendRequest("PUT", currentUser.url, body);
+  await sendRequest("PUT", currentUser.url, body);
   location.reload();
 }
 

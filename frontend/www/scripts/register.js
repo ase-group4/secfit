@@ -3,7 +3,7 @@ import { HOST } from "./utils/host.js";
 import { createAlert } from "./utils/dom.js";
 import { setCookie } from "./utils/cookies.js";
 
-async function createNewUser(event) {
+async function createNewUser() {
   let form = document.querySelector("#form-register-user");
   let formData = new FormData(form);
 

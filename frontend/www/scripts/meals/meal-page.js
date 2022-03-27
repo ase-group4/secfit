@@ -106,7 +106,6 @@ async function retrieveMeal(id) {
       }
     }
 
-    let input = form.querySelector("select:disabled");
     // files
     let filesDiv = document.querySelector("#uploaded-files");
     for (let file of mealData.files) {

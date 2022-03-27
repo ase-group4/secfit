@@ -88,7 +88,6 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has("ordering")) {
-    let aSort = null;
     ordering = urlParams.get("ordering");
     if (ordering == "name" || ordering == "owner" || ordering == "date") {
       let aSort = document.querySelector(`a[href="?ordering=${ordering}"`);

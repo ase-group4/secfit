@@ -4,15 +4,16 @@ import { createAlert, setReadOnly } from "./utils/dom.js";
 
 async function displayCurrentCoach() {
   let user = await getCurrentUser();
-  let coach = null;
 
   if (user.coach) {
-    response = await sendRequest("GET", user.coach);
+    const response = await sendRequest("GET", user.coach);
+
     if (!response.ok) {
       let data = await response.json();
       let alert = createAlert("Could not retrieve coach!", data);
       document.body.prepend(alert);
     }
+
     let coach = await response.json();
     let input = document.querySelector("#input-coach");
 
@@ -23,8 +24,6 @@ async function displayCurrentCoach() {
 }
 
 async function displayOffers() {
-  let user = await getCurrentUser();
-
   let templateOffer = document.querySelector("#template-offer");
   let listOffers = document.querySelector("#list-offers");
 
@@ -73,17 +72,17 @@ async function displayOffers() {
   }
 }
 
-async function fetchUsers(currentUser, athletesIds) {
+async function fetchUsers(currentUser) {
   let response = await sendRequest("GET", `${HOST}/api/users/`);
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   } else {
     let data = await response.json();
 
-    users = data.results;
-    innerHTML = "";
+    const users = data.results;
+    let innerHTML = "";
     for (let j = 0; j < users.length; j++) {
-      user = users[j];
+      const user = users[j];
       if (user.id != currentUser.id) {
         innerHTML += `<option value=${user.username}> </option>`;
       }
@@ -93,7 +92,6 @@ async function fetchUsers(currentUser, athletesIds) {
 }
 
 async function acceptOffer(event, offerUrl, ownerUsername) {
-  let button = event.currentTarget;
   let body = { status: "d" };
 
   let response = await sendRequest("PATCH", offerUrl, body);
@@ -121,7 +119,6 @@ async function acceptOffer(event, offerUrl, ownerUsername) {
 }
 
 async function declineOffer(event, offerUrl) {
-  let button = event.currentTarget;
   let body = { status: "d" };
 
   let response = await sendRequest("PATCH", offerUrl, body);
@@ -185,29 +182,29 @@ async function displayFiles() {
   }
 }
 
-async function getReceivedRequests() {
-  let response = await sendRequest("GET", `${HOST}/api/athlete-requests/`);
-  if (!response.ok) {
-    let data = await response.json();
-    let alert = createAlert("Could not retrieve athlete request!", data);
-    document.body.prepend(alert);
-  } else {
-    let data = await response.json();
-    let athleteRequests = data.results;
-    for (let athleteRequest of athleteRequests) {
-      if (athleteRequest.recipient == sessionStorage.getItem("username")) {
-        let div = document.querySelector("#div-received-athlete-requests");
-        let template = document.querySelector("#template-athlete-request");
+// async function getReceivedRequests() {
+//   let response = await sendRequest("GET", `${HOST}/api/athlete-requests/`);
+//   if (!response.ok) {
+//     let data = await response.json();
+//     let alert = createAlert("Could not retrieve athlete request!", data);
+//     document.body.prepend(alert);
+//   } else {
+//     let data = await response.json();
+//     let athleteRequests = data.results;
+//     for (let athleteRequest of athleteRequests) {
+//       if (athleteRequest.recipient == sessionStorage.getItem("username")) {
+//         let div = document.querySelector("#div-received-athlete-requests");
+//         let template = document.querySelector("#template-athlete-request");
 
-        let clone = template.content.firstElementChild.cloneNode(true);
-        let button = clone.querySelector("button");
-        button.textContent = `${athleteRequest.owner} wants to be your coach!`;
+//         let clone = template.content.firstElementChild.cloneNode(true);
+//         let button = clone.querySelector("button");
+//         button.textContent = `${athleteRequest.owner} wants to be your coach!`;
 
-        div.appendChild(clone);
-      }
-    }
-  }
-}
+//         div.appendChild(clone);
+//       }
+//     }
+//   }
+// }
 
 function editCoach(event) {
   let buttonEditCoach = event.currentTarget;

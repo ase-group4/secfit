@@ -6,7 +6,6 @@ let cancelWorkoutButton;
 let okWorkoutButton;
 let deleteWorkoutButton;
 let editWorkoutButton;
-let postCommentButton;
 let galleryButton;
 
 async function retrieveWorkout(id) {
@@ -213,8 +212,6 @@ function handleCancelDuringWorkoutCreate() {
 }
 
 async function createBlankExercise() {
-  let form = document.querySelector("#form-workout");
-
   let exerciseTypeResponse = await sendRequest("GET", `${HOST}/api/exercises/`);
   let exerciseTypes = await exerciseTypeResponse.json();
 
@@ -238,7 +235,7 @@ async function createBlankExercise() {
   divExercises.appendChild(divExerciseContainer);
 }
 
-function removeExercise(event) {
+function removeExercise() {
   let divExerciseContainers = document.querySelectorAll(".div-exercise-container");
   if (divExerciseContainers && divExerciseContainers.length > 0) {
     divExerciseContainers[divExerciseContainers.length - 1].remove();

@@ -3,7 +3,6 @@ import { HOST } from "../utils/host.js";
 import { createAlert } from "../utils/dom.js";
 
 let goBackButton;
-let submitNewFileButton;
 
 async function retrieveWorkoutImages(id) {
   let workoutData = null;
@@ -142,5 +141,5 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get("id");
-  let workoutData = await retrieveWorkoutImages(id);
+  await retrieveWorkoutImages(id);
 });

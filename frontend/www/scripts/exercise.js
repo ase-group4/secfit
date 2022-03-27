@@ -16,7 +16,7 @@ class MuscleGroup {
     this.type = this.validTypes.includes(type) ? type : undefined;
   }
 
-  setMuscleGroupType = (newType) => {
+  setMuscleGroupType(newType) {
     this.isValidType = false;
 
     if (this.validTypes.includes(newType)) {
@@ -25,12 +25,12 @@ class MuscleGroup {
     } else {
       alert("Invalid muscle group!");
     }
-  };
+  }
 
-  getMuscleGroupType = () => {
+  getMuscleGroupType() {
     console.log(this.type, "SWIOEFIWEUFH");
     return this.type;
-  };
+  }
 }
 
 function handleCancelButtonDuringEdit() {
@@ -222,7 +222,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   const urlParams = new URLSearchParams(window.location.search);
 
-  categories = await getCategories();
+  const categories = await getCategories();
 
   // view/edit
   if (urlParams.has("id")) {
