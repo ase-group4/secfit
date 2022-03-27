@@ -1,19 +1,32 @@
 {
-  "name": "io.cordova.hellocordova",
-  "displayName": "HelloCordova",
+  "name": "secfit",
+  "displayName": "SecFit",
+  "description": "SecFit (Secure Fitness) is a hybrid mobile application for fitness logging.",
+  "author": "ase-group4",
   "version": "1.0.0",
-  "description": "A sample Apache Cordova application that responds to the deviceready event.",
+  "license": "MIT",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "e2e": "cypress",
-    "lint": "eslint"
-  },
   "keywords": [
     "ecosystem:cordova"
   ],
-  "author": "Apache Cordova Team",
-  "license": "Apache-2.0",
+  "scripts": {
+    "e2e": "cypress",
+    "lint": "eslint --fix",
+    "format": "prettier --write",
+    "prepare": "cd .. && husky install frontend/.husky"
+  },
+  "lint-staged": {
+    "*.{html,js,json,md}": [
+      "npm run format"
+    ],
+    "*.js": [
+      "npm run lint"
+    ],
+    "../backend/**/*.py": [
+      "black",
+      "flake8 --config=../backend/.flake8"
+    ]
+  },
   "dependencies": {
     "chance": "^1.1.8",
     "cypress": "^9.5.1",
@@ -32,7 +45,8 @@
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-import": "^2.25.4",
     "prettier": "^2.6.1",
-    "husky": "^7.0.4"
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.7"
   },
   "cordova": {
     "plugins": {
