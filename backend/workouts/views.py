@@ -2,9 +2,7 @@
 """
 from rest_framework import generics, mixins
 from rest_framework import permissions
-from rest_framework.parsers import (
-    JSONParser,
-)
+from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -45,9 +43,7 @@ def api_root(request, format=None):
             "users": reverse("user-list", request=request, format=format),
             "workouts": reverse("workout-list", request=request, format=format),
             "exercises": reverse("exercise-list", request=request, format=format),
-            "exercise-instances": reverse(
-                "exercise-instance-list", request=request, format=format
-            ),
+            "exercise-instances": reverse("exercise-instance-list", request=request, format=format),
             "exercise-categories": reverse("exercise-categories", request=request, format=format),
             "workout-files": reverse("workout-file-list", request=request, format=format),
             "comments": reverse("comment-list", request=request, format=format),

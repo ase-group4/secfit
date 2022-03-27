@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('workouts', '0003_rememberme'),
+        ("workouts", "0003_rememberme"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='exercise',
-            name='calories',
+            model_name="exercise",
+            name="calories",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='exercise',
-            name='duration',
+            model_name="exercise",
+            name="duration",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='exercise',
-            name='muscleGroup',
-            field=models.TextField(default='Legs'),
+            model_name="exercise",
+            name="muscleGroup",
+            field=models.TextField(default="Legs"),
         ),
     ]
