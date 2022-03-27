@@ -20,15 +20,15 @@ describe("Workouts visibility", () => {
   const athlete_password = chance.string({ length: 10, pool: "abcd" });
   const athlete = chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-");
 
-  let workout_PU = { ...valid_workout };
+  const workout_PU = { ...valid_workout };
   workout_PU["name"] = "Workout-PU-" + athlete;
   workout_PU["visibility"] = "PU";
 
-  let workout_PR = { ...valid_workout };
+  const workout_PR = { ...valid_workout };
   workout_PR["name"] = "Workout-PR-" + athlete;
   workout_PR["visibility"] = "PR";
 
-  let workout_CO = { ...valid_workout };
+  const workout_CO = { ...valid_workout };
   workout_CO["name"] = "Workout-CO-" + athlete;
   workout_CO["visibility"] = "CO";
 
@@ -131,7 +131,7 @@ describe("Workouts visibility", () => {
     });
 
     it("may not see others coach visibility workout", () => {
-      cy.on("uncaught:exception", (err, runnable) => {
+      cy.on("uncaught:exception", (err) => {
         expect(err.message).to.include("Cannot read properties of null (reading 'owner')");
         return false;
       });
@@ -149,7 +149,7 @@ describe("Workouts visibility", () => {
     });
 
     it("may not see others private visibility workout", () => {
-      cy.on("uncaught:exception", (err, runnable) => {
+      cy.on("uncaught:exception", (err) => {
         expect(err.message).to.include("Cannot read properties of null (reading 'owner')");
         return false;
       });

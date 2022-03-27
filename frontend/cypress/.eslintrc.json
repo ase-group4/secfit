@@ -1,7 +1,11 @@
 {
   "env": {
-    "mocha": true
+    "mocha": true,
+    "node": true
   },
   "parserOptions": { "sourceType": "module" },
-  "extends": ["plugin:cypress/recommended"]
+  "extends": ["plugin:cypress/recommended"],
+  "rules": {
+    "cypress/no-unnecessary-waiting": "off"
+  }
 }

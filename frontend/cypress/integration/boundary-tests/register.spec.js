@@ -22,7 +22,7 @@ describe("Register page boundary tests", () => {
   describe("username ", () => {
     it("may not be blank", () => {
       // inputs password, so 'may not be blank' alert for password is not shown
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       cy.addUser("", user);
       cy.get(".alert").should("be.visible");
       cy.get(".alert").contains("Registration failed!");
@@ -35,7 +35,7 @@ describe("Register page boundary tests", () => {
     });
 
     it("may not be 151 characters", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       cy.addUser(chance.string({ length: 151, pool: "abcd" }), user);
       cy.get(".alert").should("be.visible");
       cy.get(".alert").contains("Registration failed!");
@@ -51,14 +51,14 @@ describe("Register page boundary tests", () => {
 
     it("may be 1 character", () => {
       const username = chance.string({ length: 1, pool: "abcdefghijklmnopqrstuvwxyzæøå" });
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       cy.addUser(username, user);
       cy.url().should("include", "/workouts.html");
     });
 
     it("may be 150 characters", () => {
       const username = chance.string({ length: 150, pool: "abcdefghijklmnopqrstuvwxyzæøå" });
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       cy.addUser(username, user);
       cy.url().should("include", "/workouts.html");
     });
@@ -66,14 +66,14 @@ describe("Register page boundary tests", () => {
 
   describe("email", () => {
     it("may be blank", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["email"] = "";
       cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
     });
 
     it("may not be invalid", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["email"] = chance.string({ length: 5, pool: "abcd" });
       cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
@@ -87,7 +87,7 @@ describe("Register page boundary tests", () => {
     });
 
     it("may not be 255 characters", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["email"] = chance.string({ length: 245, pool: "abcd" }) + "@gmail.com";
       cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
@@ -103,7 +103,7 @@ describe("Register page boundary tests", () => {
     });
 
     it("may be 254 characters", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["email"] = chance.string({ length: 244, pool: "abcd" }) + "@gmail.com";
       cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
@@ -112,7 +112,7 @@ describe("Register page boundary tests", () => {
 
   describe("password", () => {
     it("may not be blank", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["password"] = "";
       cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
@@ -125,7 +125,7 @@ describe("Register page boundary tests", () => {
       cy.get(".btn-close").click();
     });
     it("may be one character", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["password"] = "a";
       cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
@@ -134,7 +134,7 @@ describe("Register page boundary tests", () => {
 
   describe("password1", () => {
     it("may not be blank", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["password1"] = "";
       cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
@@ -147,7 +147,7 @@ describe("Register page boundary tests", () => {
       cy.get(".btn-close").click();
     });
     it("may be one character", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["password1"] = "a";
       cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
@@ -156,14 +156,14 @@ describe("Register page boundary tests", () => {
 
   describe("phone number", () => {
     it("may be blank", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["phone"] = "";
       cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
     });
 
     it("may not be 51 characters", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["phone"] = chance.string({ length: 51, pool: "abcd" });
       cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
@@ -179,7 +179,7 @@ describe("Register page boundary tests", () => {
     });
 
     it("may be 50 charcters", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["phone"] = chance.string({ length: 50, pool: "123456789" });
       cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
@@ -188,14 +188,14 @@ describe("Register page boundary tests", () => {
 
   describe("country", () => {
     it("may be blank", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["country"] = "";
       cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
     });
 
     it("may not be 51 characters", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["country"] = chance.string({ length: 51, pool: "abcd" });
       cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
@@ -211,7 +211,7 @@ describe("Register page boundary tests", () => {
     });
 
     it("may be 50 charcters", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["country"] = chance.string({ length: 50, pool: "abcde" });
       cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
@@ -220,14 +220,14 @@ describe("Register page boundary tests", () => {
 
   describe("city", () => {
     it("may be blank", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["city"] = "";
       cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
     });
 
     it("may not be 51 characters", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["city"] = chance.string({ length: 51, pool: "abcd" });
       cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
@@ -243,7 +243,7 @@ describe("Register page boundary tests", () => {
     });
 
     it("may be 50 charcters", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["city"] = chance.string({ length: 50, pool: "abcde" });
       cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
@@ -252,14 +252,14 @@ describe("Register page boundary tests", () => {
 
   describe("street address", () => {
     it("may be blank", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["address"] = "";
       cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");
     });
 
     it("may not be 51 characters", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["address"] = chance.string({ length: 51, pool: "abcd" });
       cy.addUser(generateUsername(), user);
       cy.get(".alert").should("be.visible");
@@ -275,7 +275,7 @@ describe("Register page boundary tests", () => {
     });
 
     it("may be 50 charcters", () => {
-      let user = { ...valid_user_data };
+      const user = { ...valid_user_data };
       user["address"] = chance.string({ length: 50, pool: "abcde" });
       cy.addUser(generateUsername(), user);
       cy.url().should("include", "/workouts.html");

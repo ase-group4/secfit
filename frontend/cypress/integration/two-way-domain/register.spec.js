@@ -4,7 +4,7 @@ import Chance from "chance";
 const chance = new Chance();
 
 // usernames = [empty(generate valid username), too long, invalid, empty (invalid)]
-const usernames = [, chance.string({ length: 151, pool: "abcd" }), "lol'lol", ""];
+const usernames = [undefined, chance.string({ length: 151, pool: "abcd" }), "lol'lol", ""];
 
 // emails = [valid email, too long, invalid]
 const emails = [
@@ -252,7 +252,7 @@ describe("Register page 2-way domain tests", () => {
     cy.wait(500);
   }
 
-  for (let [key, value] of Object.entries(combinations)) {
+  for (const [key, value] of Object.entries(combinations)) {
     // loops through each combination to achieve 2-way testing
     it("testID: " + key.toString(), () => {
       cy.visit("../../www/register.html");
