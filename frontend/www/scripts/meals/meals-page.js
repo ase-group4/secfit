@@ -3,7 +3,7 @@ import { sendRequest, getCurrentUser } from "../utils/api.js";
 import { HOST } from "../utils/host.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
-  let createButton = document.querySelector("#btn-create-meal");
+  const createButton = document.querySelector("#btn-create-meal");
   createButton.addEventListener("click", createMeal);
 
   let ordering = "-date";
@@ -11,33 +11,33 @@ window.addEventListener("DOMContentLoaded", async () => {
   if (urlParams.has("ordering")) {
     ordering = urlParams.get("ordering");
     if (ordering == "name" || ordering == "owner" || ordering == "date") {
-      let aSort = document.querySelector(`a[href="?ordering=${ordering}"`);
+      const aSort = document.querySelector(`a[href="?ordering=${ordering}"`);
       aSort.href = `?ordering=-${ordering}`;
     }
   }
 
-  let currentSort = document.querySelector("#current-sort");
+  const currentSort = document.querySelector("#current-sort");
   currentSort.innerHTML =
     (ordering.startsWith("-") ? "Descending" : "Ascending") + " " + ordering.replace("-", "");
 
-  let currentUser = await getCurrentUser();
+  const currentUser = await getCurrentUser();
   // grab username
   if (ordering.includes("owner")) {
     ordering += "__username";
   }
-  let meals = await fetchMeals(ordering);
+  const meals = await fetchMeals(ordering);
 
-  let tabEls = document.querySelectorAll('a[data-bs-toggle="list"]');
+  const tabEls = document.querySelectorAll('a[data-bs-toggle="list"]');
   for (let i = 0; i < tabEls.length; i++) {
-    let tabEl = tabEls[i];
+    const tabEl = tabEls[i];
     tabEl.addEventListener("show.bs.tab", function (event) {
-      let mealAnchors = document.querySelectorAll(".meal");
+      const mealAnchors = document.querySelectorAll(".meal");
       for (let j = 0; j < meals.length; j++) {
         // I'm assuming that the order of meal objects matches
         // the other of the meal anchor elements. They should, given
         // that I just created them.
-        let meal = meals[j];
-        let mealAnchor = mealAnchors[j];
+        const meal = meals[j];
+        const mealAnchor = mealAnchors[j];
 
         switch (event.currentTarget.id) {
           case "list-my-meals-list":
@@ -61,26 +61,26 @@ function createMeal() {
 }
 
 async function fetchMeals(ordering) {
-  let response = await sendRequest("GET", `${HOST}/api/meals/?ordering=${ordering}`);
+  const response = await sendRequest("GET", `${HOST}/api/meals/?ordering=${ordering}`);
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   } else {
-    let data = await response.json();
+    const data = await response.json();
 
-    let meals = data.results;
-    let container = document.getElementById("div-content");
+    const meals = data.results;
+    const container = document.getElementById("div-content");
     meals.forEach((meal) => {
-      let templateMeal = document.querySelector("#template-meal");
-      let cloneMeal = templateMeal.content.cloneNode(true);
+      const templateMeal = document.querySelector("#template-meal");
+      const cloneMeal = templateMeal.content.cloneNode(true);
 
-      let aMeal = cloneMeal.querySelector("a");
+      const aMeal = cloneMeal.querySelector("a");
       aMeal.href = `meal.html?id=${meal.id}`;
 
-      let h5 = aMeal.querySelector("h5");
+      const h5 = aMeal.querySelector("h5");
       h5.textContent = meal.name;
 
-      let localDate = new Date(meal.date);
+      const localDate = new Date(meal.date);
 
       const table = aMeal.querySelector("table");
       const rows = table.querySelectorAll("tr");

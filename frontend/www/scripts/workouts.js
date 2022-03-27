@@ -2,29 +2,29 @@ import { sendRequest, getCurrentUser } from "./utils/api.js";
 import { HOST } from "./utils/host.js";
 
 async function fetchWorkouts(ordering) {
-  let response = await sendRequest("GET", `${HOST}/api/workouts/?ordering=${ordering}`);
+  const response = await sendRequest("GET", `${HOST}/api/workouts/?ordering=${ordering}`);
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   } else {
-    let data = await response.json();
+    const data = await response.json();
 
-    let workouts = data.results;
-    let container = document.getElementById("div-content");
+    const workouts = data.results;
+    const container = document.getElementById("div-content");
     workouts.forEach((workout) => {
-      let templateWorkout = document.querySelector("#template-workout");
-      let cloneWorkout = templateWorkout.content.cloneNode(true);
+      const templateWorkout = document.querySelector("#template-workout");
+      const cloneWorkout = templateWorkout.content.cloneNode(true);
 
-      let aWorkout = cloneWorkout.querySelector("a");
+      const aWorkout = cloneWorkout.querySelector("a");
       aWorkout.href = `workout.html?id=${workout.id}`;
 
-      let h5 = aWorkout.querySelector("h5");
+      const h5 = aWorkout.querySelector("h5");
       h5.textContent = workout.name;
 
-      let localDate = new Date(workout.date);
+      const localDate = new Date(workout.date);
 
-      let table = aWorkout.querySelector("table");
-      let rows = table.querySelectorAll("tr");
+      const table = aWorkout.querySelector("table");
+      const rows = table.querySelectorAll("tr");
       rows[0].querySelectorAll("td")[1].textContent = localDate.toLocaleDateString(); // Date
       rows[1].querySelectorAll("td")[1].textContent = localDate.toLocaleTimeString(); // Time
       rows[2].querySelectorAll("td")[1].textContent = workout.owner_username; //Owner
@@ -41,13 +41,13 @@ function createWorkout() {
 }
 
 function filterWorkouts(searchValue, authorFilter, workouts, currentUser) {
-  let workoutAnchors = document.querySelectorAll(".workout");
+  const workoutAnchors = document.querySelectorAll(".workout");
   for (let j = 0; j < workouts.length; j++) {
     // I'm assuming that the order of workout objects matches
     // the other of the workout anchor elements. They should, given
     // that I just created them.
-    let workout = workouts[j];
-    let workoutAnchor = workoutAnchors[j];
+    const workout = workouts[j];
+    const workoutAnchor = workoutAnchors[j];
     if (workout.name.toLowerCase().includes(searchValue.toLowerCase())) {
       switch (authorFilter) {
         case "list-my-workouts-list":
@@ -82,7 +82,7 @@ function filterWorkouts(searchValue, authorFilter, workouts, currentUser) {
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
-  let createButton = document.querySelector("#btn-create-workout");
+  const createButton = document.querySelector("#btn-create-workout");
   createButton.addEventListener("click", createWorkout);
   let ordering = "-date";
 
@@ -90,23 +90,23 @@ window.addEventListener("DOMContentLoaded", async () => {
   if (urlParams.has("ordering")) {
     ordering = urlParams.get("ordering");
     if (ordering == "name" || ordering == "owner" || ordering == "date") {
-      let aSort = document.querySelector(`a[href="?ordering=${ordering}"`);
+      const aSort = document.querySelector(`a[href="?ordering=${ordering}"`);
       aSort.href = `?ordering=-${ordering}`;
     }
   }
 
-  let currentSort = document.querySelector("#current-sort");
+  const currentSort = document.querySelector("#current-sort");
   currentSort.innerHTML =
     (ordering.startsWith("-") ? "Descending" : "Ascending") + " " + ordering.replace("-", "");
 
-  let currentUser = await getCurrentUser();
+  const currentUser = await getCurrentUser();
   // grab username
   if (ordering.includes("owner")) {
     ordering += "__username";
   }
-  let workouts = await fetchWorkouts(ordering);
+  const workouts = await fetchWorkouts(ordering);
 
-  let searchInput = document.querySelector("[data-search]");
+  const searchInput = document.querySelector("[data-search]");
   let searchValue = "";
   searchInput.addEventListener("input", (e) => {
     searchValue = e.target.value;
@@ -114,9 +114,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   });
 
   let authorFilter = "list-my-workouts-list";
-  let tabEls = document.querySelectorAll('a[data-bs-toggle="list"]');
+  const tabEls = document.querySelectorAll('a[data-bs-toggle="list"]');
   for (let i = 0; i < tabEls.length; i++) {
-    let tabEl = tabEls[i];
+    const tabEl = tabEls[i];
     tabEl.addEventListener("show.bs.tab", function (event) {
       authorFilter = event.currentTarget.id;
       filterWorkouts(searchValue, authorFilter, workouts, currentUser);

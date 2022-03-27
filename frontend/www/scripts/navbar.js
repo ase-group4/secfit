@@ -69,7 +69,7 @@ function updateNavBar() {
 }
 
 export function makeNavLinkActive(id) {
-  let link = document.getElementById(id);
+  const link = document.getElementById(id);
   link.classList.add("active");
   link.setAttribute("aria-current", "page");
 }

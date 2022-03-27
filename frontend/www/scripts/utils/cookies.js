@@ -8,7 +8,7 @@ export function deleteCookie(name) {
 
 export function getCookieValue(name) {
   let cookieValue = null;
-  let cookieByName = document.cookie.split("; ").find((row) => row.startsWith(name));
+  const cookieByName = document.cookie.split("; ").find((row) => row.startsWith(name));
 
   if (cookieByName) {
     cookieValue = cookieByName.split("=")[1];

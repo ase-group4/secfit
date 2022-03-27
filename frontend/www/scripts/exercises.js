@@ -3,18 +3,18 @@ import { HOST } from "./utils/host.js";
 import { createAlert } from "./utils/dom.js";
 
 async function fetchExerciseTypes() {
-  let response = await sendRequest("GET", `${HOST}/api/exercises/`);
+  const response = await sendRequest("GET", `${HOST}/api/exercises/`);
 
   if (!response.ok) {
-    let data = await response.json();
-    let alert = createAlert("Could not retrieve exercise types!", data);
+    const data = await response.json();
+    const alert = createAlert("Could not retrieve exercise types!", data);
     document.body.prepend(alert);
   } else {
-    let data = await response.json();
+    const data = await response.json();
 
-    let exercises = data.results;
-    let container = document.getElementById("div-content");
-    let exerciseTemplate = document.querySelector("#template-exercise");
+    const exercises = data.results;
+    const container = document.getElementById("div-content");
+    const exerciseTemplate = document.querySelector("#template-exercise");
     exercises.forEach((exercise) => {
       const exerciseAnchor = exerciseTemplate.content.firstElementChild.cloneNode(true);
       exerciseAnchor.href = `exercise.html?id=${exercise.id}`;
@@ -32,14 +32,14 @@ async function fetchExerciseTypes() {
 }
 
 async function getCategories() {
-  let response = await sendRequest("GET", `${HOST}/api/exercise-categories/`);
+  const response = await sendRequest("GET", `${HOST}/api/exercise-categories/`);
   if (!response.ok) {
-    let data = await response.json();
-    let alert = createAlert("Could not retrieve category data!", data);
+    const data = await response.json();
+    const alert = createAlert("Could not retrieve category data!", data);
     document.body.prepend(alert);
   } else {
-    let categoriesData = await response.json();
-    let categorySelect = document.querySelector("#list-tab");
+    const categoriesData = await response.json();
+    const categorySelect = document.querySelector("#list-tab");
 
     let output = `<a class="list-group-item list-group-item-action active" id="list-all" data-bs-toggle="list" href="#list-all" role="tab" aria-controls="all">All</a>`;
     categoriesData["results"].forEach((category) => {
@@ -50,13 +50,13 @@ async function getCategories() {
 }
 
 function filterExercises(exercises, searchValue, categoryFilter) {
-  let exerciseAnchors = document.querySelectorAll(".exercise");
+  const exerciseAnchors = document.querySelectorAll(".exercise");
   for (let j = 0; j < exercises.length; j++) {
     // I'm assuming that the order of exercise objects matches
     // the other of the exercise anchor elements. They should, given
     // that I just created them.
-    let exercise = exercises[j];
-    let exerciseAnchor = exerciseAnchors[j];
+    const exercise = exercises[j];
+    const exerciseAnchor = exerciseAnchors[j];
     if (exercise.name.toLowerCase().includes(searchValue.toLowerCase())) {
       if (isNaN(categoryFilter) || Number(categoryFilter) == exercise.category) {
         exerciseAnchor.classList.remove("hide");
@@ -74,13 +74,13 @@ function createExercise() {
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
-  let createButton = document.querySelector("#btn-create-exercise");
+  const createButton = document.querySelector("#btn-create-exercise");
   createButton.addEventListener("click", createExercise);
   getCategories();
 
-  let exercises = await fetchExerciseTypes();
+  const exercises = await fetchExerciseTypes();
 
-  let searchInput = document.querySelector("[data-search]");
+  const searchInput = document.querySelector("[data-search]");
   let searchValue = "";
   let categoryFilter = "all";
 
@@ -89,9 +89,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     filterExercises(exercises, searchValue, categoryFilter);
   });
 
-  let tabEls = document.querySelectorAll('a[data-bs-toggle="list"]');
+  const tabEls = document.querySelectorAll('a[data-bs-toggle="list"]');
   for (let i = 0; i < tabEls.length; i++) {
-    let tabEl = tabEls[i];
+    const tabEl = tabEls[i];
     tabEl.addEventListener("show.bs.tab", function (event) {
       categoryFilter = event.currentTarget.id.split("-")[1];
       filterExercises(exercises, searchValue, categoryFilter);

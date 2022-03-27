@@ -29,11 +29,11 @@ window.addEventListener("DOMContentLoaded", async () => {
   const addIngredientModal = document.querySelector("create-ingredient-modal");
 
   const urlParams = new URLSearchParams(window.location.search);
-  let currentUser = await getCurrentUser();
+  const currentUser = await getCurrentUser();
 
   if (urlParams.has("id")) {
     const id = urlParams.get("id");
-    let mealData = await retrieveMeal(id);
+    const mealData = await retrieveMeal(id);
 
     for (const hiddenButton of [createIngredientButton, addIngredientButton]) {
       hiddenButton.classList.add("hide");
@@ -61,7 +61,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       );
     }
   } else {
-    let ownerInput = document.querySelector("#inputOwner");
+    const ownerInput = document.querySelector("#inputOwner");
     ownerInput.value = currentUser.username;
     setReadOnly(false, "#form-meal");
     ownerInput.readOnly = !ownerInput.readOnly;
@@ -81,19 +81,19 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 async function retrieveMeal(id) {
   let mealData = null;
-  let response = await sendRequest("GET", `${HOST}/api/meals/${id}/`);
+  const response = await sendRequest("GET", `${HOST}/api/meals/${id}/`);
   if (!response.ok) {
-    let data = await response.json();
-    let alert = createAlert("Could not retrieve your meal data!", data);
+    const data = await response.json();
+    const alert = createAlert("Could not retrieve your meal data!", data);
     document.body.prepend(alert);
   } else {
     mealData = await response.json();
-    let form = document.querySelector("#form-meal");
-    let formData = new FormData(form);
+    const form = document.querySelector("#form-meal");
+    const formData = new FormData(form);
 
-    for (let key of formData.keys()) {
-      let selector = `input[name="${key}"], textarea[name="${key}"]`;
-      let input = form.querySelector(selector);
+    for (const key of formData.keys()) {
+      const selector = `input[name="${key}"], textarea[name="${key}"]`;
+      const input = form.querySelector(selector);
       let newVal = mealData[key];
       if (key == "date") {
         // Creating a valid datetime-local string with the correct local time
@@ -107,11 +107,11 @@ async function retrieveMeal(id) {
     }
 
     // files
-    let filesDiv = document.querySelector("#uploaded-files");
-    for (let file of mealData.files) {
-      let a = document.createElement("a");
+    const filesDiv = document.querySelector("#uploaded-files");
+    for (const file of mealData.files) {
+      const a = document.createElement("a");
       a.href = file.file;
-      let pathArray = file.file.split("/");
+      const pathArray = file.file.split("/");
       a.text = pathArray[pathArray.length - 1];
       a.className = "me-2";
       filesDiv.appendChild(a);
@@ -136,10 +136,10 @@ function handleEditMealButtonClick() {
 }
 
 async function deleteMeal(id) {
-  let response = await sendRequest("DELETE", `${HOST}/api/meals/${id}/`);
+  const response = await sendRequest("DELETE", `${HOST}/api/meals/${id}/`);
   if (!response.ok) {
-    let data = await response.json();
-    let alert = createAlert(`Could not delete this meal. ID: ${id}!`, data);
+    const data = await response.json();
+    const alert = createAlert(`Could not delete this meal. ID: ${id}!`, data);
     document.body.prepend(alert);
   } else {
     window.location.replace("meals.html");
@@ -147,12 +147,12 @@ async function deleteMeal(id) {
 }
 
 async function updateMeal(id) {
-  let submitForm = generateMealForm();
+  const submitForm = generateMealForm();
 
-  let response = await sendRequest("PUT", `${HOST}/api/meals/${id}/`, submitForm, "");
+  const response = await sendRequest("PUT", `${HOST}/api/meals/${id}/`, submitForm, "");
   if (!response.ok) {
-    let data = await response.json();
-    let alert = createAlert("Could not update your meal! :-( ", data);
+    const data = await response.json();
+    const alert = createAlert("Could not update your meal! :-( ", data);
     document.body.prepend(alert);
   } else {
     location.reload();
@@ -160,13 +160,13 @@ async function updateMeal(id) {
 }
 
 function generateMealForm() {
-  let form = document.querySelector("#form-meal");
+  const form = document.querySelector("#form-meal");
 
-  let formData = new FormData(form);
-  let submitForm = new FormData();
+  const formData = new FormData(form);
+  const submitForm = new FormData();
 
   submitForm.append("name", formData.get("name"));
-  let date = new Date(formData.get("date")).toISOString();
+  const date = new Date(formData.get("date")).toISOString();
   submitForm.append("date", date);
   submitForm.append("notes", formData.get("notes"));
 
@@ -177,22 +177,22 @@ function generateMealForm() {
   submitForm.append("ingredient_weights", JSON.stringify(ingredientsInMeal));
 
   // Adds the files
-  for (let file of formData.getAll("files")) {
+  for (const file of formData.getAll("files")) {
     submitForm.append("files", file);
   }
   return submitForm;
 }
 
 async function createMeal() {
-  let submitForm = generateMealForm();
+  const submitForm = generateMealForm();
 
-  let response = await sendRequest("POST", `${HOST}/api/meals/`, submitForm, "");
+  const response = await sendRequest("POST", `${HOST}/api/meals/`, submitForm, "");
 
   if (response.ok) {
     window.location.replace("meals.html");
   } else {
-    let data = await response.json();
-    let alert = createAlert("Could not create new meal", data);
+    const data = await response.json();
+    const alert = createAlert("Could not create new meal", data);
     document.body.prepend(alert);
   }
 }

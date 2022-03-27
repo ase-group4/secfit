@@ -43,7 +43,7 @@ function handleCancelButtonDuringEdit() {
 
   cancelButton.removeEventListener("click", handleCancelButtonDuringEdit);
 
-  let form = document.querySelector("#form-exercise");
+  const form = document.querySelector("#form-exercise");
   if (oldFormData.has("name")) form.name.value = oldFormData.get("name");
   if (oldFormData.has("description")) form.description.value = oldFormData.get("description");
   if (oldFormData.has("duration")) form.duration.value = oldFormData.get("duration");
@@ -67,9 +67,9 @@ function handleCancelButtonDuringCreate() {
 
 async function createExercise() {
   document.querySelector("select").removeAttribute("disabled");
-  let form = document.querySelector("#form-exercise");
-  let formData = new FormData(form);
-  let body = {
+  const form = document.querySelector("#form-exercise");
+  const formData = new FormData(form);
+  const body = {
     name: formData.get("name"),
     description: formData.get("description"),
     duration: formData.get("duration"),
@@ -79,13 +79,13 @@ async function createExercise() {
     unit: formData.get("unit"),
   };
 
-  let response = await sendRequest("POST", `${HOST}/api/exercises/`, body);
+  const response = await sendRequest("POST", `${HOST}/api/exercises/`, body);
 
   if (response.ok) {
     window.location.replace("exercises.html");
   } else {
-    let data = await response.json();
-    let alert = createAlert("Could not create new exercise!", data);
+    const data = await response.json();
+    const alert = createAlert("Could not create new exercise!", data);
     document.body.prepend(alert);
   }
 }
@@ -102,15 +102,15 @@ function handleEditExerciseButtonClick() {
 
   cancelButton.addEventListener("click", handleCancelButtonDuringEdit);
 
-  let form = document.querySelector("#form-exercise");
+  const form = document.querySelector("#form-exercise");
   oldFormData = new FormData(form);
 }
 
 async function deleteExercise(id) {
-  let response = await sendRequest("DELETE", `${HOST}/api/exercises/${id}/`);
+  const response = await sendRequest("DELETE", `${HOST}/api/exercises/${id}/`);
   if (!response.ok) {
-    let data = await response.json();
-    let alert = createAlert(`Could not delete exercise ${id}`, data);
+    const data = await response.json();
+    const alert = createAlert(`Could not delete exercise ${id}`, data);
     document.body.prepend(alert);
   } else {
     window.location.replace("exercises.html");
@@ -118,28 +118,28 @@ async function deleteExercise(id) {
 }
 
 async function retrieveExercise(id) {
-  let response = await sendRequest("GET", `${HOST}/api/exercises/${id}/`);
+  const response = await sendRequest("GET", `${HOST}/api/exercises/${id}/`);
 
   if (!response.ok) {
-    let data = await response.json();
-    let alert = createAlert("Could not retrieve exercise data!", data);
+    const data = await response.json();
+    const alert = createAlert("Could not retrieve exercise data!", data);
     document.body.prepend(alert);
   } else {
     document.querySelector('select[name="muscleGroup"]').removeAttribute("disabled");
-    let exerciseData = await response.json();
-    let form = document.querySelector("#form-exercise");
-    let formData = new FormData(form);
+    const exerciseData = await response.json();
+    const form = document.querySelector("#form-exercise");
+    const formData = new FormData(form);
 
     const categorySelector = document.querySelector('select[name="category"]');
     categorySelector.value = exerciseData["category"];
 
-    for (let key of formData.keys()) {
+    for (const key of formData.keys()) {
       let selector;
       key !== "muscleGroup"
         ? (selector = `input[name="${key}"], textarea[name="${key}"]`)
         : (selector = `select[name=${key}]`);
-      let input = form.querySelector(selector);
-      let newVal = exerciseData[key];
+      const input = form.querySelector(selector);
+      const newVal = exerciseData[key];
       input.value = newVal;
     }
     document.querySelector('select[name="muscleGroup"]').setAttribute("disabled", "");
@@ -147,15 +147,15 @@ async function retrieveExercise(id) {
 }
 
 async function updateExercise(id) {
-  let form = document.querySelector("#form-exercise");
-  let formData = new FormData(form);
+  const form = document.querySelector("#form-exercise");
+  const formData = new FormData(form);
 
-  let muscleGroupSelector = document.querySelector('select[name="muscleGroup"]');
+  const muscleGroupSelector = document.querySelector('select[name="muscleGroup"]');
   muscleGroupSelector.removeAttribute("disabled");
 
-  let selectedMuscleGroup = new MuscleGroup(formData.get("muscleGroup"));
+  const selectedMuscleGroup = new MuscleGroup(formData.get("muscleGroup"));
 
-  let body = {
+  const body = {
     name: formData.get("name"),
     description: formData.get("description"),
     duration: formData.get("duration"),
@@ -164,11 +164,11 @@ async function updateExercise(id) {
     muscleGroup: selectedMuscleGroup.getMuscleGroupType(),
     unit: formData.get("unit"),
   };
-  let response = await sendRequest("PUT", `${HOST}/api/exercises/${id}/`, body);
+  const response = await sendRequest("PUT", `${HOST}/api/exercises/${id}/`, body);
 
   if (!response.ok) {
-    let data = await response.json();
-    let alert = createAlert(`Could not update exercise ${id}`, data);
+    const data = await response.json();
+    const alert = createAlert(`Could not update exercise ${id}`, data);
     document.body.prepend(alert);
   } else {
     muscleGroupSelector.setAttribute("disabled", "");
@@ -193,16 +193,16 @@ async function updateExercise(id) {
 }
 
 async function getCategories() {
-  let response = await sendRequest("GET", `${HOST}/api/exercise-categories/`);
+  const response = await sendRequest("GET", `${HOST}/api/exercise-categories/`);
 
   if (!response.ok) {
-    let data = await response.json();
-    let alert = createAlert("Could not retrieve category data!", data);
+    const data = await response.json();
+    const alert = createAlert("Could not retrieve category data!", data);
     document.body.prepend(alert);
     return;
   } else {
-    let categoriesData = await response.json();
-    let categoryDrop = document.querySelector('select[name="category"]');
+    const categoriesData = await response.json();
+    const categoryDrop = document.querySelector('select[name="category"]');
 
     let output = "";
     categoriesData["results"].forEach((category) => {
