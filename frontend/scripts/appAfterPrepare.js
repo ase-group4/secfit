@@ -26,8 +26,8 @@ module.exports = function (context) {
     // If you're running an older version, the path is:
     // "platforms/android/assets/www/index.html"
     var configFilesToReplace = {
-      browser: "platforms/browser/www/scripts/defaults.js",
-      android: "platforms/android/app/src/main/assets/www/scripts/defaults.js",
+      browser: "platforms/browser/www/scripts/utils/host.js",
+      android: "platforms/android/app/src/main/assets/www/scripts/utils/host.js",
     };
 
     for (var platform of context.opts.cordova.platforms) {
