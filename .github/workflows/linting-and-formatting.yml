@@ -1,0 +1,62 @@
+name: Linting & Formatting
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        linter: [black, flake8]
+        include:
+          - linter: black
+            flags: --check
+          - linter: flake8
+            flags: --config=backend/.flake8
+      fail-fast: false
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install ${{ matrix.linter }}
+        run: pip install ${{ matrix.linter }}
+
+      - name: Run ${{ matrix.linter }}
+        run: ${{ matrix.linter }} backend ${{ matrix.flags }}
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        linter: [prettier, eslint]
+        include:
+          - linter: prettier
+            command: format -- --check .
+          - linter: eslint
+            command: lint -- .
+      fail-fast: false
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Navigate to frontend
+        run: cd frontend
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ${{ matrix.linter }}
+        uses: npm run ${{ matrix.command }}

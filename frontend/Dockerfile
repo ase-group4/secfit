@@ -13,7 +13,7 @@ WORKDIR /app
 COPY . /app/
 
 # Set the host variable in default.js (overwrite)
-RUN echo "const HOST = '${URL_PREFIX}${DOMAIN}:${PORT}';" > ./www/scripts/defaults.js
+RUN echo "export const HOST = '${URL_PREFIX}${DOMAIN}:${PORT}';" > ./www/scripts/utils/host.js
 
 # Install cordova
 # Also install shelljs because of windows for some reason

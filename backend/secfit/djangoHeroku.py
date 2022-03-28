@@ -15,7 +15,6 @@ def settings(
     logging=True,
     secret_key=True
 ):
-
     # Database configuration.
     # TODO: support other database (e.g. TEAL, AMBER, etc, automatically.)
     if databases:

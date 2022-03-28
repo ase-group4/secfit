@@ -105,9 +105,7 @@ class IngredientInMeal(models.Model):
         constraints = [
             # Disallows adding the same ingredient twice to the same meal
             # (increase weight instead).
-            models.UniqueConstraint(
-                fields=["ingredient", "meal"], name="unique_ingredient_in_meal"
-            )
+            models.UniqueConstraint(fields=["ingredient", "meal"], name="unique_ingredient_in_meal")
         ]
 
 
@@ -134,7 +132,5 @@ class MealFile(models.Model):
     """
 
     meal = models.ForeignKey(Meal, on_delete=models.CASCADE, related_name="files")
-    owner = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE, related_name="meal_files"
-    )
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="meal_files")
     file = models.FileField(upload_to=meal_directory_path)

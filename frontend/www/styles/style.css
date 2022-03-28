@@ -1,7 +1,3 @@
-.workout {
-
-}
-
 .hide {
   display: none !important;
 }
@@ -20,7 +16,7 @@
 .divider-text span {
   padding: 7px;
   font-size: 12px;
-  position: relative;   
+  position: relative;
   z-index: 2;
 }
 .divider-text:after {
@@ -34,39 +30,37 @@
 }
 
 .btn-facebook {
-  background-color: #405D9D;
+  background-color: #405d9d;
   color: #fff;
 }
 .btn-twitter {
-  background-color: #42AEEC;
+  background-color: #42aeec;
   color: #fff;
 }
 /* Adapted from https://bootsnipp.com/snippets/z8699 END */
 .comment-wrapper .panel-body {
-  max-height:650px;
-  overflow:auto;
+  max-height: 650px;
+  overflow: auto;
 }
 
 .comment-wrapper .media-list .media img {
-  width:64px;
-  height:64px;
-  border:2px solid #e5e7e8;
+  width: 64px;
+  height: 64px;
+  border: 2px solid #e5e7e8;
 }
 
 .comment-wrapper .media-list .media {
-  border-bottom:1px dashed #efefef;
-  margin-bottom:25px;
+  border-bottom: 1px dashed #efefef;
+  margin-bottom: 25px;
 }
 
-.entry:not(:first-of-type)
-{
-    margin-top: 10px;
+.entry:not(:first-of-type) {
+  margin-top: 10px;
 }
 
 .link-block {
   display: block;
 }
-
 
 .gallery-container {
   max-width: 760px;
@@ -75,12 +69,13 @@
   background: #fff;
 }
 
-.main-img img, .imgs img {
+.main-img img,
+.imgs img {
   width: 100%;
   max-height: 400px;
 }
 
-.imgs > div{
+.imgs > div {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 5px;
@@ -107,7 +102,7 @@
 
 #img-collection-delete {
   z-index: 2;
-  position: absolute; 
+  position: absolute;
 }
 
 @keyframes fadeIn {
@@ -118,5 +113,5 @@
 
 .fade-in {
   opacity: 0;
-  animation: fadeIn 0.5s ease-in 1 forwards ;
+  animation: fadeIn 0.5s ease-in 1 forwards;
 }

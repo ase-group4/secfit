@@ -12,6 +12,8 @@ SecFit (Secure Fitness) is a hybrid mobile application for fitness logging.
   - [Backend](#backend)
   - [Frontend](#frontend)
 - [Running Tests](#running-tests)
+  - [Full statement coverage tests](#full-statement-coverage-tests)
+  - [Cypress tests (Blackbox tests)](#cypress-tests-blackbox-tests)
   - [Data Flow Tests](#data-flow-tests)
 
 ## Deployment
@@ -99,7 +101,12 @@ python3 --version
 
 If output is something other than `3.8.10`, either [update here](https://www.python.org/downloads/) or set up [pyenv](https://github.com/pyenv/pyenv#readme).
 
-2. **Navigate to the `secfit` folder we cloned earlier**
+2. **Navigate to the `backend` subfolder of the `secfit` folder we cloned earlier**
+
+```
+cd secfit/backend
+```
+
 3. **Set up Python virtual environment**
 
 ```
@@ -112,8 +119,10 @@ Whenever you launch a new terminal session for the project, remember to re-run `
 4. **Install Python dependencies**
 
 ```
-pip install -r requirements.txt
+pip install -r dev-requirements.txt
 ```
+
+`dev-requirements.txt` includes `requirements.txt`, but adds dependencies for formatting and linting that are required for pre-commit hooks.
 
 5. **Navigate to backend folder**
 
@@ -149,16 +158,18 @@ python3 manage.py loaddata
 
 1. **Download Node.js** (https://nodejs.org/en/)
 2. **Navigate to `secfit/frontend`**
-3. **Install Cordova**
+3. **Install dependencies**
 
 ```
-npm install -g cordova
+npm ci
 ```
+
+This will also install `husky` and `lint-staged` to lint and format code changes on every commit. This can be skipped by using the `--no-verify` flag on commit, though this should only be used when absolutely necessary.
 
 4. **Run Cordova**
-   - For browser: `cordova run browser`
-   - For Android: `cordova run android`
-   - For iOS: `cordova run ios`
+   - For browser: `cordova run browser --port=3000`
+   - For Android: `cordova run android --port=3000`
+   - For iOS: `cordova run ios --port=3000`
 
 Additional Cordova resources:
 
@@ -211,7 +222,7 @@ pip install -r requirements.txt
 
 ### Cypress tests (Blackbox tests)
 
-To run the tests, there need to be a locally running instance of the backend for the tests to send requests to, set up for this is [explained above](#backend). 
+To run the tests, there need to be a locally running instance of the backend for the tests to send requests to, set up for this is [explained above](#backend).
 
 While running a backend, do the following in the terminal to run the tests:
 

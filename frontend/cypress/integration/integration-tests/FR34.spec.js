@@ -184,7 +184,7 @@ describe("Integration tests", () => {
       cy.get(".meal-ingredient-input").type(ingredient1.name);
       cy.get('input[name="weight"]').type(200);
       fillOutMeal(meal1);
-      cy.wait(1000)
+      cy.wait(1000);
       cy.get("#btn-ok-meal").click();
     });
 
@@ -243,9 +243,9 @@ describe("Integration tests", () => {
 
       cy.get('textarea[name="notes"]').type(chance.sentence());
       cy.get('textarea[name="notes"]').type(chance.sentence());
-      cy.wait(1000)
+      cy.wait(1000);
       cy.get("#btn-ok-meal").click();
-      cy.wait(1000)
+      cy.wait(1000);
     });
 
     it("view meal with ingredient", () => {

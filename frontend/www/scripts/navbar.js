@@ -1,3 +1,5 @@
+import { getCookieValue } from "./utils/cookies.js";
+
 class NavBar extends HTMLElement {
   constructor() {
     super();
@@ -34,3 +36,46 @@ class NavBar extends HTMLElement {
 }
 
 customElements.define("navbar-el", NavBar);
+
+function updateNavBar() {
+  // Emphasize link to current page
+  if (window.location.pathname == "/" || window.location.pathname == "/index.html") {
+    makeNavLinkActive("nav-index");
+  } else if (window.location.pathname == "/workouts.html") {
+    makeNavLinkActive("nav-workouts");
+  } else if (window.location.pathname == "/exercises.html") {
+    makeNavLinkActive("nav-exercises");
+  } else if (window.location.pathname == "/mycoach.html") {
+    makeNavLinkActive("nav-mycoach");
+  } else if (window.location.pathname == "/myathletes.html") {
+    makeNavLinkActive("nav-myathletes");
+  } else if (window.location.pathname == "/meals.html") {
+    makeNavLinkActive("nav-meals");
+  }
+
+  if (isUserAuthenticated()) {
+    document.getElementById("btn-logout").classList.remove("hide");
+
+    document.querySelector('a[href="logout.html"').classList.remove("hide");
+    document.querySelector('a[href="workouts.html"').classList.remove("hide");
+    document.querySelector('a[href="mycoach.html"').classList.remove("hide");
+    document.querySelector('a[href="exercises.html"').classList.remove("hide");
+    document.querySelector('a[href="myathletes.html"').classList.remove("hide");
+    document.querySelector('a[href="meals.html"').classList.remove("hide");
+  } else {
+    document.getElementById("btn-login-nav").classList.remove("hide");
+    document.getElementById("btn-register").classList.remove("hide");
+  }
+}
+
+export function makeNavLinkActive(id) {
+  const link = document.getElementById(id);
+  link.classList.add("active");
+  link.setAttribute("aria-current", "page");
+}
+
+function isUserAuthenticated() {
+  return getCookieValue("access") != null || getCookieValue("refresh") != null;
+}
+
+window.addEventListener("DOMContentLoaded", updateNavBar);
