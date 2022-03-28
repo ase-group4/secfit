@@ -56,7 +56,7 @@ jobs:
         run: cd frontend
 
       - name: Install dependencies
-        run: npm install --frozen-lockfile
+        run: npm ci
 
       - name: Run ${{ matrix.linter }}
         uses: npm run ${{ matrix.command }}

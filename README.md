@@ -161,7 +161,7 @@ python3 manage.py loaddata
 3. **Install dependencies**
 
 ```
-npm install --frozen-lockfile
+npm ci
 ```
 
 This will also install `husky` and `lint-staged` to lint and format code changes on every commit. This can be skipped by using the `--no-verify` flag on commit, though this should only be used when absolutely necessary.
