@@ -1,11 +1,11 @@
 name: Code Analysis
 
+# Triggers workflow on all pushes and Pull Requests to the main branch.
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches: [main]
 
 jobs:
   sonarcloud:
@@ -17,6 +17,7 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Calls on SonarCloud to analyze the code, using our SonarCloud secret.
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
