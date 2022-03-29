@@ -1,6 +1,6 @@
 name: Deployment
 
-# Triggers workflow on pushes to main.
+# Triggers workflow on pushes to the main branch.
 on:
   push:
     branches: [main]

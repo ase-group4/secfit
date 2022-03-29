@@ -1,5 +1,6 @@
 name: Testing
 
+# Triggers workflow on all pushes and Pull Requests to the main branch.
 on:
   push:
     branches: [main]
