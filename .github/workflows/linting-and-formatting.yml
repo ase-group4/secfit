@@ -1,5 +1,6 @@
 name: Linting & Formatting
 
+# Triggers workflow on pushes and pull requests to main branch.
 on:
   push:
     branches: [main]
@@ -11,14 +12,15 @@ jobs:
     name: Backend
     runs-on: ubuntu-latest
 
+    # Sets up a black and flake8 as 'variables' for the workflow.
     strategy:
       matrix:
         linter: [black, flake8]
         include:
           - linter: black
-            flags: --check
+            flags: --check # Appended to 'black' command.
           - linter: flake8
-            flags: --config=backend/.flake8
+            flags: --config=backend/.flake8 # Appended to 'flake8' command.
       fail-fast: false
 
     steps:
@@ -40,14 +42,15 @@ jobs:
     name: Frontend
     runs-on: ubuntu-latest
 
+    # Sets up prettier and eslint as 'variables' for the workflow.
     strategy:
       matrix:
         linter: [prettier, eslint]
         include:
           - linter: prettier
-            command: format -- --check .
+            command: format -- --check . # Appended to 'npm run'.
           - linter: eslint
-            command: lint -- .
+            command: lint -- . # Appended to 'npm run'.
       fail-fast: false
 
     steps:
@@ -57,6 +60,9 @@ jobs:
       - name: Navigate to frontend
         run: cd frontend
 
+      # Uses pre-installed npm on GitHub Ubuntu VM
+      # See version here:
+      # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#package-management
       - name: Install dependencies
         run: npm ci
 
