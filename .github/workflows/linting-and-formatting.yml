@@ -57,14 +57,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Navigate to frontend
-        run: cd frontend
-
       # Uses pre-installed npm on GitHub Ubuntu VM
       # See version here:
       # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#package-management
       - name: Install dependencies
+        working-directory: ./frontend
         run: npm ci
 
       - name: Run ${{ matrix.linter }}
+        working-directory: ./frontend
         run: npm run ${{ matrix.command }}
