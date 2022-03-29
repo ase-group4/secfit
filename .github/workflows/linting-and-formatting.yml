@@ -62,7 +62,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.npm
-          key: npm-${{ hashFiles('package-lock.json') }}
+          key: npm-${{ hashFiles('frontend/package-lock.json') }}
           restore-keys: npm-
 
       # Uses pre-installed npm on GitHub Ubuntu VM
