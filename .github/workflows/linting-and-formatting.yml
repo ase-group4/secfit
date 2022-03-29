@@ -49,8 +49,10 @@ jobs:
         include:
           - linter: prettier
             command: format -- --check . # Appended to 'npm run'.
+            dependencies: ""
           - linter: eslint
             command: lint -- . # Appended to 'npm run'.
+            dependencies: eslint-config-prettier eslint-plugin-cypress eslint-plugin-import eslint-plugin-prettier
       fail-fast: false
 
     steps:
@@ -62,7 +64,7 @@ jobs:
       # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#package-management
       - name: Install ${{ matrix.linter }}
         working-directory: ./frontend
-        run: npm install -g ${{ matrix.linter }}
+        run: npm install -g ${{ matrix.linter }} ${{ matrix.dependencies }}
 
       - name: Run ${{ matrix.linter }}
         working-directory: ./frontend
