@@ -49,22 +49,28 @@ jobs:
         include:
           - linter: prettier
             command: format -- --check . # Appended to 'npm run'.
-            dependencies: ""
           - linter: eslint
             command: lint -- . # Appended to 'npm run'.
-            dependencies: eslint-config-prettier eslint-plugin-cypress eslint-plugin-import eslint-plugin-prettier
       fail-fast: false
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
 
+      # Cache npm dependencies for faster subsequent workflows.
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
+
       # Uses pre-installed npm on GitHub Ubuntu VM
       # See version here:
       # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#package-management
       - name: Install ${{ matrix.linter }}
         working-directory: ./frontend
-        run: npm install -g ${{ matrix.linter }} ${{ matrix.dependencies }}
+        run: npm ci --ignore-scripts
 
       - name: Run ${{ matrix.linter }}
         working-directory: ./frontend
