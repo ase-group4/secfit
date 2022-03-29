@@ -60,9 +60,9 @@ jobs:
       # Uses pre-installed npm on GitHub Ubuntu VM
       # See version here:
       # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md#package-management
-      - name: Install dependencies
+      - name: Install ${{ matrix.linter }}
         working-directory: ./frontend
-        run: npm ci
+        run: npm install ${{ matrix.linter }}
 
       - name: Run ${{ matrix.linter }}
         working-directory: ./frontend
