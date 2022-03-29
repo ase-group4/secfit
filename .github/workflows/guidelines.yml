@@ -36,6 +36,3 @@ jobs:
 
             **For: methods, functions**
             - JavaScript: Does the method/function have JSDoc type annotations for its parameters and return value?
-
-            **For: variables**
-            - JavaScript: If the variable is not later redefined, is it declared as `const`?
