@@ -61,4 +61,4 @@ jobs:
         run: npm ci
 
       - name: Run ${{ matrix.linter }}
-        uses: npm run ${{ matrix.command }}
+        run: npm run ${{ matrix.command }}
