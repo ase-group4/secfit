@@ -1,6 +1,6 @@
-import { sendRequest } from "../utils/api.js";
-import { HOST } from "../utils/host.js";
-import { createAlert } from "../utils/dom.js";
+import { sendRequest } from "../../utils/api.js";
+import { HOST } from "../../utils/host.js";
+import { createAlert } from "../../utils/dom.js";
 
 let goBackButton;
 
