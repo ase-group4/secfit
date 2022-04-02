@@ -14,11 +14,11 @@ const IMAGE_FILE_TYPES = ["jpg", "png", "gif", "jpeg", "JPG", "PNG", "GIF", "JPE
 window.addEventListener("DOMContentLoaded", async () => {
   // Gets the 'id' URL parameter, and stops the script if it is not present.
   const urlParams = new URLSearchParams(window.location.search);
-  const workoutId = urlParams.get("id");
-  if (workoutId === null) {
+  if (!urlParams.has("id")) {
     displayAlert("Missing URL parameter", { detail: "'id' parameter required" });
     return;
   }
+  const workoutId = urlParams.get("id");
 
   const goBackButton = document.querySelector("#btn-back-workout");
   goBackButton.addEventListener("click", () =>
