@@ -11,6 +11,7 @@ async function fetchExerciseTypes() {
     document.body.prepend(alert);
   } else {
     const data = await response.json();
+    console.log(data);
 
     const exercises = data.results;
     const container = document.getElementById("div-content");

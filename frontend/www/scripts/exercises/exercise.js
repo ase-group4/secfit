@@ -1,12 +1,53 @@
 import { setReadOnly, createAlert } from "../utils/dom.js";
 import { sendRequest } from "../utils/api.js";
 import { HOST } from "../utils/host.js";
+import { getCategories } from "./utils.js";
 
 let cancelButton;
 let okButton;
 let deleteButton;
 let editButton;
 let oldFormData;
+
+// Entry point of the script on the gallery page.
+window.addEventListener("DOMContentLoaded", async () => {
+  cancelButton = document.querySelector("#btn-cancel-exercise");
+  okButton = document.querySelector("#btn-ok-exercise");
+  deleteButton = document.querySelector("#btn-delete-exercise");
+  editButton = document.querySelector("#btn-edit-exercise");
+  oldFormData = null;
+
+  const urlParams = new URLSearchParams(window.location.search);
+
+  const categories = await getCategories();
+
+  // view/edit
+  if (urlParams.has("id")) {
+    const exerciseId = urlParams.get("id");
+    await retrieveExercise(exerciseId, categories);
+
+    editButton.addEventListener("click", handleEditExerciseButtonClick);
+    deleteButton.addEventListener(
+      "click",
+      (async (id) => await deleteExercise(id)).bind(undefined, exerciseId)
+    );
+    okButton.addEventListener(
+      "click",
+      (async (id) => await updateExercise(id)).bind(undefined, exerciseId)
+    );
+  }
+  //create
+  else {
+    setReadOnly(false, "#form-exercise");
+
+    editButton.className += " hide";
+    okButton.className = okButton.className.replace(" hide", "");
+    cancelButton.className = cancelButton.className.replace(" hide", "");
+
+    okButton.addEventListener("click", async () => await createExercise());
+    cancelButton.addEventListener("click", handleCancelButtonDuringCreate);
+  }
+});
 
 class MuscleGroup {
   constructor(type) {
@@ -191,63 +232,3 @@ async function updateExercise(id) {
     oldFormData.delete("category");
   }
 }
-
-async function getCategories() {
-  const response = await sendRequest("GET", `${HOST}/api/exercise-categories/`);
-
-  if (!response.ok) {
-    const data = await response.json();
-    const alert = createAlert("Could not retrieve category data!", data);
-    document.body.prepend(alert);
-    return;
-  } else {
-    const categoriesData = await response.json();
-    const categoryDrop = document.querySelector('select[name="category"]');
-
-    let output = "";
-    categoriesData["results"].forEach((category) => {
-      output += `<option value=${category.id}>${category.name}</option>`;
-    });
-    categoryDrop.innerHTML = output;
-    return categoriesData["results"];
-  }
-}
-
-window.addEventListener("DOMContentLoaded", async () => {
-  cancelButton = document.querySelector("#btn-cancel-exercise");
-  okButton = document.querySelector("#btn-ok-exercise");
-  deleteButton = document.querySelector("#btn-delete-exercise");
-  editButton = document.querySelector("#btn-edit-exercise");
-  oldFormData = null;
-
-  const urlParams = new URLSearchParams(window.location.search);
-
-  const categories = await getCategories();
-
-  // view/edit
-  if (urlParams.has("id")) {
-    const exerciseId = urlParams.get("id");
-    await retrieveExercise(exerciseId, categories);
-
-    editButton.addEventListener("click", handleEditExerciseButtonClick);
-    deleteButton.addEventListener(
-      "click",
-      (async (id) => await deleteExercise(id)).bind(undefined, exerciseId)
-    );
-    okButton.addEventListener(
-      "click",
-      (async (id) => await updateExercise(id)).bind(undefined, exerciseId)
-    );
-  }
-  //create
-  else {
-    setReadOnly(false, "#form-exercise");
-
-    editButton.className += " hide";
-    okButton.className = okButton.className.replace(" hide", "");
-    cancelButton.className = cancelButton.className.replace(" hide", "");
-
-    okButton.addEventListener("click", async () => await createExercise());
-    cancelButton.addEventListener("click", handleCancelButtonDuringCreate);
-  }
-});
