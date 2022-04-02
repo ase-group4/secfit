@@ -39,6 +39,11 @@ export function createAlert(header, data) {
   return alertDiv;
 }
 
+export function displayAlert(header, data) {
+  const alert = createAlert(header, data);
+  document.body.prepend(alert);
+}
+
 export function setReadOnly(readOnly, selector) {
   const form = document.querySelector(selector);
   const formData = new FormData(form);
