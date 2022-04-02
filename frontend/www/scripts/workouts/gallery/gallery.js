@@ -1,146 +1,156 @@
 import { sendRequest } from "../../utils/api.js";
 import { HOST } from "../../utils/host.js";
-import { createAlert } from "../../utils/dom.js";
+import { displayAlert } from "../../utils/dom.js";
+import { fetchWorkout, getWorkoutFileType } from "../utils.js";
 
-let goBackButton;
+// JSDoc type imports.
+/** @typedef {import("../types.js").Workout} Workout */
+/** @typedef {import("../types.js").WorkoutFile} WorkoutFile */
 
-async function retrieveWorkoutImages(id) {
-  let workoutData = null;
-  const response = await sendRequest("GET", `${HOST}/api/workouts/${id}/`);
+/** The accepted file types that should be displayed as images in the gallery. */
+const IMAGE_FILE_TYPES = ["jpg", "png", "gif", "jpeg", "JPG", "PNG", "GIF", "JPEG"];
 
-  if (!response.ok) {
-    const data = await response.json();
-    const alert = createAlert("Could not retrieve workout data!", data);
-    document.body.prepend(alert);
-  } else {
-    workoutData = await response.json();
-
-    document.getElementById("workout-title").innerHTML = "Workout name: " + workoutData["name"];
-    document.getElementById("workout-owner").innerHTML = "Owner: " + workoutData["owner_username"];
-
-    const hasNoImages = workoutData.files.length == 0;
-    const noImageText = document.querySelector("#no-images-text");
-
-    if (hasNoImages) {
-      noImageText.classList.remove("hide");
-      return;
-    }
-
-    noImageText.classList.add("hide");
-
-    const filesDiv = document.getElementById("img-collection");
-    const filesDeleteDiv = document.getElementById("img-collection-delete");
-
-    const currentImageFileElement = document.querySelector("#current");
-    let isFirstImg = true;
-
-    let fileCounter = 0;
-
-    for (const file of workoutData.files) {
-      const a = document.createElement("a");
-      a.href = file.file;
-      const pathArray = file.file.split("/");
-      a.text = pathArray[pathArray.length - 1];
-      a.className = "me-2";
-
-      const isImage = ["jpg", "png", "gif", "jpeg", "JPG", "PNG", "GIF", "JPEG"].includes(
-        a.text.split(".")[1]
-      );
-
-      if (isImage) {
-        const deleteImgButton = document.createElement("input");
-        deleteImgButton.type = "button";
-        deleteImgButton.className = "btn btn-close";
-        deleteImgButton.id = file.url.split("/")[file.url.split("/").length - 2];
-        deleteImgButton.addEventListener("click", () =>
-          handleDeleteImgClick(
-            deleteImgButton.id,
-            "DELETE",
-            `Could not delete workout ${deleteImgButton.id}!`,
-            HOST,
-            ["jpg", "png", "gif", "jpeg", "JPG", "PNG", "GIF", "JPEG"]
-          )
-        );
-        filesDeleteDiv.appendChild(deleteImgButton);
-
-        const img = document.createElement("img");
-        img.src = file.file;
-
-        filesDiv.appendChild(img);
-        deleteImgButton.style.left = `${(fileCounter % 4) * 191}px`;
-        deleteImgButton.style.top = `${Math.floor(fileCounter / 4) * 105}px`;
-
-        if (isFirstImg) {
-          currentImageFileElement.src = file.file;
-          isFirstImg = false;
-        }
-        fileCounter++;
-      }
-    }
-
-    const otherImageFileElements = document.querySelectorAll(".imgs img");
-    const selectedOpacity = 0.6;
-    otherImageFileElements[0].style.opacity = selectedOpacity;
-
-    otherImageFileElements.forEach((imageFileElement) =>
-      imageFileElement.addEventListener("click", (event) => {
-        //Changes the main image
-        currentImageFileElement.src = event.target.src;
-
-        //Adds the fade animation
-        currentImageFileElement.classList.add("fade-in");
-        setTimeout(() => currentImageFileElement.classList.remove("fade-in"), 500);
-
-        //Sets the opacity of the selected image to 0.4
-        otherImageFileElements.forEach((imageFileElement) => (imageFileElement.style.opacity = 1));
-        event.target.style.opacity = selectedOpacity;
-      })
-    );
-  }
-  return workoutData;
-}
-
-async function validateImgFileType(id, host_variable, acceptedFileTypes) {
-  const file = await sendRequest("GET", `${host_variable}/api/workout-files/${id}/`);
-  const fileData = await file.json();
-  const fileType = fileData.file.split("/")[fileData.file.split("/").length - 1].split(".")[1];
-
-  return acceptedFileTypes.includes(fileType);
-}
-
-async function handleDeleteImgClick(
-  id,
-  http_keyword,
-  fail_alert_text,
-  host_variable,
-  acceptedFileTypes
-) {
-  if (validateImgFileType(id, host_variable, acceptedFileTypes)) {
+// Entry point of the script on the gallery page.
+window.addEventListener("DOMContentLoaded", async () => {
+  // Gets the 'id' URL parameter, and stops the script if it is not present.
+  const urlParams = new URLSearchParams(window.location.search);
+  const workoutId = urlParams.get("id");
+  if (workoutId === null) {
+    displayAlert("Missing URL parameter", { detail: "'id' parameter required" });
     return;
   }
 
-  const response = await sendRequest(http_keyword, `${host_variable}/api/workout-files/${id}/`);
+  const goBackButton = document.querySelector("#btn-back-workout");
+  goBackButton.addEventListener("click", () =>
+    window.location.replace(`workout.html?id=${workoutId}`)
+  );
 
-  if (!response.ok) {
-    const data = await response.json();
-    const alert = createAlert(fail_alert_text, data);
-    document.body.prepend(alert);
-  } else {
-    location.reload();
+  const { ok, workout } = await fetchWorkout(workoutId);
+  if (!ok) return;
+
+  displayWorkoutDetails(workout);
+  displayWorkoutImages(workout.files);
+});
+
+/**
+ * Displays the title and owner of the workout on the gallery page.
+ * @param {Workout} workout
+ */
+function displayWorkoutDetails(workout) {
+  document.getElementById("workout-title").innerHTML = "Workout name: " + workout["name"];
+  document.getElementById("workout-owner").innerHTML = "Owner: " + workout["owner_username"];
+}
+
+/**
+ * Displays images submitted as part of the workout.
+ * @param {WorkoutFile[]} workoutFiles
+ */
+function displayWorkoutImages(workoutFiles) {
+  // Filters the given files for accepted image file types.
+  const imageFiles = workoutFiles?.filter((file) =>
+    IMAGE_FILE_TYPES.includes(getWorkoutFileType(file))
+  );
+
+  // Returns early if the workout has no image files.
+  if (!imageFiles || imageFiles.length === 0) {
+    const noImageText = document.querySelector("#no-images-text");
+    noImageText.classList.remove("hide");
+    return;
+  }
+
+  /**
+   * Stores the images added to the bottom navigation bar of the gallery.
+   * @type {HTMLImageElement[]}
+   */
+  const navigationBarImages = [];
+
+  const currentImage = document.querySelector("#current");
+  const selectedOpacity = 0.6; // Opacity of the currently selected image in the gallery navigation bar.
+  let isFirstImage = true;
+
+  for (const [index, file] of imageFiles.entries()) {
+    // Adds the image in the bottom gallery navigation row.
+    const image = document.createElement("img");
+    image.src = file.file;
+    navigationBarImages.push(image);
+    const filesDiv = document.getElementById("img-collection");
+    filesDiv.appendChild(image);
+
+    // Adds a delete button to the image.
+    const deleteImageButton = createDeleteImageButton(file, index);
+    const filesDeleteDiv = document.getElementById("img-collection-delete");
+    filesDeleteDiv.appendChild(deleteImageButton);
+
+    // Sets the first image file as the current image.
+    if (isFirstImage) {
+      currentImage.src = file.file;
+      image.style.opacity = selectedOpacity;
+      isFirstImage = false;
+    }
+  }
+
+  addNavigationBarImageListeners(navigationBarImages, currentImage, selectedOpacity);
+}
+
+/**
+ * Adds a listener to each of the given `navigationBarImages`,
+ * that changes the `currentImage` to that image on click,
+ * and sets that image's opacity in the gallery navigation to `selectedOpacity`.
+ * @param {HTMLImageElement[]} navigationBarImages
+ * @param {HTMLImageElement} currentImage
+ * @param {number} selectedOpacity
+ */
+function addNavigationBarImageListeners(navigationBarImages, currentImage, selectedOpacity) {
+  for (const image of navigationBarImages) {
+    image.addEventListener("click", () => {
+      if (image.src === currentImage.src) return;
+
+      // Changes the main image.
+      currentImage.src = image.src;
+
+      // Adds the fade animation.
+      currentImage.classList.add("fade-in");
+      setTimeout(() => currentImage.classList.remove("fade-in"), 500);
+
+      // Sets correct opacities for images in the gallery navigation bar.
+      image.style.opacity = selectedOpacity;
+      const otherImages = navigationBarImages.filter((otherImage) => image !== otherImage);
+      for (const otherImage of otherImages) {
+        otherImage.style.opacity = 1;
+      }
+    });
   }
 }
 
-function handleGoBackToWorkoutClick() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const id = urlParams.get("id");
-  window.location.replace(`workout.html?id=${id}`);
+/**
+ * Returns an HTML button deletes the given workout file on click.
+ * @param {WorkoutFile} file The workout file to delete on click.
+ * @param {number} galleryIndex The index of this file in the gallery navigation, for button layout.
+ * @returns {HTMLInputElement} The created button.
+ */
+function createDeleteImageButton(file, galleryIndex) {
+  const deleteImageButton = document.createElement("input");
+  deleteImageButton.type = "button";
+  deleteImageButton.className = "btn btn-close";
+  deleteImageButton.style.left = `${(galleryIndex % 4) * 191}px`;
+  deleteImageButton.style.top = `${Math.floor(galleryIndex / 4) * 105}px`;
+  deleteImageButton.addEventListener("click", () => handleDeleteImgClick(file.id));
+  return deleteImageButton;
 }
 
-window.addEventListener("DOMContentLoaded", async () => {
-  goBackButton = document.querySelector("#btn-back-workout");
-  goBackButton.addEventListener("click", handleGoBackToWorkoutClick);
+/**
+ * Deletes the workout file with the given ID, then reloads the page.
+ * @param {number} id ID of the workout image to delete.
+ * @param {string} errorAlertText Text to display in the error alert if deletion failed.
+ */
+async function handleDeleteImgClick(id) {
+  const response = await sendRequest("DELETE", `${HOST}/api/workout-files/${id}/`);
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const id = urlParams.get("id");
-  await retrieveWorkoutImages(id);
-});
+  if (!response.ok) {
+    const data = await response.json();
+    displayAlert(`Could not delete workout file ${id}!`, data);
+    return;
+  }
+
+  location.reload();
+}
