@@ -15,4 +15,11 @@
  * @property {ApiUrl[]} exercise_instances API URLs to instances of this exercise on workouts.
  */
 
+/**
+ * A default category for exercises on SecFit.
+ * @typedef {Object} ExerciseCategory
+ * @property {number} id
+ * @property {string} name
+ */
+
 export {};

@@ -1,6 +1,7 @@
 import { sendRequest } from "../utils/api.js";
 import { HOST } from "../utils/host.js";
 import { createAlert } from "../utils/dom.js";
+import { fetchCategories } from "./utils.js";
 
 async function fetchExerciseTypes() {
   const response = await sendRequest("GET", `${HOST}/api/exercises/`);
@@ -32,22 +33,32 @@ async function fetchExerciseTypes() {
   }
 }
 
-async function getCategories() {
-  const response = await sendRequest("GET", `${HOST}/api/exercise-categories/`);
-  if (!response.ok) {
-    const data = await response.json();
-    const alert = createAlert("Could not retrieve category data!", data);
-    document.body.prepend(alert);
-  } else {
-    const categoriesData = await response.json();
-    const categorySelect = document.querySelector("#list-tab");
+async function populateCategoryBar() {
+  const categoryBar = document.querySelector("#list-tab");
 
-    let output = `<a class="list-group-item list-group-item-action active" id="list-all" data-bs-toggle="list" href="#list-all" role="tab" aria-controls="all">All</a>`;
-    categoriesData["results"].forEach((category) => {
-      output += `<a class="list-group-item list-group-item-action" id="list-${category.id}" data-bs-toggle="list" href="#list-${category.id}" role="tab" aria-controls=${category.name}>${category.name}</a>`;
-    });
-    categorySelect.innerHTML = output;
+  const { ok, categories } = await fetchCategories();
+  if (!ok) return;
+
+  const allTab = createTabElement({ id: "all", name: "All", active: true });
+  categoryBar.appendChild(allTab);
+
+  for (const category of categories) {
+    const categoryTab = createTabElement(category);
+    categoryBar.appendChild(categoryTab);
   }
+}
+
+function createTabElement({ id, name, active }) {
+  const tab = document.createElement("a");
+  tab.innerText = name;
+  tab.className = "list-group-item list-group-item-action";
+  if (active) tab.classList.add("active");
+  tab.id = `list-${id}`;
+  tab.href = `#list-${id}`;
+  tab.setAttribute("role", "tab");
+  tab.setAttribute("data-bs-toggle", "list");
+  tab.setAttribute("aria-controls", name);
+  return tab;
 }
 
 function filterExercises(exercises, searchValue, categoryFilter) {
@@ -77,7 +88,7 @@ function createExercise() {
 window.addEventListener("DOMContentLoaded", async () => {
   const createButton = document.querySelector("#btn-create-exercise");
   createButton.addEventListener("click", createExercise);
-  getCategories();
+  populateCategoryBar();
 
   const exercises = await fetchExerciseTypes();
 

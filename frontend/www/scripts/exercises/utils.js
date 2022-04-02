@@ -2,24 +2,22 @@ import { sendRequest } from "../utils/api.js";
 import { HOST } from "../utils/host.js";
 import { createAlert } from "../utils/dom.js";
 
-export async function getCategories() {
+// JSDoc type imports.
+/** @typedef {import("./types.js").ExerciseCategory} ExerciseCategory */
+
+/**
+ * Fetches SecFit's default exercise categories.
+ * @returns {Promise<{ ok: true, categories: ExerciseCategory[] } | { ok: false }>} Result of the fetch.
+ */
+export async function fetchCategories() {
   const response = await sendRequest("GET", `${HOST}/api/exercise-categories/`);
+  const data = await response.json();
 
   if (!response.ok) {
-    const data = await response.json();
     const alert = createAlert("Could not retrieve category data!", data);
     document.body.prepend(alert);
-    return;
-  } else {
-    const categoriesData = await response.json();
-    console.log(categoriesData);
-    const categoryDrop = document.querySelector('select[name="category"]');
-
-    let output = "";
-    categoriesData["results"].forEach((category) => {
-      output += `<option value=${category.id}>${category.name}</option>`;
-    });
-    categoryDrop.innerHTML = output;
-    return categoriesData["results"];
+    return { ok: false };
   }
+
+  return { ok: true, categories: data.results };
 }

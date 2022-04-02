@@ -1,7 +1,10 @@
 import { setReadOnly, createAlert } from "../utils/dom.js";
 import { sendRequest } from "../utils/api.js";
 import { HOST } from "../utils/host.js";
-import { getCategories } from "./utils.js";
+import { fetchCategories } from "./utils.js";
+
+// JSDoc type imports.
+/** @typedef {import("./types.js").ExerciseCategory} ExerciseCategory */
 
 let cancelButton;
 let okButton;
@@ -19,7 +22,10 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   const urlParams = new URLSearchParams(window.location.search);
 
-  const categories = await getCategories();
+  const { ok, categories } = await fetchCategories();
+  if (ok) {
+    populateCategoryDropdown(categories);
+  }
 
   // view/edit
   if (urlParams.has("id")) {
@@ -71,6 +77,22 @@ class MuscleGroup {
   getMuscleGroupType() {
     console.log(this.type, "SWIOEFIWEUFH");
     return this.type;
+  }
+}
+
+/**
+ * Populates the category dropdown on the exercise page
+ * with an option for each of the given exercise categories.
+ * @param {ExerciseCategory[]} categories
+ */
+function populateCategoryDropdown(categories) {
+  const categoryDropdown = document.querySelector('select[name="category"]');
+
+  for (const category of categories) {
+    const option = document.createElement("option");
+    option.value = category.id;
+    option.innerText = category.name;
+    categoryDropdown.appendChild(option);
   }
 }
 
