@@ -64,9 +64,7 @@ describe("Create exercise instance", () => {
 
     it("Create workout with exercise", () => {
       cy.login(user, user_password);
-      const workout = { ...valid_workout };
       workout.exercise = { ...exercise1 };
-      workout.name = "Workout-" + user;
       cy.addWorkout(workout);
     });
 

@@ -41,6 +41,6 @@ describe("Workout gallery", () => {
     cy.get("#btn-gallery-workout").click();
     cy.wait(500);
     cy.get(".btn-close").click();
-    cy.get(".main-img").find("img").should("have.attr", "src").should("include", "bugs.jpg");
+    cy.get(".main-img").find("img").should("have.attr", "src").should("not.include", "bugs.jpg");
   });
 });
