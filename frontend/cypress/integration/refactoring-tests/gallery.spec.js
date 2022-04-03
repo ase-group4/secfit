@@ -36,11 +36,11 @@ describe("Workout gallery", () => {
     cy.url().should("include", "/workout.html");
   });
 
-  it("May press button to delete workoutfile, but nothing happens :/", () => {
+  it("May press button to delete workoutfile (this functionality was fixed during codereview+refactoring)", () => {
     cy.goToWorkout(workout.name);
     cy.get("#btn-gallery-workout").click();
     cy.wait(500);
     cy.get(".btn-close").click();
-    cy.get(".main-img").find("img").should("have.attr", "src").should("not.include", "bugs.jpg");
+    cy.get("#no-images-text").contains("This workout has no images.").should("be.visible");
   });
 });

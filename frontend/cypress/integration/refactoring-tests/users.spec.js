@@ -44,6 +44,8 @@ describe("Workouts visibility", () => {
       .within(() => {
         cy.get(".btn-success").click();
       });
+    cy.wait(1000);
+    cy.get('input[name="coach"]').should("have.value", coach);
   });
 
   it("Coach may upload athletefile", () => {
