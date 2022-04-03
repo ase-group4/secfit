@@ -32,14 +32,6 @@ const valid_workout = {
   files: "images/bugs.jpg",
 };
 
-function validateExercise(exercise) {
-  cy.get('textarea[name="description"]').should("have.value", exercise.description);
-  cy.get('input[name="unit"]').should("have.value", exercise.unit);
-  cy.get('input[name="duration"]').should("have.value", exercise.duration);
-  cy.get('input[name="calories"]').should("have.value", exercise.calories);
-  cy.get('select[name="category"]').find("option:selected").should("have.text", exercise.category);
-}
-
 describe("Create exercise instance", () => {
   const user = chance.first() + chance.last().replace(/[^a-zA-Z0-9]/g, "-");
   const user_password = chance.string({ length: 10, pool: "abcd" });
@@ -49,6 +41,16 @@ describe("Create exercise instance", () => {
   exercise2.name = "Exercise2-" + user;
   const workout = { ...valid_workout };
   workout.name = "Workout-" + user;
+
+  function validateExercise(exercise) {
+    cy.get('textarea[name="description"]').should("have.value", exercise.description);
+    cy.get('input[name="unit"]').should("have.value", exercise.unit);
+    cy.get('input[name="duration"]').should("have.value", exercise.duration);
+    cy.get('input[name="calories"]').should("have.value", exercise.calories);
+    cy.get('select[name="category"]')
+      .find("option:selected")
+      .should("have.text", exercise.category);
+  }
 
   describe("Create exercise instance", () => {
     it("Create exercise (without re-logging in, tests RememberMe)", () => {
