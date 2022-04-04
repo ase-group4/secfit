@@ -1,8 +1,8 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import Offer, AthleteFile
 from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserChangeForm, CustomUserCreationForm
+from .models import Offer, AthleteFile
 
 
 class CustomUserAdmin(UserAdmin):
