@@ -20,8 +20,15 @@ from workouts.permissions import (
     IsWorkoutPublic,
 )
 from workouts.mixins import CreateListModelMixin
-from workouts.models import Workout, Exercise, ExerciseInstance, ExerciseCategory, WorkoutFile
-from workouts.serializers import WorkoutSerializer, ExerciseSerializer
+from workouts.models import (
+    MuscleGroup,
+    Workout,
+    Exercise,
+    ExerciseInstance,
+    ExerciseCategory,
+    WorkoutFile,
+)
+from workouts.serializers import MuscleGroupSerializer, WorkoutSerializer, ExerciseSerializer
 from workouts.serializers import RememberMeSerializer
 from workouts.serializers import (
     ExerciseInstanceSerializer,
@@ -195,8 +202,21 @@ class ExerciseList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Gene
         return self.create(request, *args, **kwargs)
 
 
-class ExerciseCategories(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-    """Class defining the web response for getting exercise categories
+class MuscleGroups(mixins.ListModelMixin, generics.GenericAPIView):
+    """Class defining the web response for getting muscle groups.
+
+    HTTP methods: GET
+    """
+
+    queryset = MuscleGroup.objects.all()
+    serializer_class = MuscleGroupSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class ExerciseCategories(mixins.ListModelMixin, generics.GenericAPIView):
+    """Class defining the web response for getting exercise categories.
 
     HTTP methods: GET
     """

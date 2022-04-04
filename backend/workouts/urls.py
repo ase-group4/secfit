@@ -17,6 +17,7 @@ urlpatterns = format_suffix_patterns(
             name="workout-detail",
         ),
         path("api/exercises/", views.ExerciseList.as_view(), name="exercise-list"),
+        path("api/muscle-groups/", views.MuscleGroups.as_view(), name="muscle-groups"),
         path(
             "api/exercise-categories/",
             views.ExerciseCategories.as_view(),
