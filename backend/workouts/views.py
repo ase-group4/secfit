@@ -29,18 +29,11 @@ from workouts.models import (
     WorkoutFile,
 )
 from workouts.serializers import MuscleGroupSerializer, WorkoutSerializer, ExerciseSerializer
-from workouts.serializers import RememberMeSerializer
 from workouts.serializers import (
     ExerciseInstanceSerializer,
     WorkoutFileSerializer,
     ExerciseCategorySerializer,
 )
-from django.core.exceptions import PermissionDenied
-from rest_framework_simplejwt.tokens import RefreshToken
-from collections import namedtuple
-import base64
-import pickle
-from django.core.signing import Signer
 
 
 @api_view(["GET"])
@@ -63,51 +56,6 @@ def api_root(request, format=None):
             "ingredients": reverse("ingredients", request=request, format=format),
         }
     )
-
-
-# Allow users to save a persistent session in their browser
-class RememberMe(
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    generics.GenericAPIView,
-):
-
-    serializer_class = RememberMeSerializer
-
-    def get(self, request):
-        if request.user.is_authenticated is False:
-            raise PermissionDenied
-        else:
-            return Response({"remember_me": self.rememberme()})
-
-    def post(self, request):
-        cookieObject = namedtuple("Cookies", request.COOKIES.keys())(*request.COOKIES.values())
-        user = self.get_user(cookieObject)
-        refresh = RefreshToken.for_user(user)
-        return Response(
-            {
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
-            }
-        )
-
-    def get_user(self, cookieObject):
-        decode = base64.b64decode(cookieObject.remember_me)
-        user, sign = pickle.loads(decode)
-
-        # Validate signature
-        if sign == self.sign_user(user):
-            return user
-
-    def rememberme(self):
-        creds = [self.request.user, self.sign_user(str(self.request.user))]
-        return base64.b64encode(pickle.dumps(creds))
-
-    def sign_user(self, username):
-        signer = Signer()
-        signed_user = signer.sign(username)
-        return signed_user
 
 
 class WorkoutList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):

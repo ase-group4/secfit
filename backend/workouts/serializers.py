@@ -9,7 +9,6 @@ from workouts.models import (
     ExerciseInstance,
     ExerciseCategory,
     WorkoutFile,
-    RememberMe,
 )
 
 
@@ -256,17 +255,3 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
             "unit",
             "instances",
         ]
-
-
-class RememberMeSerializer(serializers.HyperlinkedModelSerializer):
-    """Serializer for an RememberMe. Hyperlinks are used for relationships by default.
-
-    Serialized fields: remember_me
-
-    Attributes:
-        remember_me:    Value of cookie used for remember me functionality
-    """
-
-    class Meta:
-        model = RememberMe
-        fields = ["remember_me"]
