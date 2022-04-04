@@ -15,5 +15,9 @@ urlpatterns = [
     path(OFFERS_PATH + "<int:pk>/", OfferDetail.as_view(), name="offer-detail"),
     # Athlete-files
     path(FILES_PATH, AthleteFileList.as_view(), name="athlete-file-list"),
-    path(FILES_PATH + "<int:pk>/", AthleteFileDetail.as_view(), name="athletefile-detail",),
+    path(
+        FILES_PATH + "<int:pk>/",
+        AthleteFileDetail.as_view(),
+        name="athletefile-detail",
+    ),
 ]
