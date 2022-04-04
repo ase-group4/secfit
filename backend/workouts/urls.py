@@ -1,32 +1,38 @@
-from django.urls import path, include
+from django.urls import path
 from workouts import views
 from rest_framework.urlpatterns import format_suffix_patterns
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 
-# This is a bit messy and will need to change
 urlpatterns = format_suffix_patterns(
     [
-        path("", views.api_root),
-        path("api/workouts/", views.WorkoutList.as_view(), name="workout-list"),
+        path(
+            "api/workouts/",
+            views.WorkoutList.as_view(),
+            name="workout-list",
+        ),
         path(
             "api/workouts/<int:pk>/",
             views.WorkoutDetail.as_view(),
             name="workout-detail",
         ),
-        path("api/exercises/", views.ExerciseList.as_view(), name="exercise-list"),
-        path("api/muscle-groups/", views.MuscleGroups.as_view(), name="muscle-groups"),
         path(
-            "api/exercise-categories/",
-            views.ExerciseCategories.as_view(),
-            name="exercise-categories",
+            "api/exercises/",
+            views.ExerciseList.as_view(),
+            name="exercise-list",
         ),
         path(
             "api/exercises/<int:pk>/",
             views.ExerciseDetail.as_view(),
             name="exercise-detail",
+        ),
+        path(
+            "api/muscle-groups/",
+            views.MuscleGroups.as_view(),
+            name="muscle-groups",
+        ),
+        path(
+            "api/exercise-categories/",
+            views.ExerciseCategories.as_view(),
+            name="exercise-categories",
         ),
         path(
             "api/exercise-instances/",
@@ -48,10 +54,5 @@ urlpatterns = format_suffix_patterns(
             views.WorkoutFileDetail.as_view(),
             name="workoutfile-detail",
         ),
-        path("", include("users.urls")),
-        path("", include("comments.urls")),
-        path("api/auth/", include("rest_framework.urls")),
-        path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-        path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     ]
 )

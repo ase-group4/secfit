@@ -3,9 +3,6 @@
 from rest_framework import generics, mixins
 from rest_framework import permissions
 from rest_framework.parsers import JSONParser
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
 from django.db.models import Q
 from rest_framework import filters
 from utils.pagination import ExpandedPagination
@@ -34,28 +31,6 @@ from workouts.serializers import (
     WorkoutFileSerializer,
     ExerciseCategorySerializer,
 )
-
-
-@api_view(["GET"])
-def api_root(request, format=None):
-    return Response(
-        {
-            "users": reverse("user-list", request=request, format=format),
-            "workouts": reverse("workout-list", request=request, format=format),
-            "exercises": reverse("exercise-list", request=request, format=format),
-            "exercise-instances": reverse("exercise-instance-list", request=request, format=format),
-            "exercise-categories": reverse("exercise-categories", request=request, format=format),
-            "workout-files": reverse("workout-file-list", request=request, format=format),
-            "comments": reverse("comment-list", request=request, format=format),
-            "likes": reverse("like-list", request=request, format=format),
-            "meals": reverse(
-                "meal-list",
-                request=request,
-                format=format,
-            ),
-            "ingredients": reverse("ingredients", request=request, format=format),
-        }
-    )
 
 
 class WorkoutList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
