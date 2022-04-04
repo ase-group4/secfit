@@ -44,7 +44,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   const urlParams = new URLSearchParams(window.location.search);
 
-  // Fetches for the dropdown are done concurrently, to reduce wait time.
+  // Fetches for the form dropdowns are done concurrently, to reduce wait time.
   await Promise.all([initializeMuscleGroups(), initializeCategories()]);
 
   // If URL parameter "id" is passed, the page should be in view mode.
@@ -63,10 +63,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 /**
- * Fetches the exercise of the given ID, populates the exercise form fields with the response data,
- * then returns the response.
+ * Fetches the exercise of the given ID, and populates the exercise form fields with the response data.
  * @param {number} exerciseId
- * @returns {Promise<ApiResponse<Exercise>>}
  */
 async function initializeExerciseData(exerciseId) {
   /** @type {ApiResponse<Exercise>} */
@@ -93,15 +91,9 @@ async function initializeExerciseData(exerciseId) {
 
     input.value = data[key];
   }
-
-  return response;
 }
 
-/**
- * Fetches muscle groups, populates the muscle group dropdown with them,
- * then returns the result of the fetch.
- * @returns {Promise<ApiResponse<MuscleGroup[]>>}
- */
+/** Fetches muscle groups, and populates the muscle group dropdown with them. */
 async function initializeMuscleGroups() {
   /** @type {ApiResponse<MuscleGroup[]>} */
   const response = await fetchData(
@@ -113,15 +105,9 @@ async function initializeMuscleGroups() {
   if (response.ok) {
     populateDropdown(response.data, "muscle_group", "muscle");
   }
-
-  return response;
 }
 
-/**
- * Fetches exercise categories, populates the category dropdown with them,
- * then returns the result of the fetch.
- * @returns {Promise<ApiResponse<ExerciseCategory[]>>}
- */
+/** Fetches exercise categories, and populates the category dropdown with them. */
 async function initializeCategories() {
   /** @type {ApiResponse<ExerciseCategory[]>} */
   const response = await fetchData(
@@ -133,8 +119,6 @@ async function initializeCategories() {
   if (response.ok) {
     populateDropdown(response.data, "category", "name");
   }
-
-  return response;
 }
 
 /**
