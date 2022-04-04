@@ -1,5 +1,9 @@
 import { getCookieValue, setCookie } from "./cookies.js";
 import { HOST } from "./host.js";
+import { displayAlert } from "./dom.js";
+
+// JSDoc type imports.
+/** @typedef {import("./types.js").ApiResponse} ApiResponse */
 
 export async function sendRequest(
   method,
@@ -46,6 +50,30 @@ export async function sendRequest(
   }
 
   return response;
+}
+
+/**
+ * Fetches data from the given URL, and displays an error alert if it fails.
+ * @param {string} url The API URL to fetch data from.
+ * @param {string} alertTextOnFail The text to display in the alert if fetching failed.
+ * @returns {Promise<ApiResponse>} Result of the fetch.
+ */
+export async function fetchData(url, alertTextOnFail, list) {
+  const response = await sendRequest("GET", url);
+  const data = await response.json();
+
+  if (!response.ok) {
+    displayAlert(alertTextOnFail, data);
+    return { ok: false };
+  }
+
+  const result = { ok: true };
+  if (list) {
+    result.data = data.results;
+  } else {
+    result.data = data;
+  }
+  return result;
 }
 
 export async function getCurrentUser() {

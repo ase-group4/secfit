@@ -61,33 +61,21 @@
         <div class="col-lg-6"></div>
         <div class="col-lg-6">
           <label for="inputMuscles" class="form-label">Muscle group used</label>
-          <select class="form-select" name="muscleGroup" disabled="true">
-            <option value="Legs">Legs</option>
-            <option value="Chest">Chest</option>
-            <option value="Back">Back</option>
-            <option value="Arms">Arms</option>
-            <option value="Abdomen">Abdominals</option>
-            <option value="Shoulders">Shoulders</option>
-          </select>
+          <select class="form-select" name="muscle_group"></select>
         </div>
         <div class="col-lg-6"></div>
         <div class="col-lg-6">
           <label for="inputCategories" class="form-label">Category</label>
-          <select class="form-select" name="category" disabled="true"></select>
+          <select class="form-select" name="category"></select>
         </div>
         <div class="col-lg-6"></div>
         <div class="col-lg-6">
-          <input type="button" class="btn btn-primary hide" id="btn-ok-exercise" value="  OK  " />
+          <input type="button" class="btn btn-primary" id="btn-ok-exercise" value="  OK  " />
           <input type="button" class="btn btn-primary" id="btn-edit-exercise" value=" Edit " />
+          <input type="button" class="btn btn-secondary" id="btn-cancel-exercise" value="Cancel" />
           <input
             type="button"
-            class="btn btn-secondary hide"
-            id="btn-cancel-exercise"
-            value="Cancel"
-          />
-          <input
-            type="button"
-            class="btn btn-danger float-end hide"
+            class="btn btn-danger float-end"
             id="btn-delete-exercise"
             value="Delete"
           />
