@@ -7,16 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('workouts', '0006_muscle_groups'),
+        ("workouts", "0006_muscle_groups"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='RememberMe',
+            name="RememberMe",
         ),
         migrations.AlterField(
-            model_name='exercise',
-            name='muscle_group',
-            field=models.ForeignKey(default=True, on_delete=django.db.models.deletion.CASCADE, to='workouts.musclegroup'),
+            model_name="exercise",
+            name="muscle_group",
+            field=models.ForeignKey(
+                default=True, on_delete=django.db.models.deletion.CASCADE, to="workouts.musclegroup"
+            ),
         ),
     ]
