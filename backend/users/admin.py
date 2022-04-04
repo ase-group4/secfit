@@ -6,6 +6,7 @@ from .forms import CustomUserChangeForm, CustomUserCreationForm
 
 
 class CustomUserAdmin(UserAdmin):
+    """ Class that extends the default admin view for User by adding a coach field to the create-view and the edit-view """
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = get_user_model()
