@@ -8,7 +8,7 @@ from .models import Offer, AthleteFile
 class CustomUserAdmin(UserAdmin):
     """
     A class that extends the default admin view for User by adding a
-    coach field to the create-view and the edit-view
+    coach field to the create-view and the edit-view.
     """
 
     add_form = CustomUserCreationForm
