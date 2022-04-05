@@ -34,7 +34,7 @@ class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
         if self.request.user:
             # Return the currently logged in user
             status = self.request.query_params.get("user", None)
-            if status and status == "current":
+            if status == "current":
                 queryset = get_user_model().objects.filter(pk=self.request.user.pk)
         return queryset
 
