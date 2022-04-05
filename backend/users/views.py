@@ -84,32 +84,25 @@ class OfferList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Generic
 
     def get_queryset(self):
         queryset = Offer.objects.none()
-        result = Offer.objects.none()
 
         if self.request.user:
-            queryset = Offer.objects.filter(
-                Q(owner=self.request.user) | Q(recipient=self.request.user)
-            ).distinct()
-            queryparams = self.request.query_params
             user = self.request.user
+            queryset = Offer.objects.filter(Q(owner=user) | Q(recipient=user)).distinct()
+
+            queryparams = self.request.query_params
 
             # filtering by status (if provided)
             status = queryparams.get("status", None)
-            if status is not None and self.request is not None:
+            if status is not None:
                 queryset = queryset.filter(status=status)
-                if queryparams.get("status", None) is None:
-                    queryset = Offer.objects.filter(Q(owner=user)).distinct()
 
             # filtering by category (sent or received)
             category = queryparams.get("category", None)
-            if category is not None:
-                if category == "sent":
-                    queryset = queryset.filter(owner=user)
-                elif category == "received":
-                    queryset = queryset.filter(recipient=user)
-            return queryset
-        else:
-            return result
+            if category == "sent":
+                queryset = queryset.filter(owner=user)
+            elif category == "received":
+                queryset = queryset.filter(recipient=user)
+        return queryset
 
 
 class OfferDetail(
