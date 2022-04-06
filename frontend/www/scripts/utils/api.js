@@ -3,7 +3,56 @@ import { HOST } from "./host.js";
 import { displayAlert } from "./dom.js";
 
 // JSDoc type imports.
-/** @typedef {import("./types.js").ApiResponse} ApiResponse */
+/**
+ * @typedef {import("../utils/types.js").ApiResponse<ResponseData>} ApiResponse<ResponseData>
+ * @template ResponseData
+ */
+
+/**
+ * Fetches data from the given URL, and displays an error alert if it fails.
+ * @param {string} url API URL to fetch data from.
+ * @param {string} alertTextOnFail Text to display in the alert if fetching failed.
+ * @param {boolean} list Whether the fetched data is expected to be a list.
+ * @returns {Promise<ApiResponse<Data>>} Result of the fetch.
+ * @template Data
+ */
+export async function fetchData(url, alertTextOnFail, list = false) {
+  const response = await sendRequest("GET", url);
+  const data = await response.json();
+
+  if (!response.ok) {
+    displayAlert(alertTextOnFail, data);
+    return { ok: false };
+  }
+
+  const result = { ok: true };
+  if (list) {
+    result.data = data.results;
+  } else {
+    result.data = data;
+  }
+  return result;
+}
+
+/**
+ * Sends a request to change data at the given URL, and displays an error if it fails.
+ * @param {"POST" | "PUT" | "PATCH" | "DELETE"} httpMethod Request type (use `fetchData` for GET).
+ * @param {string} url API URL to fetch data from.
+ * @param {alertTextOnFail} alertTextOnFail Text to display in the alert if fetching failed.
+ * @param {Object} [body] Optional body to send as part of the request.
+ * @returns {Promise<{ ok: boolean }>} Whether the request succeeded.
+ */
+export async function changeData(httpMethod, url, alertTextOnFail, body = undefined) {
+  const response = await sendRequest(httpMethod, url, body);
+  const { ok } = response;
+
+  if (!ok) {
+    const data = await response.json();
+    displayAlert(alertTextOnFail, data);
+  }
+
+  return { ok };
+}
 
 export async function sendRequest(
   method,
@@ -50,30 +99,6 @@ export async function sendRequest(
   }
 
   return response;
-}
-
-/**
- * Fetches data from the given URL, and displays an error alert if it fails.
- * @param {string} url The API URL to fetch data from.
- * @param {string} alertTextOnFail The text to display in the alert if fetching failed.
- * @returns {Promise<ApiResponse>} Result of the fetch.
- */
-export async function fetchData(url, alertTextOnFail, list) {
-  const response = await sendRequest("GET", url);
-  const data = await response.json();
-
-  if (!response.ok) {
-    displayAlert(alertTextOnFail, data);
-    return { ok: false };
-  }
-
-  const result = { ok: true };
-  if (list) {
-    result.data = data.results;
-  } else {
-    result.data = data;
-  }
-  return result;
 }
 
 export async function getCurrentUser() {

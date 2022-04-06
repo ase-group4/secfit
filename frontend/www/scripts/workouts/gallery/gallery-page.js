@@ -1,7 +1,6 @@
-import { sendRequest } from "../../utils/api.js";
-import { HOST } from "../../utils/host.js";
 import { displayAlert } from "../../utils/dom.js";
-import { fetchWorkout, getWorkoutFileType } from "../utils.js";
+import { getWorkoutFileType } from "../utils.js";
+import { deleteWorkoutFile, fetchWorkout } from "../requests";
 
 // JSDoc type imports.
 /** @typedef {import("../types.js").Workout} Workout */
@@ -25,7 +24,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     window.location.replace(`workout.html?id=${workoutId}`)
   );
 
-  const { ok, workout } = await fetchWorkout(workoutId);
+  const { ok, data: workout } = await fetchWorkout(workoutId);
   if (!ok) return;
 
   displayWorkoutDetails(workout);
@@ -143,13 +142,9 @@ function createDeleteImageButton(file, galleryIndex) {
  * @param {number} id ID of the workout image to delete.
  */
 async function handleDeleteImgClick(id) {
-  const response = await sendRequest("DELETE", `${HOST}/api/workout-files/${id}/`);
+  const { ok } = deleteWorkoutFile(id);
 
-  if (!response.ok) {
-    const data = await response.json();
-    displayAlert(`Could not delete workout file ${id}!`, data);
-    return;
+  if (ok) {
+    location.reload();
   }
-
-  location.reload();
 }

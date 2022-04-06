@@ -1,48 +1,49 @@
-import { sendRequest } from "../utils/api.js";
+import { fetchData } from "../utils/api.js";
 import { HOST } from "../utils/host.js";
-import { createAlert } from "../utils/dom.js";
-import { fetchCategories } from "./utils.js";
+import { fetchExercises } from "./requests.js";
+
+// JSDoc type imports.
+/** @typedef {import("./types.js").Exercise} Exercise */
+/** @typedef {import("./types.js").ExerciseCategory} ExerciseCategory */
 
 async function fetchExerciseTypes() {
-  const response = await sendRequest("GET", `${HOST}/api/exercises/`);
+  const { ok, data: exercises } = await fetchExercises();
+  if (!ok) return;
 
-  if (!response.ok) {
-    const data = await response.json();
-    const alert = createAlert("Could not retrieve exercise types!", data);
-    document.body.prepend(alert);
-  } else {
-    const data = await response.json();
-    console.log(data);
+  const container = document.getElementById("div-content");
+  const exerciseTemplate = document.querySelector("#template-exercise");
 
-    const exercises = data.results;
-    const container = document.getElementById("div-content");
-    const exerciseTemplate = document.querySelector("#template-exercise");
-    exercises.forEach((exercise) => {
-      const exerciseAnchor = exerciseTemplate.content.firstElementChild.cloneNode(true);
-      exerciseAnchor.href = `exercise.html?id=${exercise.id}`;
+  for (const exercise of exercises) {
+    const exerciseAnchor = exerciseTemplate.content.firstElementChild.cloneNode(true);
+    exerciseAnchor.href = `exercise.html?id=${exercise.id}`;
 
-      const h5 = exerciseAnchor.querySelector("h5");
-      h5.textContent = exercise.name;
+    const h5 = exerciseAnchor.querySelector("h5");
+    h5.textContent = exercise.name;
 
-      const p = exerciseAnchor.querySelector("p");
-      p.textContent = exercise.description;
+    const p = exerciseAnchor.querySelector("p");
+    p.textContent = exercise.description;
 
-      container.appendChild(exerciseAnchor);
-    });
-    return exercises;
+    container.appendChild(exerciseAnchor);
   }
+
+  return exercises;
 }
 
 async function populateCategoryBar() {
   const categoryBar = document.querySelector("#list-tab");
 
-  const { ok, categories } = await fetchCategories();
-  if (!ok) return;
+  /** @type {ApiResponse<ExerciseCategory[]>} */
+  const response = await fetchData(
+    `${HOST}/api/exercise-categories/`,
+    "Could not retrieve category data!",
+    true
+  );
+  if (!response.ok) return;
 
   const allTab = createTabElement({ id: "all", name: "All", active: true });
   categoryBar.appendChild(allTab);
 
-  for (const category of categories) {
+  for (const category of response.data) {
     const categoryTab = createTabElement(category);
     categoryBar.appendChild(categoryTab);
   }

@@ -1,21 +1,15 @@
+import { setReadOnly, populateDropdown, populateForm, getFormAnswers } from "../utils/dom.js";
 import {
-  setReadOnly,
-  displayAlert,
-  populateDropdown,
-  populateForm,
-  getFormAnswers,
-} from "../utils/dom.js";
-import { fetchData, sendRequest } from "../utils/api.js";
-import { HOST } from "../utils/host.js";
+  createExercise,
+  deleteExercise,
+  fetchCategories,
+  fetchExercise,
+  fetchMuscleGroups,
+  updateExercise,
+} from "./requests.js";
 
 // JSDoc type imports.
 /** @typedef {import("./types.js").Exercise} Exercise */
-/** @typedef {import("./types.js").MuscleGroup} MuscleGroup */
-/** @typedef {import("./types.js").ExerciseCategory} ExerciseCategory */
-/**
- * @typedef {import("../utils/types.js").ApiResponse<ResponseData>} ApiResponse<ResponseData>
- * @template ResponseData
- */
 
 /**
  * Container object for buttons on the exercise page.
@@ -67,17 +61,9 @@ window.addEventListener("DOMContentLoaded", async () => {
  * @param {number} exerciseId
  */
 async function initializeExerciseData(exerciseId) {
-  /** @type {ApiResponse<Exercise>} */
-  const response = await fetchData(
-    `${HOST}/api/exercises/${exerciseId}/`,
-    `Could not retrieve exercise with id ${exerciseId}.`
-  );
+  const { ok, data: exercise } = await fetchExercise(exerciseId);
+  if (!ok) return;
 
-  if (!response.ok) {
-    return response;
-  }
-
-  const { data } = response;
   const form = document.querySelector("#form-exercise");
   const formData = new FormData(form);
 
@@ -89,36 +75,24 @@ async function initializeExerciseData(exerciseId) {
 
     const input = document.querySelector(selector);
 
-    input.value = data[key];
+    input.value = exercise[key];
   }
 }
 
 /** Fetches muscle groups, and populates the muscle group dropdown with them. */
 async function initializeMuscleGroups() {
-  /** @type {ApiResponse<MuscleGroup[]>} */
-  const response = await fetchData(
-    `${HOST}/api/muscle-groups/`,
-    "Could not retrieve muscle groups!",
-    true
-  );
+  const { ok, data: muscleGroups } = await fetchMuscleGroups();
+  if (!ok) return;
 
-  if (response.ok) {
-    populateDropdown(response.data, "muscle_group", "muscle");
-  }
+  populateDropdown(muscleGroups, "muscle_group", "muscle");
 }
 
 /** Fetches exercise categories, and populates the category dropdown with them. */
 async function initializeCategories() {
-  /** @type {ApiResponse<ExerciseCategory[]>} */
-  const response = await fetchData(
-    `${HOST}/api/exercise-categories/`,
-    "Could not retrieve category data!",
-    true
-  );
+  const { ok, data: categories } = await fetchCategories();
+  if (!ok) return;
 
-  if (response.ok) {
-    populateDropdown(response.data, "category", "name");
-  }
+  populateDropdown(categories, "category", "name");
 }
 
 /**
@@ -145,13 +119,13 @@ function setPageMode(mode, buttons, exerciseId) {
         handleEditExerciseButtonClick(buttons);
       });
       buttons.ok.addEventListener("click", async () => {
-        await updateExercise(exerciseId, buttons);
+        await handleUpdateExercise(exerciseId, buttons);
       });
       buttons.cancel.addEventListener("click", () => {
         handleCancelButtonDuringEdit(buttons);
       });
       buttons.delete.addEventListener("click", async () => {
-        await deleteExercise(exerciseId);
+        await handleDeleteExercise(exerciseId);
       });
 
       break;
@@ -174,7 +148,7 @@ function setPageMode(mode, buttons, exerciseId) {
         buttons[button].classList.add("hide");
       }
 
-      buttons.ok.addEventListener("click", async () => await createExercise());
+      buttons.ok.addEventListener("click", async () => await handleCreateExercise());
       buttons.cancel.addEventListener("click", () => {
         window.location.replace("exercises.html");
       });
@@ -201,43 +175,35 @@ function handleEditExerciseButtonClick(buttons) {
 
 /**
  * Reads the input in the exercise form, and sends a request to create the exercise.
- * Redirects to Exercises page on success, else displays an alert.
+ * Redirects to Exercises page on success.
  */
-async function createExercise() {
+async function handleCreateExercise() {
   /** @type {Exercise} */
   const body = getFormAnswers("#form-exercise");
 
-  const response = await sendRequest("POST", `${HOST}/api/exercises/`, body);
+  const { ok } = await createExercise(body);
 
-  if (!response.ok) {
-    const data = await response.json();
-    displayAlert("Could not create new exercise!", data);
-    return;
+  if (ok) {
+    window.location.replace("exercises.html");
   }
-
-  window.location.replace("exercises.html");
 }
 
 /**
  * Reads the form inputs on the exercise page,
  * and sends a request to update the exercise of the given ID.
- * Returns the page to view mode on success, else displays an error alert.
+ * Returns the page to view mode on success.
  * @param {number} id ID of the exercise to update.
  * @param {ExercisePageButtons} buttons Buttons on the exercise page.
  */
-async function updateExercise(id, buttons) {
+async function handleUpdateExercise(id, buttons) {
   /** @type {Exercise} */
   const body = getFormAnswers("#form-exercise");
 
-  const response = await sendRequest("PUT", `${HOST}/api/exercises/${id}/`, body);
+  const { ok } = await updateExercise(id, body);
 
-  if (!response.ok) {
-    const data = await response.json();
-    displayAlert(`Could not update exercise ${id}`, data);
-    return;
+  if (ok) {
+    setPageMode("view", buttons);
   }
-
-  setPageMode("view", buttons);
 }
 
 /**
@@ -254,16 +220,13 @@ function handleCancelButtonDuringEdit(buttons) {
 
 /**
  * Sends a request to delete the exercise of the given ID.
- * Redirects to Exercises page on success, else displays an alert.
+ * Redirects to Exercises page on success.
  * @param {number} id ID of the exercise to delete.
  */
-async function deleteExercise(id) {
-  const response = await sendRequest("DELETE", `${HOST}/api/exercises/${id}/`);
+async function handleDeleteExercise(id) {
+  const { ok } = deleteExercise(id);
 
-  if (!response.ok) {
-    const data = await response.json();
-    displayAlert(`Could not delete exercise ${id}`, data);
+  if (ok) {
+    window.location.replace("exercises.html");
   }
-
-  window.location.replace("exercises.html");
 }
