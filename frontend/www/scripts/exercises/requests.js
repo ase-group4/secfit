@@ -1,4 +1,4 @@
-import { fetchData, changeData } from "../utils/api.js";
+import { fetchData, changeData } from "../utils/requests.js";
 import { HOST } from "../utils/host.js";
 
 // JSDoc type imports.

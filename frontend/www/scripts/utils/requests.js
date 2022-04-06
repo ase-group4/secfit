@@ -4,7 +4,7 @@ import { displayAlert } from "./dom.js";
 
 // JSDoc type imports.
 /**
- * @typedef {import("../utils/types.js").ApiResponse<ResponseData>} ApiResponse<ResponseData>
+ * @typedef {import("./types.js").ApiResponse<ResponseData>} ApiResponse<ResponseData>
  * @template ResponseData
  */
 

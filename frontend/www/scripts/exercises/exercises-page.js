@@ -1,4 +1,4 @@
-import { fetchData } from "../utils/api.js";
+import { fetchData } from "../utils/requests.js";
 import { HOST } from "../utils/host.js";
 import { fetchExercises } from "./requests.js";
 
