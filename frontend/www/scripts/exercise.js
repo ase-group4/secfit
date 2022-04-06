@@ -8,6 +8,8 @@ let deleteButton;
 let editButton;
 let oldFormData;
 
+let unusedVariable;
+
 class MuscleGroup {
   constructor(type) {
     this.isValidType = false;
