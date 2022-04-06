@@ -1,6 +1,6 @@
 import { displayAlert } from "../../utils/dom.js";
 import { getWorkoutFileType } from "../utils.js";
-import { deleteWorkoutFile, fetchWorkout } from "../requests";
+import { deleteWorkoutFile, fetchWorkout } from "../requests.js";
 
 // JSDoc type imports.
 /** @typedef {import("../types.js").Workout} Workout */

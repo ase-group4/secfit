@@ -1,5 +1,5 @@
 import { changeData, fetchData } from "../utils/requests.js";
-import { HOST } from "../utils/host";
+import { HOST } from "../utils/host.js";
 
 // JSDoc type imports.
 /** @typedef {import("./types.js").Workout} Workout */
