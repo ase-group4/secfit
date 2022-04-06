@@ -18,14 +18,17 @@ jobs:
             ### Code Review Checklist
 
             **General**
+
             1. Is there logic in the frontend that should be moved to the backend, or vice versa?
             2. Backend: Are all parts of the API used by the frontend?
 
             **For: classes, methods, functions, variables**
+
             3. Is the purpose of the class/method/function/variable obvious from its name?
             4. Frontend: If the class/method/function/variable is from another script, is it imported using JavaScript module syntax?
 
             **For: classes, methods, functions**
+
             5. Does the class/method/function have low cohesion, and should be split up?
             6. Are any of the classes/methods/functions tightly coupled, and should be combined?
             7. Is the class/method/function self-explanatory, and if not, does it have an explanatory docstring?
@@ -33,8 +36,10 @@ jobs:
             9. Is the class/method/function located where you expect to find it in the file hierarchy, and within the file?
 
             **For: classes**
+
             10. Does every class have only a single responsibility?
 
             **For: methods, functions**
+
             11. Is all code in the method/function reachable in the flow of the program?
             12. JavaScript: Does the method/function have JSDoc type annotations for its parameters and return value?
