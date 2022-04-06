@@ -224,7 +224,7 @@ function handleCancelButtonDuringEdit(buttons) {
  * @param {number} id ID of the exercise to delete.
  */
 async function handleDeleteExercise(id) {
-  const { ok } = deleteExercise(id);
+  const { ok } = await deleteExercise(id);
 
   if (ok) {
     window.location.replace("exercises.html");
