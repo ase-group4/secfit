@@ -1,36 +1,33 @@
-from rest_framework import mixins, generics
-from rest_framework.response import Response
-from utils.pagination import ExpandedPagination
-from workouts.mixins import CreateListModelMixin
-from rest_framework import permissions
-from users.serializers import (
-    UserSerializer,
-    OfferSerializer,
-    AthleteFileSerializer,
-    UserPutSerializer,
-    UserGetSerializer,
-    RememberMeSerializer,
-)
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from users.models import Offer, AthleteFile
-from django.contrib.auth import get_user_model
-from django.db.models import Q
-from rest_framework.parsers import MultiPartParser, FormParser
-from users.permissions import IsCurrentUser, IsAthlete, IsCoach
-from workouts.permissions import IsOwner, IsReadOnly
-from django.core.exceptions import PermissionDenied
-from rest_framework_simplejwt.tokens import RefreshToken
 from collections import namedtuple
 import base64
 import pickle
+from rest_framework import mixins, generics, permissions
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import get_user_model
+from django.core.exceptions import PermissionDenied
 from django.core.signing import Signer
+from django.db.models import Q
+
+from utils.pagination import ExpandedPagination
+from workouts.mixins import CreateListModelMixin
+from workouts.permissions import IsOwner, IsReadOnly
+from .models import Offer, AthleteFile
+from .permissions import IsCurrentUser, IsAthlete, IsCoach
+from .serializers import (
+    UserSerializer,
+    OfferSerializer,
+    AthleteFileSerializer,
+    UserGetSerializer,
+    RememberMeSerializer,
+)
 
 
 class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     serializer_class = UserSerializer
     pagination_class = ExpandedPagination
-    users = []
-    admins = []
 
     def get(self, request, *args, **kwargs):
         self.serializer_class = UserGetSerializer
@@ -40,15 +37,13 @@ class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
         return self.create(request, *args, **kwargs)
 
     def get_queryset(self):
-        qs = get_user_model().objects.all()
-
+        queryset = get_user_model().objects.all()
         if self.request.user:
             # Return the currently logged in user
             status = self.request.query_params.get("user", None)
-            if status and status == "current":
-                qs = get_user_model().objects.filter(pk=self.request.user.pk)
-
-        return qs
+            if status == "current":
+                queryset = get_user_model().objects.filter(pk=self.request.user.pk)
+        return queryset
 
 
 class UserDetail(
@@ -77,10 +72,6 @@ class UserDetail(
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        self.serializer_class = UserPutSerializer
-        return self.update(request, *args, **kwargs)
-
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
@@ -99,33 +90,26 @@ class OfferList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Generic
         serializer.save(owner=self.request.user)
 
     def get_queryset(self):
-        qs = Offer.objects.none()
-        result = Offer.objects.none()
+        queryset = Offer.objects.none()
 
         if self.request.user:
-            qs = Offer.objects.filter(
-                Q(owner=self.request.user) | Q(recipient=self.request.user)
-            ).distinct()
-            qp = self.request.query_params
-            u = self.request.user
+            user = self.request.user
+            queryset = Offer.objects.filter(Q(owner=user) | Q(recipient=user)).distinct()
+
+            queryparams = self.request.query_params
 
             # filtering by status (if provided)
-            s = qp.get("status", None)
-            if s is not None and self.request is not None:
-                qs = qs.filter(status=s)
-                if qp.get("status", None) is None:
-                    qs = Offer.objects.filter(Q(owner=u)).distinct()
+            status = queryparams.get("status", None)
+            if status is not None:
+                queryset = queryset.filter(status=status)
 
             # filtering by category (sent or received)
-            c = qp.get("category", None)
-            if c is not None and qp is not None:
-                if c == "sent":
-                    qs = qs.filter(owner=u)
-                elif c == "received":
-                    qs = qs.filter(recipient=u)
-            return qs
-        else:
-            return result
+            category = queryparams.get("category", None)
+            if category == "sent":
+                queryset = queryset.filter(owner=user)
+            elif category == "received":
+                queryset = queryset.filter(recipient=user)
+        return queryset
 
 
 class OfferDetail(
@@ -140,9 +124,6 @@ class OfferDetail(
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
@@ -172,14 +153,12 @@ class AthleteFileList(
         serializer.save(owner=self.request.user)
 
     def get_queryset(self):
-        qs = AthleteFile.objects.none()
-
+        queryset = AthleteFile.objects.none()
         if self.request.user:
-            qs = AthleteFile.objects.filter(
+            queryset = AthleteFile.objects.filter(
                 Q(athlete=self.request.user) | Q(owner=self.request.user)
             ).distinct()
-
-        return qs
+        return queryset
 
 
 class AthleteFileDetail(

@@ -101,25 +101,41 @@ Cypress.Commands.add("addCoach", (username) => {
   cy.get('input[name="coach"]').type(username);
   cy.get("#button-set-coach").click();
 });
-Cypress.Commands.add("addWorkout", (exercisedata) => {
+
+Cypress.Commands.add("addAthlete", (username) => {
+  cy.visit("../../www/myathletes.html");
+  cy.wait(500);
+  cy.get('input[name="athlete"]').type(username);
+  cy.get('input[value="Submit"]').click();
+});
+
+Cypress.Commands.add("addWorkout", (workoutdata) => {
   cy.visit("../../www/workouts.html");
   cy.get("#btn-create-workout").click();
   cy.wait(1000);
-  cy.get('input[name="name"]').type(exercisedata.name);
+  cy.get('input[name="name"]').type(workoutdata.name);
   cy.get('input[name="date"]')
     .click()
     .then((input) => {
       input[0].dispatchEvent(new Event("input", { bubbles: true }));
-      input.val(exercisedata.date);
+      input.val(workoutdata.date);
     })
     .click();
-  cy.get('textarea[name="notes"]').type(exercisedata.notes);
-  cy.get("#inputVisibility").select(exercisedata.visibility);
-  cy.get('input[name="files"]').attachFile(exercisedata.files);
-  cy.get("#btn-remove-exercise").click();
+  cy.get('textarea[name="notes"]').type(workoutdata.notes);
+  cy.get("#inputVisibility").select(workoutdata.visibility);
+  if ("files" in workoutdata) {
+    cy.get('input[name="files"]').attachFile(workoutdata.files);
+  }
+  if ("exercise" in workoutdata) {
+    cy.get('select[name="type"]').select(workoutdata.exercise.name);
+    cy.get('input[name="sets"]').type(workoutdata.exercise.sets);
+    cy.get('input[name="number"]').type(workoutdata.exercise.number);
+  } else {
+    cy.get("#btn-remove-exercise").click();
+  }
   cy.get("#btn-ok-workout").click();
   cy.wait(1000);
-  cy.goToWorkout(exercisedata.name);
+  cy.goToWorkout(workoutdata.name);
   cy.addComment();
 });
 
@@ -136,6 +152,10 @@ Cypress.Commands.add("createExercise", (exercisedata) => {
   if (exercisedata.calories) {
     cy.get('input[name="calories"]').type(exercisedata.calories);
   }
+  if (exercisedata.muscleGroup) {
+    cy.get('select[name="muscleGroup"]').select(exercisedata.muscleGroup);
+  }
   cy.get('select[name="category"]').select(exercisedata.category);
+  cy.wait(500);
   cy.get("#btn-ok-exercise").click();
 });

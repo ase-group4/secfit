@@ -1,45 +1,30 @@
 from django.urls import path
-from users import views
+from .views import (
+    UserList,
+    UserDetail,
+    OfferList,
+    OfferDetail,
+    AthleteFileList,
+    AthleteFileDetail,
+    RememberMe,
+)
+
+USERS_PATH = "api/users/"
+OFFERS_PATH = "api/offers/"
+FILES_PATH = "api/athlete-files/"
+REMEMBER_ME_PATH = "api/remember_me/"
 
 urlpatterns = [
-    path(
-        "api/users/",
-        views.UserList.as_view(),
-        name="user-list",
-    ),
-    path(
-        "api/users/<int:pk>/",
-        views.UserDetail.as_view(),
-        name="user-detail",
-    ),
-    path(
-        "api/users/<str:username>/",
-        views.UserDetail.as_view(),
-        name="user-detail",
-    ),
-    path(
-        "api/offers/",
-        views.OfferList.as_view(),
-        name="offer-list",
-    ),
-    path(
-        "api/offers/<int:pk>/",
-        views.OfferDetail.as_view(),
-        name="offer-detail",
-    ),
-    path(
-        "api/athlete-files/",
-        views.AthleteFileList.as_view(),
-        name="athlete-file-list",
-    ),
-    path(
-        "api/athlete-files/<int:pk>/",
-        views.AthleteFileDetail.as_view(),
-        name="athletefile-detail",
-    ),
-    path(
-        "api/remember_me/",
-        views.RememberMe.as_view(),
-        name="remember_me",
-    ),
+    # Users
+    path(USERS_PATH, UserList.as_view(), name="user-list"),
+    path(USERS_PATH + "<int:pk>/", UserDetail.as_view(), name="user-detail"),
+    path(USERS_PATH + "<str:username>/", UserDetail.as_view(), name="user-detail"),
+    # Offers
+    path(OFFERS_PATH, OfferList.as_view(), name="offer-list"),
+    path(OFFERS_PATH + "<int:pk>/", OfferDetail.as_view(), name="offer-detail"),
+    # Athlete-files
+    path(FILES_PATH, AthleteFileList.as_view(), name="athlete-file-list"),
+    path(FILES_PATH + "<int:pk>/", AthleteFileDetail.as_view(), name="athletefile-detail"),
+    # User remembering
+    path(REMEMBER_ME_PATH, RememberMe.as_view(), name="remember_me"),
 ]
