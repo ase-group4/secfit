@@ -25,7 +25,7 @@ jobs:
             **For: classes, methods, functions, variables**
 
             3. Is the purpose of the class/method/function/variable obvious from its name?
-            4. Frontend: If the class/method/function/variable is from another script, is it imported using JavaScript module syntax?
+            4. JavaScript: If the class/method/function/variable is from another script, is it imported using JavaScript module syntax?
 
             **For: classes, methods, functions**
 
@@ -43,3 +43,7 @@ jobs:
 
             11. Is all code in the method/function reachable in the flow of the program?
             12. JavaScript: Does the method/function have JSDoc type annotations for its parameters and return value?
+
+            **For: variables**
+
+            13. Is the variable unnecessarily declared in the global scope?
