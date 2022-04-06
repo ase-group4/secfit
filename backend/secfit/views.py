@@ -15,7 +15,6 @@ def api_root(request, format=None):
             "exercise-instances": reverse("exercise-instance-list", request=request, format=format),
             "workout-files": reverse("workout-file-list", request=request, format=format),
             "comments": reverse("comment-list", request=request, format=format),
-            "likes": reverse("like-list", request=request, format=format),
             "meals": reverse("meal-list", request=request, format=format),
             "ingredients": reverse("ingredients", request=request, format=format),
         }

@@ -156,6 +156,7 @@ describe("Create exercise instance", () => {
       cy.goToExercise(exercise2.name);
       cy.get("#btn-edit-exercise").click();
       cy.get("#btn-delete-exercise").click();
+      cy.wait(1000);
       cy.url().should("include", "exercises.html");
       cy.contains(exercise2.name).should("not.exist");
     });
@@ -166,7 +167,7 @@ describe("Create exercise instance", () => {
       cy.login(user, user_password);
     });
 
-    const muscleGroups = ["Legs", "Chest", "Back", "Arms", "Abdomen", "Shoulders"];
+    const muscleGroups = ["Legs", "Chest", "Back", "Arms", "Abdominals", "Shoulders"];
     for (const muscleGroup of muscleGroups) {
       it(muscleGroup, () => {
         const exercise = { ...valid_exercise1 };
@@ -175,9 +176,9 @@ describe("Create exercise instance", () => {
         cy.createExercise(exercise);
         cy.goToExercise(exercise.name);
         cy.wait(1000);
-        cy.get('select[name="muscleGroup"]')
+        cy.get('select[name="muscle_group"]')
           .find("option:selected")
-          .should("have.value", muscleGroup);
+          .should("have.text", muscleGroup);
       });
     }
   });
