@@ -141,7 +141,6 @@ function createDeleteImageButton(file, galleryIndex) {
 /**
  * Deletes the workout file with the given ID, then reloads the page.
  * @param {number} id ID of the workout image to delete.
- * @param {string} errorAlertText Text to display in the error alert if deletion failed.
  */
 async function handleDeleteImgClick(id) {
   const response = await sendRequest("DELETE", `${HOST}/api/workout-files/${id}/`);
