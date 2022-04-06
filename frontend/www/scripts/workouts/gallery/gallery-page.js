@@ -142,7 +142,7 @@ function createDeleteImageButton(file, galleryIndex) {
  * @param {number} id ID of the workout image to delete.
  */
 async function handleDeleteImgClick(id) {
-  const { ok } = deleteWorkoutFile(id);
+  const { ok } = await deleteWorkoutFile(id);
 
   if (ok) {
     location.reload();
