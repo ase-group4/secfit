@@ -1,10 +1,4 @@
-import { fetchData } from "../utils/requests.js";
-import { HOST } from "../utils/host.js";
-import { fetchExercises } from "./requests.js";
-
-// JSDoc type imports.
-/** @typedef {import("./types.js").Exercise} Exercise */
-/** @typedef {import("./types.js").ExerciseCategory} ExerciseCategory */
+import { fetchCategories, fetchExercises } from "./requests.js";
 
 async function fetchExerciseTypes() {
   const { ok, data: exercises } = await fetchExercises();
@@ -32,18 +26,13 @@ async function fetchExerciseTypes() {
 async function populateCategoryBar() {
   const categoryBar = document.querySelector("#list-tab");
 
-  /** @type {ApiResponse<ExerciseCategory[]>} */
-  const response = await fetchData(
-    `${HOST}/api/exercise-categories/`,
-    "Could not retrieve category data!",
-    true
-  );
-  if (!response.ok) return;
+  const { ok, data: categories } = await fetchCategories();
+  if (!ok) return;
 
   const allTab = createTabElement({ id: "all", name: "All", active: true });
   categoryBar.appendChild(allTab);
 
-  for (const category of response.data) {
+  for (const category of categories) {
     const categoryTab = createTabElement(category);
     categoryBar.appendChild(categoryTab);
   }
