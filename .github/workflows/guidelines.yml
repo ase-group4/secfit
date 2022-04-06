@@ -18,21 +18,32 @@ jobs:
             ### Code Review Checklist
 
             **General**
-            - Is there logic in the frontend that should be moved to the backend, or vice versa?
-            - Does the code pass the implemented automatic review tools?
+
+            1. Is there logic in the frontend that should be moved to the backend, or vice versa?
+            2. Backend: Are all parts of the API used by the frontend?
 
             **For: classes, methods, functions, variables**
-            - Is the purpose of the class/method/function/variable obvious from its name?
+
+            3. Is the purpose of the class/method/function/variable obvious from its name?
+            4. JavaScript: If the class/method/function/variable is from another script, is it imported using JavaScript module syntax?
 
             **For: classes, methods, functions**
-            - Does the class/method/function have low cohesion, and should be split up?
-            - Are any of the classes/methods/functions tightly coupled, and should be combined?
-            - Is the class/method/function self-explanatory, and if not, does it have an explanatory docstring?
-            - Is there repeated code in any of the classes/methods/functions, that should be extracted into a parent class/helper function?
-            - Is the class/method/function located where you expect to find it in the file hierarchy, and within the file?
+
+            5. Does the class/method/function have low cohesion, and should be split up?
+            6. Are any of the classes/methods/functions tightly coupled, and should be combined?
+            7. Is the class/method/function self-explanatory, and if not, does it have an explanatory docstring?
+            8. Is there repeated code in any of the classes/methods/functions, that should be extracted into a parent class/helper function?
+            9. Is the class/method/function located where you expect to find it in the file hierarchy, and within the file?
 
             **For: classes**
-            - Does every class have only a single responsibility?
+
+            10. Does every class have only a single responsibility?
 
             **For: methods, functions**
-            - JavaScript: Does the method/function have JSDoc type annotations for its parameters and return value?
+
+            11. Is all code in the method/function reachable in the flow of the program?
+            12. JavaScript: Does the method/function have JSDoc type annotations for its parameters and return value?
+
+            **For: variables**
+
+            13. Is the variable unnecessarily declared in the global scope?
