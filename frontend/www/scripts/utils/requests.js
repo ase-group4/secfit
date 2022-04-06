@@ -12,7 +12,7 @@ import { displayAlert } from "./dom.js";
  * Fetches data from the given URL, and displays an error alert if it fails.
  * @param {string} url API URL to fetch data from.
  * @param {string} alertTextOnFail Text to display in the alert if fetching failed.
- * @param {boolean} list Whether the fetched data is expected to be a list.
+ * @param {boolean} [list] Whether the fetched data is expected to be a list.
  * @returns {Promise<ApiResponse<Data>>} Result of the fetch.
  * @template Data
  */

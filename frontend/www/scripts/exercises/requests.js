@@ -36,7 +36,7 @@ export async function fetchMuscleGroups() {
 }
 
 /**
- * Fetches default muscle groups on SecFit.
+ * Fetches default exercise categories on SecFit.
  * @returns {Promise<ApiResponse<ExerciseCategory[]>>}
  */
 export async function fetchCategories() {
