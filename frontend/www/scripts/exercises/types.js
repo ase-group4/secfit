@@ -1,5 +1,7 @@
 // Type definitions for JSDoc documentation.
 
+/** @typedef {import("../utils/types.js").ApiUrl} ApiUrl */
+
 /**
  * An exercise submitted by a user on SecFit, that can be added to workouts.
  * @typedef {Object} Exercise
