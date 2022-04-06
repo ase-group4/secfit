@@ -1,6 +1,6 @@
-import { sendRequest, getCurrentUser } from "./utils/api.js";
-import { HOST } from "./utils/host.js";
-import { createAlert, setReadOnly } from "./utils/dom.js";
+import { sendRequest, getCurrentUser } from "../utils/requests.js";
+import { HOST } from "../utils/host.js";
+import { createAlert, setReadOnly } from "../utils/dom.js";
 
 let cancelWorkoutButton;
 let okWorkoutButton;
@@ -92,7 +92,7 @@ async function retrieveWorkout(id) {
       exerciseSetInput.readOnly = true;
 
       const exerciseNumberLabel = divExerciseContainer.querySelector(".exercise-number");
-      (exerciseNumberLabel.for = "for"), `inputNumber${i}`;
+      exerciseNumberLabel.for = `inputNumber${i}`;
       exerciseNumberLabel.innerText = currentExerciseType.unit;
 
       const exerciseNumberInput = divExerciseContainer.querySelector("input[name='number']");

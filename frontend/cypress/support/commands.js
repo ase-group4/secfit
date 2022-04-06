@@ -153,7 +153,7 @@ Cypress.Commands.add("createExercise", (exercisedata) => {
     cy.get('input[name="calories"]').type(exercisedata.calories);
   }
   if (exercisedata.muscleGroup) {
-    cy.get('select[name="muscleGroup"]').select(exercisedata.muscleGroup);
+    cy.get('select[name="muscle_group"]').select(exercisedata.muscleGroup);
   }
   cy.get('select[name="category"]').select(exercisedata.category);
   cy.wait(500);

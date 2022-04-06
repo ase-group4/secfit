@@ -1,13 +1,19 @@
+from collections import namedtuple
+import base64
+import pickle
 from rest_framework import mixins, generics, permissions
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model
+from django.core.exceptions import PermissionDenied
+from django.core.signing import Signer
 from django.db.models import Q
 
 from utils.pagination import ExpandedPagination
 from workouts.mixins import CreateListModelMixin
 from workouts.permissions import IsOwner, IsReadOnly
-
 from .models import Offer, AthleteFile
 from .permissions import IsCurrentUser, IsAthlete, IsCoach
 from .serializers import (
@@ -15,6 +21,7 @@ from .serializers import (
     OfferSerializer,
     AthleteFileSerializer,
     UserGetSerializer,
+    RememberMeSerializer,
 )
 
 
@@ -169,3 +176,47 @@ class AthleteFileDetail(
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+# Allow users to save a persistent session in their browser
+class RememberMe(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    generics.GenericAPIView,
+):
+    serializer_class = RememberMeSerializer
+
+    def get(self, request):
+        if request.user.is_authenticated is False:
+            raise PermissionDenied
+        else:
+            return Response({"remember_me": self.rememberme()})
+
+    def post(self, request):
+        cookieObject = namedtuple("Cookies", request.COOKIES.keys())(*request.COOKIES.values())
+        user = self.get_user(cookieObject)
+        refresh = RefreshToken.for_user(user)
+        return Response(
+            {
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            }
+        )
+
+    def get_user(self, cookieObject):
+        decode = base64.b64decode(cookieObject.remember_me)
+        user, sign = pickle.loads(decode)
+
+        # Validate signature
+        if sign == self.sign_user(user):
+            return user
+
+    def rememberme(self):
+        creds = [self.request.user, self.sign_user(str(self.request.user))]
+        return base64.b64encode(pickle.dumps(creds))
+
+    def sign_user(self, username):
+        signer = Signer()
+        signed_user = signer.sign(username)
+        return signed_user

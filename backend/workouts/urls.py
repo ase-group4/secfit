@@ -1,57 +1,65 @@
-from django.urls import path, include
+from django.urls import path
 from workouts import views
 from rest_framework.urlpatterns import format_suffix_patterns
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 
-# This is a bit messy and will need to change
+WORKOUTS_PATH = "api/workouts/"
+EXERCISES_PATH = "api/exercises/"
+MUSCLE_GROUPS_PATH = "api/muscle-groups/"
+EXERCISE_CATEGORIES_PATH = "api/exercise-categories/"
+EXERCISE_INSTANCE_PATH = "api/exercise-instances/"
+WORKOUT_FILE_PATH = "api/workout-files/"
+
 urlpatterns = format_suffix_patterns(
     [
-        path("", views.api_root),
-        path("api/workouts/", views.WorkoutList.as_view(), name="workout-list"),
         path(
-            "api/workouts/<int:pk>/",
+            WORKOUTS_PATH,
+            views.WorkoutList.as_view(),
+            name="workout-list",
+        ),
+        path(
+            WORKOUTS_PATH + "<int:pk>/",
             views.WorkoutDetail.as_view(),
             name="workout-detail",
         ),
-        path("api/exercises/", views.ExerciseList.as_view(), name="exercise-list"),
         path(
-            "api/exercise-categories/",
-            views.ExerciseCategories.as_view(),
-            name="exercise-categories",
+            EXERCISES_PATH,
+            views.ExerciseList.as_view(),
+            name="exercise-list",
         ),
         path(
-            "api/exercises/<int:pk>/",
+            EXERCISES_PATH + "<int:pk>/",
             views.ExerciseDetail.as_view(),
             name="exercise-detail",
         ),
         path(
-            "api/exercise-instances/",
+            MUSCLE_GROUPS_PATH,
+            views.MuscleGroups.as_view(),
+            name="muscle-groups",
+        ),
+        path(
+            EXERCISE_CATEGORIES_PATH,
+            views.ExerciseCategories.as_view(),
+            name="exercise-categories",
+        ),
+        path(
+            EXERCISE_INSTANCE_PATH,
             views.ExerciseInstanceList.as_view(),
             name="exercise-instance-list",
         ),
         path(
-            "api/exercise-instances/<int:pk>/",
+            EXERCISE_INSTANCE_PATH + "<int:pk>/",
             views.ExerciseInstanceDetail.as_view(),
             name="exerciseinstance-detail",
         ),
         path(
-            "api/workout-files/",
+            WORKOUT_FILE_PATH,
             views.WorkoutFileList.as_view(),
             name="workout-file-list",
         ),
         path(
-            "api/workout-files/<int:pk>/",
+            WORKOUT_FILE_PATH + "<int:pk>/",
             views.WorkoutFileDetail.as_view(),
             name="workoutfile-detail",
         ),
-        path("", include("users.urls")),
-        path("", include("comments.urls")),
-        path("api/auth/", include("rest_framework.urls")),
-        path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-        path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-        path("api/remember_me/", views.RememberMe.as_view(), name="remember_me"),
     ]
 )

@@ -5,7 +5,7 @@ import {
   addIngredientInput,
   handleCreatedIngredient,
 } from "./meal-page-ingredients.js";
-import { sendRequest, getCurrentUser } from "../utils/api.js";
+import { sendRequest, getCurrentUser } from "../utils/requests.js";
 import { HOST } from "../utils/host.js";
 import { createAlert, setReadOnly } from "../utils/dom.js";
 

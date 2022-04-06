@@ -1,5 +1,5 @@
-import { sendRequest, getCurrentUser } from "./utils/api.js";
-import { HOST } from "./utils/host.js";
+import { sendRequest, getCurrentUser } from "../utils/requests.js";
+import { HOST } from "../utils/host.js";
 
 async function fetchWorkouts(ordering) {
   const response = await sendRequest("GET", `${HOST}/api/workouts/?ordering=${ordering}`);

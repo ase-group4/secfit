@@ -1,4 +1,4 @@
-import { sendRequest } from "./utils/api.js";
+import { sendRequest } from "./utils/requests.js";
 import { HOST } from "./utils/host.js";
 import { setCookie, getCookieValue } from "./utils/cookies.js";
 import { createAlert } from "./utils/dom.js";

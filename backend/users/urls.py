@@ -1,9 +1,18 @@
 from django.urls import path
-from .views import UserList, UserDetail, OfferList, OfferDetail, AthleteFileList, AthleteFileDetail
+from .views import (
+    UserList,
+    UserDetail,
+    OfferList,
+    OfferDetail,
+    AthleteFileList,
+    AthleteFileDetail,
+    RememberMe,
+)
 
 USERS_PATH = "api/users/"
 OFFERS_PATH = "api/offers/"
 FILES_PATH = "api/athlete-files/"
+REMEMBER_ME_PATH = "api/remember_me/"
 
 urlpatterns = [
     # Users
@@ -15,9 +24,7 @@ urlpatterns = [
     path(OFFERS_PATH + "<int:pk>/", OfferDetail.as_view(), name="offer-detail"),
     # Athlete-files
     path(FILES_PATH, AthleteFileList.as_view(), name="athlete-file-list"),
-    path(
-        FILES_PATH + "<int:pk>/",
-        AthleteFileDetail.as_view(),
-        name="athletefile-detail",
-    ),
+    path(FILES_PATH + "<int:pk>/", AthleteFileDetail.as_view(), name="athletefile-detail"),
+    # User remembering
+    path(REMEMBER_ME_PATH, RememberMe.as_view(), name="remember_me"),
 ]

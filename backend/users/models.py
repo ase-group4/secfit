@@ -72,3 +72,16 @@ class Offer(models.Model):
 
     status = models.CharField(max_length=8, choices=STATUS_CHOICES, default=PENDING)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class RememberMe(models.Model):
+    """Django model for a remember_me cookie used for session persistence.
+
+    Attributes:
+        remember_me:    Value of cookie used for remember me
+    """
+
+    remember_me = models.CharField(max_length=500)
+
+    def __str__(self):
+        return self.remember_me

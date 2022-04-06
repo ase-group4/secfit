@@ -64,6 +64,19 @@ class Workout(models.Model):
         return self.name
 
 
+class MuscleGroup(models.Model):
+    """Django model for the muscle group that an exercise trains.
+
+    Attributes:
+        muscle:     The muscle that the exercise targets.
+    """
+
+    muscle = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.muscle
+
+
 class ExerciseCategory(models.Model):
     """Django model for an instance of an exercise category.
 
@@ -85,19 +98,21 @@ class Exercise(models.Model):
     Each exercise instance must have an exercise type, e.g., Pushups, Crunches, or Lunges.
 
     Attributes:
-        name:        Name of the exercise type
-        description: Description of the exercise type
-        duration:    Duration of one unit of the exercise
-        calories:    Calories spent per minute
-        muscleGroup: What major muscle group is used in the exercise
-        unit:        Name of the unit for the exercise type (e.g., reps, seconds)
+        name:           Name of the exercise type
+        description:    Description of the exercise type
+        duration:       Duration of one unit of the exercise
+        calories:       Calories spent per minute
+        muscle_group:   What major muscle group is used in the exercise
+        unit:           Name of the unit for the exercise type (e.g., reps, seconds)
     """
 
     name = models.CharField(max_length=100)
     description = models.TextField()
     duration = models.IntegerField(default=0)
     calories = models.IntegerField(default=0)
-    muscleGroup = models.TextField(default="Legs")
+    muscle_group = models.ForeignKey(
+        MuscleGroup, on_delete=models.CASCADE, default=True, null=False
+    )
     unit = models.CharField(max_length=50)
     category = models.ForeignKey(
         ExerciseCategory, on_delete=models.CASCADE, default=True, null=False
@@ -157,16 +172,3 @@ class WorkoutFile(models.Model):
         get_user_model(), on_delete=models.CASCADE, related_name="workout_files"
     )
     file = models.FileField(upload_to=workout_directory_path)
-
-
-class RememberMe(models.Model):
-    """Django model for an remember_me cookie used for remember me functionality.
-
-    Attributes:
-        remember_me:        Value of cookie used for remember me
-    """
-
-    remember_me = models.CharField(max_length=500)
-
-    def __str__(self):
-        return self.remember_me

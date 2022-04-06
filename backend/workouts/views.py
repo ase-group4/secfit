@@ -3,9 +3,6 @@
 from rest_framework import generics, mixins
 from rest_framework import permissions
 from rest_framework.parsers import JSONParser
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
 from django.db.models import Q
 from rest_framework import filters
 from utils.pagination import ExpandedPagination
@@ -20,87 +17,20 @@ from workouts.permissions import (
     IsWorkoutPublic,
 )
 from workouts.mixins import CreateListModelMixin
-from workouts.models import Workout, Exercise, ExerciseInstance, ExerciseCategory, WorkoutFile
-from workouts.serializers import WorkoutSerializer, ExerciseSerializer
-from workouts.serializers import RememberMeSerializer
+from workouts.models import (
+    MuscleGroup,
+    Workout,
+    Exercise,
+    ExerciseInstance,
+    ExerciseCategory,
+    WorkoutFile,
+)
+from workouts.serializers import MuscleGroupSerializer, WorkoutSerializer, ExerciseSerializer
 from workouts.serializers import (
     ExerciseInstanceSerializer,
     WorkoutFileSerializer,
     ExerciseCategorySerializer,
 )
-from django.core.exceptions import PermissionDenied
-from rest_framework_simplejwt.tokens import RefreshToken
-from collections import namedtuple
-import base64
-import pickle
-from django.core.signing import Signer
-
-
-@api_view(["GET"])
-def api_root(request, format=None):
-    return Response(
-        {
-            "users": reverse("user-list", request=request, format=format),
-            "workouts": reverse("workout-list", request=request, format=format),
-            "exercises": reverse("exercise-list", request=request, format=format),
-            "exercise-instances": reverse("exercise-instance-list", request=request, format=format),
-            "exercise-categories": reverse("exercise-categories", request=request, format=format),
-            "workout-files": reverse("workout-file-list", request=request, format=format),
-            "comments": reverse("comment-list", request=request, format=format),
-            "likes": reverse("like-list", request=request, format=format),
-            "meals": reverse(
-                "meal-list",
-                request=request,
-                format=format,
-            ),
-            "ingredients": reverse("ingredients", request=request, format=format),
-        }
-    )
-
-
-# Allow users to save a persistent session in their browser
-class RememberMe(
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    generics.GenericAPIView,
-):
-
-    serializer_class = RememberMeSerializer
-
-    def get(self, request):
-        if request.user.is_authenticated is False:
-            raise PermissionDenied
-        else:
-            return Response({"remember_me": self.rememberme()})
-
-    def post(self, request):
-        cookieObject = namedtuple("Cookies", request.COOKIES.keys())(*request.COOKIES.values())
-        user = self.get_user(cookieObject)
-        refresh = RefreshToken.for_user(user)
-        return Response(
-            {
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
-            }
-        )
-
-    def get_user(self, cookieObject):
-        decode = base64.b64decode(cookieObject.remember_me)
-        user, sign = pickle.loads(decode)
-
-        # Validate signature
-        if sign == self.sign_user(user):
-            return user
-
-    def rememberme(self):
-        creds = [self.request.user, self.sign_user(str(self.request.user))]
-        return base64.b64encode(pickle.dumps(creds))
-
-    def sign_user(self, username):
-        signer = Signer()
-        signed_user = signer.sign(username)
-        return signed_user
 
 
 class WorkoutList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
@@ -195,8 +125,21 @@ class ExerciseList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Gene
         return self.create(request, *args, **kwargs)
 
 
-class ExerciseCategories(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-    """Class defining the web response for getting exercise categories
+class MuscleGroups(mixins.ListModelMixin, generics.GenericAPIView):
+    """Class defining the web response for getting muscle groups.
+
+    HTTP methods: GET
+    """
+
+    queryset = MuscleGroup.objects.all()
+    serializer_class = MuscleGroupSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class ExerciseCategories(mixins.ListModelMixin, generics.GenericAPIView):
+    """Class defining the web response for getting exercise categories.
 
     HTTP methods: GET
     """

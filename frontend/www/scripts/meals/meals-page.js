@@ -1,5 +1,5 @@
 import { updateNutritionTotals } from "./ingredient-utils.js";
-import { sendRequest, getCurrentUser } from "../utils/api.js";
+import { sendRequest, getCurrentUser } from "../utils/requests.js";
 import { HOST } from "../utils/host.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
