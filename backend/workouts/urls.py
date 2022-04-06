@@ -2,55 +2,62 @@ from django.urls import path
 from workouts import views
 from rest_framework.urlpatterns import format_suffix_patterns
 
+WORKOUTS_PATH = "api/workouts/"
+EXERCISES_PATH = "api/exercises/"
+MUSCLE_GROUPS_PATH = "api/muscle-groups/"
+EXERCISE_CATEGORIES_PATH = "api/exercise-categories/"
+EXERCISE_INSTANCE_PATH = "api/exercise-instances/"
+WORKOUT_FILE_PATH = "api/workout-files/"
+
 urlpatterns = format_suffix_patterns(
     [
         path(
-            "api/workouts/",
+            WORKOUTS_PATH,
             views.WorkoutList.as_view(),
             name="workout-list",
         ),
         path(
-            "api/workouts/<int:pk>/",
+            WORKOUTS_PATH + "<int:pk>/",
             views.WorkoutDetail.as_view(),
             name="workout-detail",
         ),
         path(
-            "api/exercises/",
+            EXERCISES_PATH,
             views.ExerciseList.as_view(),
             name="exercise-list",
         ),
         path(
-            "api/exercises/<int:pk>/",
+            EXERCISES_PATH + "<int:pk>/",
             views.ExerciseDetail.as_view(),
             name="exercise-detail",
         ),
         path(
-            "api/muscle-groups/",
+            MUSCLE_GROUPS_PATH,
             views.MuscleGroups.as_view(),
             name="muscle-groups",
         ),
         path(
-            "api/exercise-categories/",
+            EXERCISE_CATEGORIES_PATH,
             views.ExerciseCategories.as_view(),
             name="exercise-categories",
         ),
         path(
-            "api/exercise-instances/",
+            EXERCISE_INSTANCE_PATH,
             views.ExerciseInstanceList.as_view(),
             name="exercise-instance-list",
         ),
         path(
-            "api/exercise-instances/<int:pk>/",
+            EXERCISE_INSTANCE_PATH + "<int:pk>/",
             views.ExerciseInstanceDetail.as_view(),
             name="exerciseinstance-detail",
         ),
         path(
-            "api/workout-files/",
+            WORKOUT_FILE_PATH,
             views.WorkoutFileList.as_view(),
             name="workout-file-list",
         ),
         path(
-            "api/workout-files/<int:pk>/",
+            WORKOUT_FILE_PATH + "<int:pk>/",
             views.WorkoutFileDetail.as_view(),
             name="workoutfile-detail",
         ),
