@@ -41,6 +41,7 @@ describe("Workout gallery", () => {
     cy.get("#btn-gallery-workout").click();
     cy.wait(500);
     cy.get(".btn-close").click();
+    cy.reload();
     cy.get("#no-images-text").contains("This workout has no images.").should("be.visible");
   });
 });
