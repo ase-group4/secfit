@@ -129,8 +129,6 @@ class WorkoutSerializer(serializers.HyperlinkedModelSerializer):
         Returns:
             Workout: Updated Workout instance
         """
-        exercise_instances_data = validated_data.pop("exercise_instances")
-        exercise_instances = instance.exercise_instances
 
         instance.name = validated_data.get("name", instance.name)
         instance.notes = validated_data.get("notes", instance.notes)
@@ -139,6 +137,18 @@ class WorkoutSerializer(serializers.HyperlinkedModelSerializer):
         instance.save()
 
         # Handle ExerciseInstances
+        exercise_instances_data = validated_data.pop("exercise_instances")
+        self.update_exercise_instances(exercise_instances_data, instance)
+
+        # Handle WorkoutFiles
+        if "files" in validated_data:
+            files_data = validated_data.pop("files")
+            self.update_files(files_data, instance)
+
+        return instance
+
+    def update_exercise_instances(exercise_instances_data, instance):
+        exercise_instances = instance.exercise_instances
 
         # This updates existing exercise instances without adding or deleting object.
         # zip() will yield n 2-tuples, where n is
@@ -165,15 +175,7 @@ class WorkoutSerializer(serializers.HyperlinkedModelSerializer):
             for i in range(len(exercise_instances_data), len(exercise_instances.all())):
                 exercise_instances.all()[i].delete()
 
-        # Handle WorkoutFiles
-
-        if "files" in validated_data:
-            files_data = validated_data.pop("files")
-            self.handle_files(files_data, instance)
-
-        return instance
-
-    def handle_files(files_data, instance):
+    def update_files(files_data, instance):
         files = instance.files
 
         for file, file_data in zip(files.all(), files_data):
