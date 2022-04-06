@@ -19,7 +19,6 @@ jobs:
 
             **General**
             - Is there logic in the frontend that should be moved to the backend, or vice versa?
-            - Does the code pass the implemented automatic review tools?
 
             **For: classes, methods, functions, variables**
             - Is the purpose of the class/method/function/variable obvious from its name?
