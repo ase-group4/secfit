@@ -11,17 +11,18 @@ SecFit (Secure Fitness) is a hybrid mobile application for fitness logging.
 - [Local Setup](#local-setup)
   - [Backend](#backend)
   - [Frontend](#frontend)
+  - [Recommendations](#recommendations)
 - [Running Tests](#running-tests)
-  - [Full statement coverage tests](#full-statement-coverage-tests)
-  - [Cypress tests (Blackbox tests)](#cypress-tests-blackbox-tests)
+  - [Django Tests](#django-tests)
+  - [Cypress Tests](#cypress-tests)
   - [Data Flow Tests](#data-flow-tests)
 
 ## Deployment
 
 The application is deployed as two applications on Heroku: one for the frontend, and one for the backend. Their links are as follows:
 
-- Frontend: https://ase-group4-secfit-frontend.herokuapp.com/
-- Backend: https://ase-group4-secfit-backend.herokuapp.com/
+- Frontend: https://ase-group4-secfit-frontend.herokuapp.com
+- Backend: https://ase-group4-secfit-backend.herokuapp.com
 
 The application is configured to deploy automatically on pushes to the `main` branch, using GitHub Actions as specified in `.github/workflows`.
 
@@ -38,39 +39,37 @@ The application is configured to deploy automatically on pushes to the `main` br
 
 ## Project Structure
 
-- `requirements.txt` - Python dependencies
-- `package.json` - Node.js dependencies for Cordova
-- `Procfile` - Procfile for backend heroku deployment
 - `frontend/` - folder for the SecFit frontend and related tests
   - `www/` - HTML, CSS and JavaScript files for the website
   - `cypress/` - Cypress tests of SecFit
   - `codeql/` - data flow queries and tests
-- `backend/` - django project folder containing the project modules
-  - `[app_name]/` - generic structure of a django application
-    - `admin.py` - file containing definitions to connect models to the django admin panel
-    - `urls.py` - contains mapping between urls and views
+  - `package.json` - Node.js dependencies
+- `backend/` - Django project folder containing the project modules
+  - `[app_name]/` - generic structure of a Django application
     - `models.py` - contains data models
-    - `permissions.py` - contains custom permissions that govern access
     - `serializers.py` - contains serializer definitions for sending data between backend and frontend
+    - `views.py` - contains methods for accepting and processing user data
+    - `urls.py` - contains mappings between endpoints and views
+    - `mixins.py` - contains classes that can be injected into views for extra functionality
+    - `permissions.py` - contains custom permissions that govern access
     - `parsers.py` - contains custom parsers for parsing the body of HTTP requests
-    - `tests/` - contains tests for the module. [View Testing in Django](https://docs.djangoproject.com/en/2.1/topics/testing/) for more.
-    - `views.py` - Controller in MVC. Methods for rendering and accepting user data
-    - `forms.py` - definitions of forms. Used to render html forms and verify user input
+    - `tests.py` - contains tests for the module (see [Testing in Django](https://docs.djangoproject.com/en/2.1/topics/testing/) for more)
+    - `admin.py` - file containing definitions to connect models to the Django admin panel
     - `settings.py` - Contains important settings at the application and/or project level
-  - `media/` - directory for file uploads (need to commit it for heroku)
-  - `comments/` - application handling user comments and reactions
-  - `secfit/` - The projects main module containing project-level settings.
-  - `users/` - application handling users and requests
   - `workouts/` - application handling exercises and workouts
   - `meals/` - application handling meals and ingredients
-  - `manage.py` - entry point for running the project.
+  - `users/` - application handling users and requests
+  - `comments/` - application handling user comments and reactions
+  - `secfit/` - the project's main module, containing project-level settings
+  - `media/` - directory for file uploads (need to commit it for Heroku)
+  - `manage.py` - entry point for running the project
+  - `requirements.txt` - Python dependencies
   - `seed.json` - contains seed data for the project to get it up and running quickly
 
 ## Running with Docker
 
 1. **Install prerequisites**
    - Docker (https://www.docker.com/products/docker-desktop)
-   - Python 3.8.10 (https://www.python.org/downloads/)
    - Git (https://git-scm.com/downloads)
 2. **Clone repo**
 
@@ -82,14 +81,14 @@ cd secfit
 3. **Run with Docker** (make sure to have Docker Desktop open)
 
 ```
-docker-compose up --build
+docker compose up --build
 ```
 
 This hosts the application on http://localhost:8080.
 
 ## Local Setup
 
-After cloning the repo (following the [steps above](#running-with-docker)), follow these steps:
+After cloning the repo (following [step 2 above](#running-with-docker)), follow these steps:
 
 ### Backend
 
@@ -99,12 +98,12 @@ After cloning the repo (following the [steps above](#running-with-docker)), foll
 python3 --version
 ```
 
-If output is something other than `3.8.10`, either [update here](https://www.python.org/downloads/) or set up [pyenv](https://github.com/pyenv/pyenv#readme).
+If output is something other than `3.8.10`, either [install it here](https://www.python.org/downloads/) or set up [pyenv](https://github.com/pyenv/pyenv#readme).
 
-2. **Navigate to the `backend` subfolder of the `secfit` folder we cloned earlier**
+2. **Navigate to the `secfit/backend` folder**
 
 ```
-cd secfit/backend
+cd backend
 ```
 
 3. **Set up Python virtual environment**
@@ -124,31 +123,27 @@ pip install -r dev-requirements.txt
 
 `dev-requirements.txt` includes `requirements.txt`, but adds dependencies for formatting and linting that are required for pre-commit hooks.
 
-5. **Navigate to backend folder**
-
-```
-cd backend
-```
-
-6. **Run database migrations**
+5. **Run database migrations**
 
 ```
 python3 manage.py migrate
 ```
 
-7. **Create Django superuser**
+6. **Create Django superuser**
 
 ```
 python3 manage.py createsuperuser
 ```
 
-8. **Run server** (or just run it through Docker [as shown earlier](#running-with-docker))
+7. **Run server**
 
 ```
 python3 manage.py runserver
 ```
 
-9. **Add initial data**
+This starts the server on `localhost:8000`.
+
+8. **Add initial data**
 
 ```
 python3 manage.py loaddata
@@ -157,40 +152,55 @@ python3 manage.py loaddata
 ### Frontend
 
 1. **Download Node.js** (https://nodejs.org/en/)
-2. **Navigate to `secfit/frontend`**
+
+2. **Navigate to the `secfit/frontend` folder**
+
+```
+cd frontend
+```
+
 3. **Install dependencies**
 
 ```
 npm ci
 ```
 
-This will also install `husky` and `lint-staged` to lint and format code changes on every commit. This can be skipped by using the `--no-verify` flag on commit, though this should only be used when absolutely necessary.
+This will also install `husky` and `lint-staged`, to lint and format code changes on every commit. This can be skipped by using the `--no-verify` flag on commit, though this should only be used when absolutely necessary.
 
 4. **Run Cordova**
-   - For browser: `cordova run browser --port=3000`
-   - For Android: `cordova run android --port=3000`
-   - For iOS: `cordova run ios --port=3000`
+
+```
+cordova run browser --port=3000
+```
+
+This runs the application on `localhost:3000`. To run it for a different platform, substitute `browser` in the above command with `android` or `ios`.
 
 Additional Cordova resources:
 
 - CLI guide<br>https://cordova.apache.org/docs/en/latest/guide/cli/
 - Using Android emulator<br>https://cordova.apache.org/docs/en/latest/guide/platforms/android/index.html
 
+### Recommendations
+
+If developing the project in VSCode, we recommend installing the [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint), [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance) extensions to get the best developer experience, and enabling the `Format On Save` setting. SecFit has configured `eslint` for frontend linting, `prettier` for frontend formatting, `flake8` for backend linting, and `black` for backend formatting.
+
 ## Running Tests
 
 The following sections describe how to run the various types of tests made for SecFit.
 
-### Full statement coverage tests
+### Django Tests
+
+Django tests are located in `tests.py` inside each app in `backend`. `workouts` and `users` are the most thoroughly tested apps.
 
 To run the tests, do the following in the terminal:
 
-1. Navigate to the `backend` folder.
+1. **Navigate to the `secfit/backend` folder**
 
 ```
 cd backend
 ```
 
-2. Run the tests.
+2. **Run the tests**
 
 ```
 python3 manage.py test
@@ -208,37 +218,39 @@ To run tests in a specific package with coverage report, run this command instea
 python3 manage.py test {PACKAGE_NAME}.tests --testrunner django_nose.NoseTestSuiteRunner --with-coverage --cover-package {PACKAGE_NAME}
 ```
 
-for example for the workouts package:
+...for example for the workouts package:
 
 ```
 python3 manage.py test workouts.tests --testrunner django_nose.NoseTestSuiteRunner --with-coverage --cover-package workouts
 ```
 
-If `django_nose` or `coverage` is missing, make sure that you have installed dependencies:
+If `django_nose` or `coverage` are missing, make sure that you have installed dependencies:
 
 ```
 pip install -r requirements.txt
 ```
 
-### Cypress tests (Blackbox tests)
+### Cypress Tests
 
-To run the tests, there need to be a locally running instance of the backend for the tests to send requests to, set up for this is [explained above](#backend).
+The `frontend/cypress/integration` folder contains integration tests, boundary value tests, two-way domain tests, black-box tests of workout visibility functionality, and tests to preserve code correctness following a refactor of SecFit.
 
-While running a backend, do the following in the terminal to run the tests:
+To run the tests, there needs to be a locally running instance of the backend for the tests to send requests to. Setup for this is [explained above](#backend).
 
-1. Navigate to the `frontend` folder.
+While running the backend, do the following in the terminal to run the tests:
+
+1. **Navigate to the `secfit/frontend` folder**
 
 ```
 cd frontend
 ```
 
-2. Run the tests (must have [Node](https://nodejs.org/en/) installed).
+2. **Run the tests** (must have [Node](https://nodejs.org/en/) installed)
 
 ```
 npx cypress run
 ```
 
-Individual tests can be run in the terminal using the `--spec` flag and giving path to the test, as documented in the [Cypress documentation](https://docs.cypress.io/guides/guides/command-line#cypress-run-spec-lt-spec-gt).
+Individual tests can be run in the terminal using the `--spec` flag with the path to the test, as documented in the [Cypress documentation](https://docs.cypress.io/guides/guides/command-line#cypress-run-spec-lt-spec-gt).
 
 The tests can also be run in Cypress Test Runner, using this command:
 
@@ -254,21 +266,21 @@ The `frontend/codeql` folder contains [CodeQL queries](https://codeql.github.com
 
 To run the tests, do the following in the terminal:
 
-1. Install the CodeQL CLI: https://codeql.github.com/docs/codeql-cli/getting-started-with-the-codeql-cli/.
+1. **Install the CodeQL CLI** (https://codeql.github.com/docs/codeql-cli/getting-started-with-the-codeql-cli/)
 
-2. Navigate to the `frontend` folder.
+2. **Navigate to the `secfit/frontend` folder**
 
 ```
 cd frontend
 ```
 
-3. Clone the CodeQL repo, and alias it as `codeql-repo` to avoid clashing with the SecFit `codeql` folder.
+3. **Clone the CodeQL repo** (and alias it as `codeql-repo` to avoid name collision with the SecFit `codeql` folder)
 
 ```
 git clone https://github.com/github/codeql.git codeql-repo
 ```
 
-4. Run the tests.
+4. **Run the tests**
 
 ```
 codeql test run --search-path=codeql www/scripts/gallery --additional-packs ./codeql-repo
