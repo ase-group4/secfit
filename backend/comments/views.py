@@ -26,8 +26,9 @@ class CommentList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Gener
 
     def get_queryset(self):
         queryset = Comment.objects.none()
+        user = self.request.user
 
-        if self.request.user:
+        if user is not None:
             """A comment should be visible to the requesting user if any of the following hold:
             - The comment is on a public visibility workout
             - The comment was written by the user
@@ -37,9 +38,9 @@ class CommentList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.Gener
 
             queryset = Comment.objects.filter(
                 Q(workout__visibility="PU")
-                | Q(owner=self.request.user)
-                | (Q(workout__visibility="CO") & Q(workout__owner__coach=self.request.user))
-                | Q(workout__owner=self.request.user)
+                | Q(owner=user)
+                | (Q(workout__visibility="CO") & Q(workout__owner__coach=user))
+                | Q(workout__owner=user)
             ).distinct()
 
         return queryset
