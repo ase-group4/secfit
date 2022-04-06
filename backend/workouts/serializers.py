@@ -169,25 +169,28 @@ class WorkoutSerializer(serializers.HyperlinkedModelSerializer):
 
         if "files" in validated_data:
             files_data = validated_data.pop("files")
-            files = instance.files
-
-            for file, file_data in zip(files.all(), files_data):
-                file.file = file_data.get("file", file.file)
-
-            # If new files have been added, creating new WorkoutFiles
-            if len(files_data) > len(files.all()):
-                for i in range(len(files.all()), len(files_data)):
-                    WorkoutFile.objects.create(
-                        workout=instance,
-                        owner=instance.owner,
-                        file=files_data[i].get("file"),
-                    )
-            # Else if files have been removed, delete WorkoutFiles
-            elif len(files_data) < len(files.all()):
-                for i in range(len(files_data), len(files.all())):
-                    files.all()[i].delete()
+            self.handle_files(files_data, instance)
 
         return instance
+
+    def handle_files(files_data, instance):
+        files = instance.files
+
+        for file, file_data in zip(files.all(), files_data):
+            file.file = file_data.get("file", file.file)
+
+        # If new files have been added, creating new WorkoutFiles
+        if len(files_data) > len(files.all()):
+            for i in range(len(files.all()), len(files_data)):
+                WorkoutFile.objects.create(
+                    workout=instance,
+                    owner=instance.owner,
+                    file=files_data[i].get("file"),
+                )
+        # Else if files have been removed, delete WorkoutFiles
+        elif len(files_data) < len(files.all()):
+            for i in range(len(files_data), len(files.all())):
+                files.all()[i].delete()
 
     def get_owner_username(self, obj):
         """Returns the owning user's username
