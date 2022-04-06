@@ -56,7 +56,7 @@ describe("Workouts visibility", () => {
     cy.get('input[value="Upload"]').click();
   });
 
-  it("Athlete may upload athletefile", () => {
+  it("Athlete may see athletefile", () => {
     cy.login(athlete, athlete_password);
     cy.visit("../../www/mycoach.html");
     cy.wait(1000);
